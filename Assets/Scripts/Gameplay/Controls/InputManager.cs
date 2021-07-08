@@ -28,8 +28,8 @@ namespace Gameplay.Controls
         private void HandleFingerTap(LeanFinger finger)
         {
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
-            
-            var cell = hitInfo.collider.GetComponent<Cell>();
+
+            var cell = hitInfo.collider.transform.parent.GetComponent<Cell>();
             if (cell != null) _playerMover.MoveToCell(cell.GetPathToCell());
         }
     }
