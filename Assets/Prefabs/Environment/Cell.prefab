@@ -172,3 +172,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   newCellDirection: 0
+  cellPrefab: {fileID: 7037149972760064767}
