@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Gameplay.Environment
@@ -17,7 +14,7 @@ namespace Gameplay.Environment
             (CellDirection.SW, null),
             (CellDirection.SE, null)
         };
-        
+
         public List<Vector3> GetPathToCell()
         {
             return new List<Vector3> { transform.position };
