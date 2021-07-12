@@ -21,7 +21,7 @@ namespace Gameplay.Сharacters
         public void MoveToCell(List<Vector3> path)
         {
             _pathToCell = new List<Vector3>(path);
-            RecalcTotalDistToNextPoint();
+            TargetNextPoint(true);
         }
 
         private void ProcessMovement()
@@ -30,13 +30,9 @@ namespace Gameplay.Сharacters
 
             if (_pathToCell.Count != 0)
             {
-                var currTarget = _pathToCell[0];
-                if (Rotate(currTarget)) return;
-                if (Move(currTarget)) return;
-                
-                _pathToCell.RemoveAt(0);
-                _currSpeed = 0f;
-                RecalcTotalDistToNextPoint();
+                if (Rotate(_pathToCell[0])) return;
+                if (Move(_pathToCell[0])) return;
+                TargetNextPoint();
             }
             else
             {
@@ -44,10 +40,12 @@ namespace Gameplay.Сharacters
             }
         }
 
-        private void RecalcTotalDistToNextPoint()
+        private void TargetNextPoint(bool first = false)
         {
-            if (_pathToCell.Count != 0)
-                _totalDistToNextPoint = Vector3.Distance(transform.position, _pathToCell[0]);
+            if (!first) _pathToCell.RemoveAt(0);
+            if (_pathToCell.Count == 0) return;
+            _totalDistToNextPoint = Vector3.Distance(transform.position, _pathToCell[0]);
+            _currSpeed = 0f;
         }
 
         private bool Rotate(Vector3 position)
