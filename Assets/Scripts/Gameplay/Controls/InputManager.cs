@@ -1,6 +1,5 @@
-using System;
 using Gameplay.Environment;
-using Gameplay.Player;
+using Gameplay.Сharacters;
 using Lean.Touch;
 using UnityEngine;
 
@@ -8,11 +7,13 @@ namespace Gameplay.Controls
 {
     public class InputManager : MonoBehaviour
     {
-        private PlayerMover _playerMover;
+        private GameObject _player;
+        private PawnMover _playerPawnMover;
 
         private void Awake()
         {
-            _playerMover = FindObjectOfType<PlayerMover>();
+            _player = GameObject.FindWithTag("Player");
+            _playerPawnMover = _player.GetComponent<PawnMover>();
         }
 
         private void OnEnable()
@@ -30,7 +31,7 @@ namespace Gameplay.Controls
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
 
             var cell = hitInfo.collider.transform.parent.GetComponent<Cell>();
-            if (cell != null) _playerMover.MoveToCell(cell.GetPathToCell());
+            if (cell != null) _playerPawnMover.MoveToCell(cell.GetPathToCell());
         }
     }
 }
