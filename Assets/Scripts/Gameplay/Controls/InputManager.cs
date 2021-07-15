@@ -1,6 +1,10 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using Gameplay.Environment;
 using Gameplay.Сharacters;
 using Lean.Touch;
+using SimplePF2D;
 using UnityEngine;
 
 namespace Gameplay.Controls
@@ -9,11 +13,17 @@ namespace Gameplay.Controls
     {
         private GameObject _player;
         private PawnMover _playerPawnMover;
+        private Grid _grid;
+        private Path _path;
+        private Coroutine _waitPathCor;
 
         private void Awake()
         {
             _player = GameObject.FindWithTag("Player");
             _playerPawnMover = _player.GetComponent<PawnMover>();
+            
+            _grid = FindObjectOfType<Grid>();
+            _path = new Path(FindObjectOfType<SimplePathFinding2D>());
         }
 
         private void OnEnable()
@@ -29,9 +39,22 @@ namespace Gameplay.Controls
         private void HandleFingerTap(LeanFinger finger)
         {
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
+            
+            if (hitInfo.collider.GetComponent<SimplePathFinding2D>() != null)
+            {
+                _path.CreatePath(_playerPawnMover.transform.position, hitInfo.point);
+                if (_waitPathCor != null) StopCoroutine(_waitPathCor);
+                _waitPathCor = StartCoroutine(WaitGeneratedPath());
+            }
+        }
 
-            var cell = hitInfo.collider.transform.parent.GetComponent<Cell>();
-            if (cell != null) _playerPawnMover.MoveToCell(cell.GetPathToCell());
+        private IEnumerator WaitGeneratedPath()
+        {
+            yield return new WaitUntil(() => _path.IsGenerated());
+
+            var vectorPath = new List<Vector3>();
+            for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
+            _playerPawnMover.MoveByPath(vectorPath);
         }
     }
 }

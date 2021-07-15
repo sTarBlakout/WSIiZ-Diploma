@@ -10,7 +10,7 @@ namespace Gameplay.Сharacters
         [SerializeField] private float maxMoveSpeed;
         [SerializeField] private float acceleration;
         
-        private List<Vector3> _pathToCell;
+        private List<Vector3> _vectorPath;
         private float _currSpeed;
         private float _totalDistToNextPoint;
 
@@ -19,33 +19,33 @@ namespace Gameplay.Сharacters
             ProcessMovement();
         }
         
-        public void MoveToCell(List<Vector3> path)
+        public void MoveByPath(List<Vector3> path)
         {
-            _pathToCell = new List<Vector3>(path);
+            _vectorPath = new List<Vector3>(path);
             TargetNextPoint(true);
         }
 
         private void ProcessMovement()
         {
-            if (_pathToCell == null) return;
+            if (_vectorPath == null) return;
 
-            if (_pathToCell.Count != 0)
+            if (_vectorPath.Count != 0)
             {
-                if (Rotate(_pathToCell[0])) return;
-                if (Move(_pathToCell[0])) return;
+                if (Rotate(_vectorPath[0])) return;
+                if (Move(_vectorPath[0])) return;
                 TargetNextPoint();
             }
             else
             {
-                _pathToCell = null;
+                _vectorPath = null;
             }
         }
 
         private void TargetNextPoint(bool first = false)
         {
-            if (!first) _pathToCell.RemoveAt(0);
-            if (_pathToCell.Count == 0) return;
-            _totalDistToNextPoint = Vector3.Distance(transform.position, _pathToCell[0]);
+            if (!first) _vectorPath.RemoveAt(0);
+            if (_vectorPath.Count == 0) return;
+            _totalDistToNextPoint = Vector3.Distance(transform.position, _vectorPath[0]);
             _currSpeed = 0f;
         }
 
