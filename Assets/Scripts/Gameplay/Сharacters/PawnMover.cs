@@ -74,6 +74,7 @@ namespace Gameplay.Сharacters
             _currSpeed = Mathf.Clamp(_currSpeed, 0f, 1f);
             transform.position = Vector3.MoveTowards(transform.position, position, maxMoveSpeed * _currSpeed * Time.deltaTime);
 
+            if (Vector3.SqrMagnitude(position - transform.position) < 0.001f) transform.position = position;
             return position != transform.position;
         }
     }
