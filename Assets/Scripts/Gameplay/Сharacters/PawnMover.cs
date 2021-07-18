@@ -6,9 +6,13 @@ namespace Gameplay.Сharacters
 {
     public class PawnMover : MonoBehaviour
     {
+        [Header("Stats")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float maxMoveSpeed;
         [SerializeField] private float acceleration;
+
+        [Header("Components")] 
+        [SerializeField] private GameObject charGraphics;
 
         private List<(Vector3 pos, bool rot)> _vectorPath;
         private Vector3 _prevPos;
@@ -84,14 +88,14 @@ namespace Gameplay.Сharacters
         {
             var direction = position - transform.position;
             
-            if (Vector3.Angle(transform.forward, direction) > 1f) 
+            if (Vector3.Angle(charGraphics.transform.forward, direction) > 1f) 
             {
                 var lookRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+                charGraphics.transform.rotation = Quaternion.Slerp(charGraphics.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
                 return true;
             }
             
-            transform.LookAt(position);
+            charGraphics.transform.LookAt(position);
             return false;
         }
 

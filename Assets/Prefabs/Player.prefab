@@ -2414,3 +2414,4 @@ MonoBehaviour:
   rotationSpeed: 2
   maxMoveSpeed: 2
   acceleration: 0.5
+  charGraphics: {fileID: 5292496188792235653}
