@@ -1,7 +1,5 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using Gameplay.Environment;
 using Gameplay.Сharacters;
 using Lean.Touch;
 using SimplePF2D;
@@ -13,7 +11,6 @@ namespace Gameplay.Controls
     {
         private GameObject _player;
         private PawnMover _playerPawnMover;
-        private Grid _grid;
         private Path _path;
         private Coroutine _waitPathCor;
 
@@ -22,7 +19,6 @@ namespace Gameplay.Controls
             _player = GameObject.FindWithTag("Player");
             _playerPawnMover = _player.GetComponent<PawnMover>();
             
-            _grid = FindObjectOfType<Grid>();
             _path = new Path(FindObjectOfType<SimplePathFinding2D>());
         }
 
@@ -40,7 +36,7 @@ namespace Gameplay.Controls
         {
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
             
-            if (hitInfo.collider.GetComponent<SimplePathFinding2D>() != null)
+            if (hitInfo.collider.GetComponent<GameArea>() != null)
             {
                 _path.CreatePath(_playerPawnMover.transform.position, hitInfo.point);
                 if (_waitPathCor != null) StopCoroutine(_waitPathCor);

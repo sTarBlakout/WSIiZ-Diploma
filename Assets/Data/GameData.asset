@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbc21eed75aa84543a374f0bc7373533, type: 3}
   m_Name: GameData
   m_EditorClassIdentifier: 
-  targetFrameRate: 30
+  targetFrameRate: 60
