@@ -25,7 +25,7 @@ namespace Gameplay.Сharacters
             ProcessMovement();
         }
         
-        public void MoveByPath(List<Vector3> path)
+        public void MovePath(List<Vector3> path)
         {
             _vectorPath = TraversePath(path);
             TargetNextPoint();
