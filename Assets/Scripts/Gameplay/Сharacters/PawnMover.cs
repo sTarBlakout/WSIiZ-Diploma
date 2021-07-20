@@ -16,17 +16,29 @@ namespace Gameplay.Сharacters
 
         private List<(Vector3 pos, bool rot)> _vectorPath;
         private Vector3 _prevPos;
+        private Vector3 _rotateToPos;
         private float _currSpeed;
         private float _totalDistToNextPoint;
         private float _distReachedFullSpeed;
 
+        private Action _onReachedDestination;
+        private Action _onRotated;
+
         private void Update()
         {
             ProcessMovement();
+            ProcessRotation();
         }
         
-        public void MovePath(List<Vector3> path)
+        public void RotateTo(Vector3 position, Action onRotated)
         {
+            _rotateToPos = position;
+            _onRotated = onRotated;
+        }
+        
+        public void MovePath(List<Vector3> path, Action onReachedDestination)
+        {
+            _onReachedDestination = onReachedDestination;
             _vectorPath = TraversePath(path);
             TargetNextPoint();
         }
@@ -58,6 +70,14 @@ namespace Gameplay.Сharacters
             return rez;
         }
 
+        private void ProcessRotation()
+        {
+            if (_onRotated == null) return;
+            if (Rotate(_rotateToPos)) return;
+            _onRotated?.Invoke();
+            _onRotated = null;
+        }
+
         private void ProcessMovement()
         {
             if (_vectorPath == null) return;
@@ -78,7 +98,11 @@ namespace Gameplay.Сharacters
         {
             _prevPos = _vectorPath[0].pos;
             _vectorPath.RemoveAt(0);
-            if (_vectorPath.Count == 0) return;
+            if (_vectorPath.Count == 0)
+            {
+                _onReachedDestination?.Invoke();
+                return;
+            }
             _totalDistToNextPoint = Vector3.Distance(transform.position, _vectorPath[0].pos);
             _currSpeed = 0f;
             _distReachedFullSpeed = -1f;

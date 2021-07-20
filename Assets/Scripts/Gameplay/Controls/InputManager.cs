@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gameplay.Interfaces;
 using Gameplay.Сharacters;
 using Lean.Touch;
 using SimplePF2D;
@@ -13,6 +14,9 @@ namespace Gameplay.Controls
         private PawnController _playerController;
         private Coroutine _waitPathCor;
         private Path _path;
+
+        private OrderType _orderType;
+        private IDamageable _damageable;
 
         private void Awake()
         {
@@ -37,21 +41,68 @@ namespace Gameplay.Controls
             // Clicked on map, process simple movement
             if (hitInfo.collider.GetComponent<GameArea>() != null)
             {
-                GeneratePathToPosition(hitInfo.point, OrderMovePath);
+                _orderType = OrderType.Move;
+                GeneratePathToPosition(hitInfo.point, OnPathGenerated);
                 return;
             }
 
             // Clicked on enemy, process attack behavior
-            var otherPawn = hitInfo.collider.transform.parent.GetComponent<PawnController>();
-            if (otherPawn != null && otherPawn.IsEnemyFor(_playerController))
+            _damageable = hitInfo.collider.transform.parent.GetComponent<IDamageable>();
+            if (_damageable != null && _damageable.IsEnemyFor(_playerController))
             {
-                GeneratePathToPosition(hitInfo.point, OrderMovePath);
+                _orderType = OrderType.Attack;
+                GeneratePathToPosition(_damageable.Position, OnPathGenerated);
+                return;
             }
         }
 
-        private void OrderMovePath(List<Vector3> path)
+        private void OnReachedDestination()
         {
-            _playerController.MovePath(path, () => {});
+            switch (_orderType)
+            {
+                case OrderType.Attack: OrderRotate(_damageable.Position); break;
+                default: _orderType = OrderType.None; break;
+            }
+        }
+
+        private void OnRotated()
+        {
+            switch (_orderType)
+            {
+                case OrderType.Attack: OrderAttack(_damageable); break;
+                default: _orderType = OrderType.None; break;
+            }
+        }
+        
+        private void OnPathGenerated(List<Vector3> path)
+        {
+            switch (_orderType)
+            {
+                case OrderType.Move: OrderSimpleMove(path); break;
+                case OrderType.Attack: OrderMoveForAttacking(path); break;
+                default: _orderType = OrderType.None; break;
+            }
+        }
+
+        private void OrderRotate(Vector3 position)
+        {
+            _playerController.RotateTo(position, OnRotated);
+        }
+
+        private void OrderSimpleMove(List<Vector3> path)
+        {
+            _playerController.MovePath(path, OnReachedDestination);
+        }
+        
+        private void OrderMoveForAttacking(List<Vector3> path)
+        {
+            path.RemoveAt(path.Count - 1);
+            _playerController.MovePath(path, OnReachedDestination);
+        }
+        
+        private void OrderAttack(IDamageable _damageable)
+        {
+            _playerController.AttackTarget(_damageable);
         }
 
         private void GeneratePathToPosition(Vector3 position, Action<List<Vector3>> onGeneratedPath)
