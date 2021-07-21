@@ -1740,6 +1740,8 @@ GameObject:
   - component: {fileID: 8550617257535909553}
   - component: {fileID: 6974840743950332069}
   - component: {fileID: 3316738538415535986}
+  - component: {fileID: 7126451183361429271}
+  - component: {fileID: 2597350701064370413}
   m_Layer: 0
   m_Name: Pawn
   m_TagString: Untagged
@@ -1792,7 +1794,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pawnData: {fileID: 0}
+  pawnAnimator: {fileID: 7126451183361429271}
   pawnMover: {fileID: 6974840743950332069}
+  pawnAttacker: {fileID: 0}
 --- !u!114 &6974840743950332069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1821,3 +1825,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff8cc12cfc9c0c9499ce8141bca69151, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7126451183361429271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974840743950332067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad19c19c3ff4dac4a98115669413da07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!95 &2597350701064370413
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974840743950332067}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: b5f71c859f9f9bf41badda8a4650082c, type: 3}
+  m_Controller: {fileID: 9100000, guid: 5078dd28400422f4d9c1a8157ebaf300, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

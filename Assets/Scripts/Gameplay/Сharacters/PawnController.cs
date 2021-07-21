@@ -8,6 +8,7 @@ namespace Gameplay.Сharacters
     public class PawnController : MonoBehaviour, IDamageable
     {
         [SerializeField] private PawnData pawnData;
+        [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnMover pawnMover;
         [SerializeField] private PawnAttacker pawnAttacker;
 
