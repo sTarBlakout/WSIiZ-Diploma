@@ -8,18 +8,14 @@ namespace Gameplay.Сharacters
     {
         [Header("Stats")]
         [SerializeField] private float rotationSpeed;
-        [SerializeField] private float maxMoveSpeed;
-        [SerializeField] private float acceleration;
+        [SerializeField] private float movementSpeed;
 
         [Header("Components")] 
         [SerializeField] private GameObject charGraphics;
 
+        private PawnAnimator _pawnAnimator;
         private List<(Vector3 pos, bool rot)> _vectorPath;
-        private Vector3 _prevPos;
         private Vector3 _rotateToPos;
-        private float _currSpeed;
-        private float _totalDistToNextPoint;
-        private float _distReachedFullSpeed;
 
         private Action _onReachedDestination;
         private Action _onRotated;
@@ -28,6 +24,11 @@ namespace Gameplay.Сharacters
         {
             ProcessMovement();
             ProcessRotation();
+        }
+
+        public void Init(PawnAnimator pawnAnimator)
+        {
+            _pawnAnimator = pawnAnimator;
         }
         
         public void RotateTo(Vector3 position, Action onRotated)
@@ -46,11 +47,11 @@ namespace Gameplay.Сharacters
         private List<(Vector3 pos, bool rot)> TraversePath(List<Vector3> path)
         {
             var rez = new List<(Vector3 pos, bool rot)>();
-            
+
             var traverser = new GameObject("Traverser");
             traverser.transform.position = transform.position;
             traverser.transform.rotation = transform.rotation;
-        
+            
             foreach (var point in path)
             {
                 (Vector3 pos, bool rot) posRot = (point, false);
@@ -59,7 +60,7 @@ namespace Gameplay.Сharacters
                     rez[rez.Count - 1] = (rez[rez.Count - 1].pos, true);
                     traverser.transform.LookAt(point);
                 }
-
+            
                 traverser.transform.position = point;
                 rez.Add(posRot);
             }
@@ -67,6 +68,7 @@ namespace Gameplay.Сharacters
             rez[rez.Count - 1] = (rez[rez.Count - 1].pos, true);
             rez.RemoveAll(posRot => !posRot.rot);
             Destroy(traverser);
+            
             return rez;
         }
 
@@ -96,26 +98,32 @@ namespace Gameplay.Сharacters
 
         private void TargetNextPoint()
         {
-            _prevPos = _vectorPath[0].pos;
             _vectorPath.RemoveAt(0);
-            if (_vectorPath.Count == 0)
-            {
-                _onReachedDestination?.Invoke();
-                return;
-            }
-            _totalDistToNextPoint = Vector3.Distance(transform.position, _vectorPath[0].pos);
-            _currSpeed = 0f;
-            _distReachedFullSpeed = -1f;
+            if (_vectorPath.Count == 0) _onReachedDestination?.Invoke();
         }
 
         private bool Rotate(Vector3 position)
         {
             var direction = position - transform.position;
-            
-            if (Vector3.Angle(charGraphics.transform.forward, direction) > 1f) 
+            var angle = Vector3.Angle(charGraphics.transform.forward, direction);
+
+            if (angle > 10f)
+            {
+                if (Vector3.Dot(direction, transform.right) > 0)
+                    _pawnAnimator.AnimateRotationLeft(true);
+                else
+                    _pawnAnimator.AnimateRotationRight(true);
+            }
+            else
+            {
+                _pawnAnimator.AnimateRotationLeft(false);
+                _pawnAnimator.AnimateRotationRight(false);
+            }
+
+            if (angle > 1f) 
             {
                 var lookRotation = Quaternion.LookRotation(direction);
-                charGraphics.transform.rotation = Quaternion.Slerp(charGraphics.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+                charGraphics.transform.rotation = Quaternion.RotateTowards(charGraphics.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
                 return true;
             }
             
@@ -125,29 +133,9 @@ namespace Gameplay.Сharacters
 
         private bool Move(Vector3 postion)
         {
-            var remainDist = Vector3.Distance(transform.position, postion);
-
-            if (_distReachedFullSpeed == -1f)
-            {
-                if (remainDist < _totalDistToNextPoint / 2)
-                    _currSpeed -= Mathf.Min(acceleration * Time.deltaTime, 1);
-                else
-                    _currSpeed += Mathf.Min(acceleration * Time.deltaTime, 1);
-            }
-            else
-            {
-                if (_distReachedFullSpeed > remainDist)
-                {
-                    _currSpeed -= Mathf.Min(acceleration * Time.deltaTime, 1);
-                }
-            }
-            
-            _currSpeed = Mathf.Clamp(_currSpeed, 0.1f, 1f);
-            transform.position = Vector3.MoveTowards(transform.position, postion, maxMoveSpeed * _currSpeed * Time.deltaTime);
-            if (_currSpeed == 1f && _distReachedFullSpeed == -1) _distReachedFullSpeed = Vector3.Distance(transform.position, _prevPos);
-
-            if (Vector3.SqrMagnitude(postion - transform.position) < 0.001f) transform.position = postion;
-            return postion!= transform.position;
+            transform.position = Vector3.MoveTowards(transform.position, postion, movementSpeed * Time.deltaTime);
+            _pawnAnimator.AnimateWalk(postion != transform.position);
+            return postion != transform.position;
         }
     }
 }

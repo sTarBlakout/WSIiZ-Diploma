@@ -12,11 +12,17 @@ namespace Gameplay.Сharacters
         [SerializeField] private PawnMover pawnMover;
         [SerializeField] private PawnAttacker pawnAttacker;
 
+        private void Start()
+        {
+            pawnMover.Init(pawnAnimator);
+        }
+
         public void MovePath(List<Vector3> path, Action onReachedDestination)
         {
             if (pawnMover == null)
                 Debug.LogError($"{gameObject.name} does not have any mover component!");
             else
+
                 pawnMover.MovePath(path, onReachedDestination);
         }
         
