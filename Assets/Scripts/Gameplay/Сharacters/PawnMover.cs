@@ -109,10 +109,14 @@ namespace Gameplay.Сharacters
 
             if (angle > 10f)
             {
-                if (Vector3.Dot(direction, transform.right) > 0)
-                    _pawnAnimator.AnimateRotationLeft(true);
-                else
+                if (Vector3.Dot(direction, charGraphics.transform.right) > 0)
+                {
                     _pawnAnimator.AnimateRotationRight(true);
+                }
+                else
+                {
+                    _pawnAnimator.AnimateRotationLeft(true);
+                }
             }
             else
             {

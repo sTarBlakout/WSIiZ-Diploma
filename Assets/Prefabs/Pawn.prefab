@@ -1809,7 +1809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b78960a9c0a134897be50727aac72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 80
+  rotationSpeed: 120
   movementSpeed: 2
   charGraphics: {fileID: 6941806847977164242}
 --- !u!114 &3316738538415535986
