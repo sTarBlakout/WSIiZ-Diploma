@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,12 +10,18 @@ namespace Gameplay.Сharacters
         [Header("Stats")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float movementSpeed;
+        [SerializeField] private float waitAfterRotate;
+        [SerializeField] private float waitAfterMove;
 
         [Header("Components")] 
         [SerializeField] private GameObject charGraphics;
 
-        private PawnAnimator _pawnAnimator;
+        private Coroutine _waitCoroutine;
+        private bool _waitedAfterRotate;
+        private bool _waitedAfterMove;
+        
         private List<(Vector3 pos, bool rot)> _vectorPath;
+        private PawnAnimator _pawnAnimator;
         private Vector3 _rotateToPos;
 
         private Action _onReachedDestination;
@@ -22,7 +29,9 @@ namespace Gameplay.Сharacters
 
         private void Update()
         {
-            ProcessMovement();
+            if (IsWaiting()) return;
+            
+            ProcessTraversing();
             ProcessRotation();
         }
 
@@ -76,24 +85,69 @@ namespace Gameplay.Сharacters
         {
             if (_onRotated == null) return;
             if (Rotate(_rotateToPos)) return;
+            
+            if (!_waitedAfterRotate)
+            {
+                InitWaiting(waitAfterRotate, () => _waitedAfterRotate = true);
+                return;
+            }
+            
             _onRotated?.Invoke();
             _onRotated = null;
         }
 
-        private void ProcessMovement()
+        private void ProcessTraversing()
         {
             if (_vectorPath == null) return;
 
             if (_vectorPath.Count != 0)
             {
                 if (Rotate(_vectorPath[0].pos)) return;
+                if (!_waitedAfterRotate)
+                {
+                    InitWaiting(waitAfterRotate, () => _waitedAfterRotate = true);
+                    return;
+                }
+                
                 if (Move(_vectorPath[0].pos)) return;
+                if (!_waitedAfterMove)
+                {
+                    InitWaiting(waitAfterMove,  () => _waitedAfterMove = true);
+                    return;
+                }
+                
+                ResetAllWaitings();
                 TargetNextPoint();
             }
             else
             {
                 _vectorPath = null;
             }
+        }
+
+        private bool IsWaiting()
+        {
+            return _waitCoroutine != null;
+        }
+
+        private void InitWaiting(float waitTime, Action onWaitEnd)
+        {
+            if (_waitCoroutine != null) StopCoroutine(_waitCoroutine);
+            _waitCoroutine = StartCoroutine(WaitForSeconds(waitTime, onWaitEnd));
+        }
+
+        private void ResetAllWaitings()
+        {
+            _waitedAfterMove = false;
+            _waitedAfterRotate = false;
+            _waitCoroutine = null;
+        }
+
+        private IEnumerator WaitForSeconds(float waitTime, Action onWaitEnd)
+        {
+            yield return new WaitForSeconds(waitTime);
+            _waitCoroutine = null;
+            onWaitEnd?.Invoke();
         }
 
         private void TargetNextPoint()
@@ -107,29 +161,20 @@ namespace Gameplay.Сharacters
             var direction = position - transform.position;
             var angle = Vector3.Angle(charGraphics.transform.forward, direction);
 
-            if (angle > 10f)
-            {
-                if (Vector3.Dot(direction, charGraphics.transform.right) > 0)
-                {
-                    _pawnAnimator.AnimateRotationRight(true);
-                }
-                else
-                {
-                    _pawnAnimator.AnimateRotationLeft(true);
-                }
-            }
-            else
-            {
-                _pawnAnimator.AnimateRotationLeft(false);
-                _pawnAnimator.AnimateRotationRight(false);
-            }
-
             if (angle > 1f) 
             {
+                if (Vector3.Dot(direction, charGraphics.transform.right) > 0)
+                    _pawnAnimator.AnimateRotationRight(true);
+                else
+                    _pawnAnimator.AnimateRotationLeft(true);
+
                 var lookRotation = Quaternion.LookRotation(direction);
                 charGraphics.transform.rotation = Quaternion.RotateTowards(charGraphics.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
                 return true;
             }
+            
+            _pawnAnimator.AnimateRotationLeft(false);
+            _pawnAnimator.AnimateRotationRight(false);
             
             charGraphics.transform.LookAt(position);
             return false;

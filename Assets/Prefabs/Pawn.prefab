@@ -1810,7 +1810,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotationSpeed: 120
-  movementSpeed: 2
+  movementSpeed: 1.8
+  waitAfterRotate: 0.5
+  waitAfterMove: 0.5
   charGraphics: {fileID: 6941806847977164242}
 --- !u!114 &3316738538415535986
 MonoBehaviour:
