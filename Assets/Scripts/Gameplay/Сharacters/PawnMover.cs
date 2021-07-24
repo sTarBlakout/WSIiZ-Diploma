@@ -7,15 +7,9 @@ namespace Gameplay.Сharacters
 {
     public class PawnMover : MonoBehaviour
     {
-        [Header("Stats")]
-        [SerializeField] private float rotationSpeed;
-        [SerializeField] private float movementSpeed;
-        [SerializeField] private float waitAfterRotate;
-        [SerializeField] private float waitAfterMove;
-
-        [Header("Components")] 
-        [SerializeField] private GameObject charGraphics;
-
+        private PawnData _pawnData;
+        private GameObject _charGraphics;
+        
         private Coroutine _waitCoroutine;
         private bool _waitedAfterRotate;
         private bool _waitedAfterMove;
@@ -35,9 +29,11 @@ namespace Gameplay.Сharacters
             ProcessRotation();
         }
 
-        public void Init(PawnAnimator pawnAnimator)
+        public void Init(PawnData pawnData, PawnAnimator pawnAnimator, GameObject charGraphics)
         {
+            _pawnData = pawnData;
             _pawnAnimator = pawnAnimator;
+            _charGraphics = charGraphics;
         }
         
         public void RotateTo(Vector3 position, Action onRotated)
@@ -88,7 +84,7 @@ namespace Gameplay.Сharacters
             
             if (!_waitedAfterRotate)
             {
-                InitWaiting(waitAfterRotate, () => _waitedAfterRotate = true);
+                InitWaiting(_pawnData.WaitAfterRotate, () => _waitedAfterRotate = true);
                 return;
             }
             
@@ -105,14 +101,14 @@ namespace Gameplay.Сharacters
                 if (Rotate(_vectorPath[0].pos)) return;
                 if (!_waitedAfterRotate)
                 {
-                    InitWaiting(waitAfterRotate, () => _waitedAfterRotate = true);
+                    InitWaiting(_pawnData.WaitAfterRotate, () => _waitedAfterRotate = true);
                     return;
                 }
                 
                 if (Move(_vectorPath[0].pos)) return;
                 if (!_waitedAfterMove)
                 {
-                    InitWaiting(waitAfterMove,  () => _waitedAfterMove = true);
+                    InitWaiting(_pawnData.WaitAfterMove,  () => _waitedAfterMove = true);
                     return;
                 }
                 
@@ -159,32 +155,41 @@ namespace Gameplay.Сharacters
         private bool Rotate(Vector3 position)
         {
             var direction = position - transform.position;
-            var angle = Vector3.Angle(charGraphics.transform.forward, direction);
+            var angle = Vector3.Angle(_charGraphics.transform.forward, direction);
 
             if (angle > 1f) 
             {
-                if (Vector3.Dot(direction, charGraphics.transform.right) > 0)
-                    _pawnAnimator.AnimateRotationRight(true);
+                if (Vector3.Dot(direction, _charGraphics.transform.right) > 0)
+                    _pawnAnimator.AnimateMovement(AnimMovement.RotateRight, true);
                 else
-                    _pawnAnimator.AnimateRotationLeft(true);
+                    _pawnAnimator.AnimateMovement(AnimMovement.RotateLeft, true);
 
                 var lookRotation = Quaternion.LookRotation(direction);
-                charGraphics.transform.rotation = Quaternion.RotateTowards(charGraphics.transform.rotation, lookRotation, rotationSpeed * Time.deltaTime);
+                _charGraphics.transform.rotation = Quaternion.RotateTowards(
+                    _charGraphics.transform.rotation, lookRotation, _pawnData.RotationSpeed * Time.deltaTime);
                 return true;
             }
             
-            _pawnAnimator.AnimateRotationLeft(false);
-            _pawnAnimator.AnimateRotationRight(false);
+            _pawnAnimator.AnimateMovement(AnimMovement.RotateLeft, false);
+            _pawnAnimator.AnimateMovement(AnimMovement.RotateRight, false);
             
-            charGraphics.transform.LookAt(position);
+            _charGraphics.transform.LookAt(position);
             return false;
         }
 
         private bool Move(Vector3 postion)
         {
-            transform.position = Vector3.MoveTowards(transform.position, postion, movementSpeed * Time.deltaTime);
-            _pawnAnimator.AnimateWalk(postion != transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, postion, _pawnData.MovementSpeed * Time.deltaTime);
+            _pawnAnimator.AnimateMovement(AnimMovement.Walk, postion != transform.position);
             return postion != transform.position;
         }
+        
+        #region Animation Events
+        
+        public void FootL() { }
+        
+        public void FootR() { }
+        
+        #endregion
     }
 }

@@ -1,40 +1,33 @@
-using System;
 using UnityEngine;
 
 namespace Gameplay.Сharacters
 {
     public class PawnAnimator : MonoBehaviour
     {
-        private static readonly int RotateRight = Animator.StringToHash("RotateRight");
-        private static readonly int RotateLeft = Animator.StringToHash("RotateLeft");
-        private static readonly int Walk = Animator.StringToHash("Walk");
-        
         private static readonly int Attack = Animator.StringToHash("Attack");
+        private static readonly int GetHit = Animator.StringToHash("GetHit");
+        private static readonly int Block = Animator.StringToHash("Block");
 
         [SerializeField] private Animator animator;
 
-        public void AnimateRotationRight(bool animate)
+        public void AnimateMovement(AnimMovement movement, bool animate)
         {
-            animator.SetBool(RotateRight, animate);
+            animator.SetBool(movement.ToString(), animate);
         }
         
-        public void AnimateRotationLeft(bool animate)
-        {
-            animator.SetBool(RotateLeft, animate);
-        }
-
-        public void AnimateWalk(bool animate)
-        {
-            animator.SetBool(Walk, animate);
-        }
-
         public void AnimateAttack()
         {
             animator.SetTrigger(Attack);
         }
-
-        public void FootL() { }
         
-        public void FootR() { }
+        public void AnimateGetHit()
+        {
+            animator.SetTrigger(GetHit);
+        }
+
+        public void AnimateBlock(bool animate)
+        {
+            animator.SetBool(Block, animate);
+        }
     }
 }

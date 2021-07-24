@@ -11,11 +11,12 @@ namespace Gameplay.Сharacters
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnMover pawnMover;
         [SerializeField] private PawnAttacker pawnAttacker;
+        [SerializeField] private GameObject charGraphics;
 
         private void Start()
         {
-            pawnMover.Init(pawnAnimator);
-            pawnAttacker.Init(pawnData, pawnAnimator);
+            pawnMover.Init(pawnData, pawnAnimator, charGraphics);
+            pawnAttacker.Init(pawnData, pawnAnimator, this);
         }
 
         public void MovePath(List<Vector3> path, Action onReachedDestination)
@@ -43,16 +44,33 @@ namespace Gameplay.Сharacters
                 pawnAttacker.AttackTarget(damageable, onAttacked);
         }
 
-        public Vector3 Position => transform.position;
+        #region IDamageable Implementation
 
+        public Vector3 Position => transform.position;
+        
+        public void PrepareForDamage(IDamageable attacker, Action onPrepared)
+        {
+            onPrepared += TryBlock;
+            RotateTo(attacker.Position, onPrepared);
+        }
+
+        // TODO: Add some callback and wait a bit
         public void Damage(int value)
         {
-            Debug.Log($"Damn I'm damaged: {value}");
+            pawnAnimator.AnimateGetHit();
+            //pawnAnimator.AnimateBlock(false);
         }
 
         public bool IsEnemyFor(PawnController pawn)
         {
             return pawnData.TeamId != pawn.pawnData.TeamId;
+        }
+        
+        #endregion
+        
+        private void TryBlock()
+        {
+            pawnAnimator.AnimateBlock(true);
         }
     }
 }

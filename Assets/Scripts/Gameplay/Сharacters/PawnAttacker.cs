@@ -8,27 +8,33 @@ namespace Gameplay.Сharacters
     {
         private PawnData _pawnData;
         private PawnAnimator _pawnAnimator;
-
         private IDamageable _damageable;
+        
+        private IDamageable _targetDamageable;
         private Action _onAttacked;
         
-        public void Init(PawnData pawnData, PawnAnimator pawnAnimator)
+        public void Init(PawnData pawnData, PawnAnimator pawnAnimator, IDamageable damageable)
         {
             _pawnData = pawnData;
             _pawnAnimator = pawnAnimator;
+            _damageable = damageable;
         }
 
         public void AttackTarget(IDamageable damageable, Action onAttacked)
         {
-            _damageable = damageable;
+            _targetDamageable = damageable;
             _onAttacked = onAttacked;
-            _pawnAnimator.AnimateAttack();
+            _targetDamageable.PrepareForDamage(_damageable, () => _pawnAnimator.AnimateAttack());
         }
 
+        #region Unused Animation Events
+       
         public void Hit()
         {
-            _damageable.Damage(_pawnData.Damage);
+            _targetDamageable.Damage(_pawnData.Damage);
             _onAttacked?.Invoke();
         }
+        
+        #endregion
     }
 }

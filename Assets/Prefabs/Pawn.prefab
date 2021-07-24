@@ -1797,6 +1797,7 @@ MonoBehaviour:
   pawnAnimator: {fileID: 7126451183361429271}
   pawnMover: {fileID: 6974840743950332069}
   pawnAttacker: {fileID: 3316738538415535986}
+  charGraphics: {fileID: 6941806847977164242}
 --- !u!114 &6974840743950332069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1809,11 +1810,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b78960a9c0a134897be50727aac72d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 120
-  movementSpeed: 1.8
-  waitAfterRotate: 0.5
-  waitAfterMove: 0.5
-  charGraphics: {fileID: 6941806847977164242}
 --- !u!114 &3316738538415535986
 MonoBehaviour:
   m_ObjectHideFlags: 0

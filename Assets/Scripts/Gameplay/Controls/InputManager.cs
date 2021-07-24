@@ -15,7 +15,7 @@ namespace Gameplay.Controls
         private Coroutine _waitPathCor;
         private Path _path;
 
-        private OrderType _orderType;
+        private Order _order;
         private IDamageable _damageable;
 
         private void Awake()
@@ -41,7 +41,7 @@ namespace Gameplay.Controls
             // Clicked on map, process simple movement
             if (hitInfo.collider.GetComponent<GameArea>() != null)
             {
-                _orderType = OrderType.Move;
+                _order = Order.Move;
                 GeneratePathToPosition(hitInfo.point, OnPathGenerated);
                 return;
             }
@@ -50,7 +50,7 @@ namespace Gameplay.Controls
             _damageable = hitInfo.collider.transform.parent.GetComponent<IDamageable>();
             if (_damageable != null && _damageable.IsEnemyFor(_playerController))
             {
-                _orderType = OrderType.Attack;
+                _order = Order.Attack;
                 GeneratePathToPosition(_damageable.Position, OnPathGenerated);
                 return;
             }
@@ -58,19 +58,19 @@ namespace Gameplay.Controls
 
         private void OnReachedDestination()
         {
-            switch (_orderType)
+            switch (_order)
             {
-                case OrderType.Attack: OrderRotate(_damageable.Position); break;
-                default: _orderType = OrderType.None; break;
+                case Order.Attack: OrderRotate(_damageable.Position); break;
+                default: _order = Order.None; break;
             }
         }
 
         private void OnRotated()
         {
-            switch (_orderType)
+            switch (_order)
             {
-                case OrderType.Attack: OrderAttack(_damageable); break;
-                default: _orderType = OrderType.None; break;
+                case Order.Attack: OrderAttack(_damageable); break;
+                default: _order = Order.None; break;
             }
         }
 
@@ -81,11 +81,11 @@ namespace Gameplay.Controls
         
         private void OnPathGenerated(List<Vector3> path)
         {
-            switch (_orderType)
+            switch (_order)
             {
-                case OrderType.Move: OrderSimpleMove(path); break;
-                case OrderType.Attack: OrderMoveForAttacking(path); break;
-                default: _orderType = OrderType.None; break;
+                case Order.Move: OrderSimpleMove(path); break;
+                case Order.Attack: OrderMoveForAttacking(path); break;
+                default: _order = Order.None; break;
             }
         }
 

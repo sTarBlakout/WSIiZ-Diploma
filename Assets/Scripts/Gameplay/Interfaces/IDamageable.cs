@@ -1,12 +1,12 @@
+using System;
 using Gameplay.Сharacters;
-using UnityEngine;
 
 namespace Gameplay.Interfaces
 {
-    public interface IDamageable
+    public interface IDamageable : IInteractable
     {
+        void PrepareForDamage(IDamageable attacker, Action onPrepared);
         void Damage(int value);
         bool IsEnemyFor(PawnController pawn);
-        Vector3 Position { get; }
     }
 }
