@@ -8,6 +8,8 @@ namespace Gameplay.Сharacters
         private static readonly int RotateRight = Animator.StringToHash("RotateRight");
         private static readonly int RotateLeft = Animator.StringToHash("RotateLeft");
         private static readonly int Walk = Animator.StringToHash("Walk");
+        
+        private static readonly int Attack = Animator.StringToHash("Attack");
 
         [SerializeField] private Animator animator;
 
@@ -24,6 +26,11 @@ namespace Gameplay.Сharacters
         public void AnimateWalk(bool animate)
         {
             animator.SetBool(Walk, animate);
+        }
+
+        public void AnimateAttack()
+        {
+            animator.SetTrigger(Attack);
         }
 
         public void FootL() { }

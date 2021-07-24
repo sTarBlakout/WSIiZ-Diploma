@@ -1796,7 +1796,7 @@ MonoBehaviour:
   pawnData: {fileID: 0}
   pawnAnimator: {fileID: 7126451183361429271}
   pawnMover: {fileID: 6974840743950332069}
-  pawnAttacker: {fileID: 0}
+  pawnAttacker: {fileID: 3316738538415535986}
 --- !u!114 &6974840743950332069
 MonoBehaviour:
   m_ObjectHideFlags: 0

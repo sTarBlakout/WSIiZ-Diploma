@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: PawnEnemyData
   m_EditorClassIdentifier: 
   teamId: 1
+  level: 2

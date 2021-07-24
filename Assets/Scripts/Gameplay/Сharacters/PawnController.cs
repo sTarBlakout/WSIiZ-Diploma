@@ -15,6 +15,7 @@ namespace Gameplay.Сharacters
         private void Start()
         {
             pawnMover.Init(pawnAnimator);
+            pawnAttacker.Init(pawnData, pawnAnimator);
         }
 
         public void MovePath(List<Vector3> path, Action onReachedDestination)
@@ -34,12 +35,20 @@ namespace Gameplay.Сharacters
                 pawnMover.RotateTo(position, onRotated);
         }
 
-        public void AttackTarget(IDamageable damageable)
+        public void AttackTarget(IDamageable damageable, Action onAttacked)
         {
-            Debug.Log("Pew!!! Attacking :)");
+            if (pawnAttacker == null)
+                Debug.LogError($"{gameObject.name} does not have any attacker component!");
+            else
+                pawnAttacker.AttackTarget(damageable, onAttacked);
         }
 
         public Vector3 Position => transform.position;
+
+        public void Damage(int value)
+        {
+            Debug.Log($"Damn I'm damaged: {value}");
+        }
 
         public bool IsEnemyFor(PawnController pawn)
         {

@@ -6,7 +6,9 @@ namespace Gameplay.Сharacters
     public class PawnData : ScriptableObject
     {
         [SerializeField] private int teamId;
+        [SerializeField] private int level;
         
         public int TeamId => teamId;
+        public int Damage => level;
     }
 }

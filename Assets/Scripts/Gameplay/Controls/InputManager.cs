@@ -73,6 +73,11 @@ namespace Gameplay.Controls
                 default: _orderType = OrderType.None; break;
             }
         }
+
+        private void OnAttacked()
+        {
+            Debug.Log("Just Attacked somebody");
+        }
         
         private void OnPathGenerated(List<Vector3> path)
         {
@@ -102,7 +107,7 @@ namespace Gameplay.Controls
         
         private void OrderAttack(IDamageable _damageable)
         {
-            _playerController.AttackTarget(_damageable);
+            _playerController.AttackTarget(_damageable, OnAttacked);
         }
 
         private void GeneratePathToPosition(Vector3 position, Action<List<Vector3>> onGeneratedPath)

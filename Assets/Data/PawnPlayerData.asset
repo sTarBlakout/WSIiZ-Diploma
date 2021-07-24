@@ -12,3 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3830130386f1c364f8e9bd4bc28d1aa6, type: 3}
   m_Name: PawnPlayerData
   m_EditorClassIdentifier: 
+  teamId: 0
+  level: 3
