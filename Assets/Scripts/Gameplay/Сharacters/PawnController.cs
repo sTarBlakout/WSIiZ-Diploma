@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Gameplay.Interfaces;
 using UnityEngine;
@@ -13,8 +14,17 @@ namespace Gameplay.Сharacters
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private GameObject charGraphics;
 
+        private int _currHealth;
+
         private void Start()
         {
+            Init();
+        }
+
+        public void Init()
+        {
+            _currHealth = pawnData.Health;
+            
             pawnMover.Init(pawnData, pawnAnimator, charGraphics);
             pawnAttacker.Init(pawnData, pawnAnimator, this);
         }
@@ -24,7 +34,6 @@ namespace Gameplay.Сharacters
             if (pawnMover == null)
                 Debug.LogError($"{gameObject.name} does not have any mover component!");
             else
-
                 pawnMover.MovePath(path, onReachedDestination);
         }
         
@@ -53,12 +62,19 @@ namespace Gameplay.Сharacters
             onPrepared += TryBlock;
             RotateTo(attacker.Position, onPrepared);
         }
-
-        // TODO: Add some callback and wait a bit
-        public void Damage(int value)
+        
+        public void Damage(int value, Action onDamageDealt)
         {
             pawnAnimator.AnimateGetHit();
-            //pawnAnimator.AnimateBlock(false);
+            _currHealth = Mathf.Max(0, _currHealth - value);
+            if (_currHealth == 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(ProcessPostDamage(onDamageDealt));
+            }
         }
 
         public bool IsEnemyFor(PawnController pawn)
@@ -67,10 +83,22 @@ namespace Gameplay.Сharacters
         }
         
         #endregion
+
+        private IEnumerator ProcessPostDamage(Action onDamageDealt)
+        {
+            yield return new WaitForSeconds(pawnData.AfterDamageDelay);
+            pawnAnimator.AnimateBlock(false);
+            onDamageDealt?.Invoke();
+        }
         
         private void TryBlock()
         {
             pawnAnimator.AnimateBlock(true);
+        }
+
+        private void Die()
+        {
+            pawnAnimator.AnimateDie();
         }
     }
 }

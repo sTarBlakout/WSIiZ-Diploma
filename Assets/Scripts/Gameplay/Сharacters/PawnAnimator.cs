@@ -6,7 +6,9 @@ namespace Gameplay.Сharacters
     {
         private static readonly int Attack = Animator.StringToHash("Attack");
         private static readonly int GetHit = Animator.StringToHash("GetHit");
+        private static readonly int GetHitBlocked = Animator.StringToHash("GetHitBlocked");
         private static readonly int Block = Animator.StringToHash("Block");
+        private static readonly int Die = Animator.StringToHash("Die");
 
         [SerializeField] private Animator animator;
 
@@ -22,12 +24,17 @@ namespace Gameplay.Сharacters
         
         public void AnimateGetHit()
         {
-            animator.SetTrigger(GetHit);
+            animator.SetTrigger(animator.GetBool(Block) ? GetHitBlocked : GetHit);
         }
 
         public void AnimateBlock(bool animate)
         {
             animator.SetBool(Block, animate);
+        }
+
+        public void AnimateDie()
+        {
+            animator.SetTrigger(Die);
         }
     }
 }

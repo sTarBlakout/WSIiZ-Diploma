@@ -31,7 +31,7 @@ namespace Gameplay.Сharacters
        
         public void Hit()
         {
-            _targetDamageable.Damage(_pawnData.Damage);
+            _targetDamageable.Damage(_pawnData.Damage, () => { });
             _onAttacked?.Invoke();
         }
         

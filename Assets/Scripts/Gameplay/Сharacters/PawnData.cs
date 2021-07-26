@@ -15,10 +15,14 @@ namespace Gameplay.Сharacters
         [SerializeField] private float waitAfterRotate;
         [SerializeField] private float waitAfterMove;
 
+        [Header("Attacking")] 
+        [SerializeField] private float afterDamageDelay;
+
         #region General
 
         public int TeamId => teamId;
         public int Damage => level;
+        public int Health => level;
         
         #endregion
 
@@ -28,6 +32,12 @@ namespace Gameplay.Сharacters
         public float MovementSpeed => movementSpeed;
         public float WaitAfterRotate => waitAfterRotate;
         public float WaitAfterMove => waitAfterMove;
+
+        #endregion
+
+        #region Attacking
+
+        public float AfterDamageDelay => afterDamageDelay;
 
         #endregion
     }

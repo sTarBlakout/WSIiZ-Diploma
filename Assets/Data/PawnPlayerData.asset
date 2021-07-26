@@ -18,3 +18,4 @@ MonoBehaviour:
   movementSpeed: 1.8
   waitAfterRotate: 0.5
   waitAfterMove: 0.5
+  afterDamageDelay: 1
