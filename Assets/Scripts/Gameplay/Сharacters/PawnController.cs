@@ -12,9 +12,10 @@ namespace Gameplay.Сharacters
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnMover pawnMover;
         [SerializeField] private PawnAttacker pawnAttacker;
+        [SerializeField] private PawnHealthIndicator pawnHealthIndicator;
         [SerializeField] private GameObject charGraphics;
 
-        private int _currHealth;
+        private PawnData _currPawnData;
 
         private void Start()
         {
@@ -23,10 +24,11 @@ namespace Gameplay.Сharacters
 
         public void Init()
         {
-            _currHealth = pawnData.Health;
-            
-            pawnMover.Init(pawnData, pawnAnimator, charGraphics);
-            pawnAttacker.Init(pawnData, pawnAnimator, this);
+            _currPawnData = Instantiate(pawnData);
+
+            pawnMover.Init(_currPawnData, pawnAnimator, charGraphics);
+            pawnAttacker.Init(_currPawnData, pawnAnimator, this);
+            pawnHealthIndicator.Init(_currPawnData);
         }
 
         public void MovePath(List<Vector3> path, Action onReachedDestination)
@@ -63,18 +65,9 @@ namespace Gameplay.Сharacters
             RotateTo(attacker.Position, onPrepared);
         }
         
-        public void Damage(int value, Action onDamageDealt)
+        public void Damage(int value, Action<int> onDamageDealt)
         {
-            pawnAnimator.AnimateGetHit();
-            _currHealth = Mathf.Max(0, _currHealth - value);
-            if (_currHealth == 0)
-            {
-                Die();
-            }
-            else
-            {
-                StartCoroutine(ProcessPostDamage(onDamageDealt));
-            }
+            StartCoroutine(ProcessDamage(value, onDamageDealt));
         }
 
         public bool IsEnemyFor(PawnController pawn)
@@ -84,11 +77,22 @@ namespace Gameplay.Сharacters
         
         #endregion
 
-        private IEnumerator ProcessPostDamage(Action onDamageDealt)
+        private IEnumerator ProcessDamage(int value, Action<int> onDamageDealt)
         {
+            pawnAnimator.AnimateGetHit();
+
+            var health = _currPawnData.Level;
+            var damageDealt = value;
+            _currPawnData.ModifyLevelBy(-value);
+            if (_currPawnData.Level == 0)
+            {
+                damageDealt = value + (health - value);
+                Die();
+            }
+            
             yield return new WaitForSeconds(pawnData.AfterDamageDelay);
             pawnAnimator.AnimateBlock(false);
-            onDamageDealt?.Invoke();
+            onDamageDealt?.Invoke(damageDealt);
         }
         
         private void TryBlock()

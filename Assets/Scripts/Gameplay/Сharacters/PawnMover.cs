@@ -88,6 +88,7 @@ namespace Gameplay.Сharacters
                 return;
             }
             
+            ResetAllWaitings();
             _onRotated?.Invoke();
             _onRotated = null;
         }

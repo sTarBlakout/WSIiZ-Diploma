@@ -22,8 +22,13 @@ namespace Gameplay.Сharacters
 
         public int TeamId => teamId;
         public int Damage => level;
-        public int Health => level;
-        
+        public int Level => level;
+
+        public void ModifyLevelBy(int value)
+        {
+            level =  Mathf.Max(0, level + value);
+        }
+
         #endregion
 
         #region Movement

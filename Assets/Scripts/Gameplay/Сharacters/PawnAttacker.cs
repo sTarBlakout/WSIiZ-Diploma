@@ -27,12 +27,17 @@ namespace Gameplay.Сharacters
             _targetDamageable.PrepareForDamage(_damageable, () => _pawnAnimator.AnimateAttack());
         }
 
-        #region Unused Animation Events
+        private void OnDamageDealt(int value)
+        {
+            _pawnData.ModifyLevelBy(value);
+            _onAttacked?.Invoke();
+        }
+
+        #region Animation Events
        
         public void Hit()
         {
-            _targetDamageable.Damage(_pawnData.Damage, () => { });
-            _onAttacked?.Invoke();
+            _targetDamageable.Damage(_pawnData.Damage, OnDamageDealt);
         }
         
         #endregion
