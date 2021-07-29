@@ -9,11 +9,14 @@ namespace Gameplay.Сharacters
     public class PawnController : MonoBehaviour, IDamageable
     {
         [SerializeField] private PawnData pawnData;
-        [SerializeField] private PawnAnimator pawnAnimator;
-        [SerializeField] private PawnMover pawnMover;
-        [SerializeField] private PawnAttacker pawnAttacker;
+        
         [SerializeField] private PawnHealthIndicator pawnHealthIndicator;
-        [SerializeField] private GameObject charGraphics;
+        [SerializeField] private PawnAnimator pawnAnimator;
+        [SerializeField] private PawnAttacker pawnAttacker;
+        [SerializeField] private PawnMover pawnMover;
+        
+        [SerializeField] private GameObject pawnGraphics;
+        [SerializeField] private Collider pawnCollider;
 
         private PawnData _currPawnData;
 
@@ -26,7 +29,7 @@ namespace Gameplay.Сharacters
         {
             _currPawnData = Instantiate(pawnData);
 
-            pawnMover.Init(_currPawnData, pawnAnimator, charGraphics);
+            pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
             pawnAttacker.Init(_currPawnData, pawnAnimator, this);
             pawnHealthIndicator.Init(_currPawnData);
         }
@@ -59,6 +62,11 @@ namespace Gameplay.Сharacters
 
         public Vector3 Position => transform.position;
         
+        public bool IsInteractable()
+        {
+            return _currPawnData.Level != 0;
+        }
+        
         public void PrepareForDamage(IDamageable attacker, Action onPrepared)
         {
             onPrepared += TryBlock;
@@ -87,7 +95,7 @@ namespace Gameplay.Сharacters
             if (_currPawnData.Level == 0)
             {
                 damageDealt = value + (health - value);
-                Die();
+                StartCoroutine(DeathCoroutine());
             }
             
             yield return new WaitForSeconds(pawnData.AfterDamageDelay);
@@ -100,9 +108,13 @@ namespace Gameplay.Сharacters
             pawnAnimator.AnimateBlock(true);
         }
 
-        private void Die()
+        private IEnumerator DeathCoroutine()
         {
             pawnAnimator.AnimateDie();
+            pawnCollider.enabled = false;
+            pawnMover.enabled = false;
+            yield return new WaitForSeconds(1f);
+            pawnHealthIndicator.Show(false);
         }
     }
 }

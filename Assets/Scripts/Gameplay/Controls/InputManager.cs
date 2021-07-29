@@ -16,6 +16,7 @@ namespace Gameplay.Controls
         private Path _path;
 
         private Order _order;
+        private IInteractable _interactable;
         private IDamageable _damageable;
 
         private void Awake()
@@ -45,14 +46,20 @@ namespace Gameplay.Controls
                 GeneratePathToPosition(hitInfo.point, OnPathGenerated);
                 return;
             }
-
-            // Clicked on enemy, process attack behavior
-            _damageable = hitInfo.collider.transform.parent.GetComponent<IDamageable>();
-            if (_damageable != null && _damageable.IsEnemyFor(_playerController))
+            
+            // Checking if pawn
+            _interactable = hitInfo.collider.transform.parent.GetComponent<IInteractable>();
+            if (_interactable != null)
             {
-                _order = Order.Attack;
-                GeneratePathToPosition(_damageable.Position, OnPathGenerated);
-                return;
+                if (_interactable is IDamageable damageable) _damageable = damageable;
+
+                // Clicked on enemy, try attack
+                if (_damageable != null && _damageable.IsInteractable() && _damageable.IsEnemyFor(_playerController))
+                {
+                    _order = Order.Attack;
+                    GeneratePathToPosition(_damageable.Position, OnPathGenerated);
+                    return;
+                }
             }
         }
 

@@ -22,5 +22,10 @@ namespace Gameplay.Сharacters
             levelText.text = _pawnData.Level.ToString(); 
             transform.LookAt(_cameraTransform.position);
         }
+
+        public void Show(bool show)
+        {
+            levelText.enabled = show;
+        }
     }
 }

@@ -2014,7 +2014,8 @@ MonoBehaviour:
   pawnMover: {fileID: 6974840743950332069}
   pawnAttacker: {fileID: 3316738538415535986}
   pawnHealthIndicator: {fileID: 5191940173515881877}
-  charGraphics: {fileID: 6941806847977164242}
+  pawnGraphics: {fileID: 6941806847977164242}
+  pawnCollider: {fileID: 1218216975610482}
 --- !u!114 &6974840743950332069
 MonoBehaviour:
   m_ObjectHideFlags: 0
