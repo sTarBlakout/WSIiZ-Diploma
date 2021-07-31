@@ -67,42 +67,42 @@ namespace Gameplay.Сharacters
             return _currPawnData.Level != 0;
         }
         
-        public void PrepareForDamage(IDamageable attacker, Action onPrepared)
-        {
-            onPrepared += TryBlock;
-            RotateTo(attacker.Position, onPrepared);
-        }
-        
-        public void Damage(int value, Action<int> onDamageDealt)
-        {
-            StartCoroutine(ProcessDamage(value, onDamageDealt));
-        }
-
         public bool IsEnemyFor(PawnController pawn)
         {
             return pawnData.TeamId != pawn.pawnData.TeamId;
         }
         
-        #endregion
-
-        private IEnumerator ProcessDamage(int value, Action<int> onDamageDealt)
+        public void PreDamage(IDamageable attacker, Action onPrepared)
         {
-            pawnAnimator.AnimateGetHit();
+            onPrepared += TryBlock;
+            RotateTo(attacker.Position, onPrepared);
+        }
 
+        public void Damage(int value, Action<int> onDamageDealt)
+        {
             var health = _currPawnData.Level;
-            var damageDealt = value;
+            var dmgReceived = value;
             _currPawnData.ModifyLevelBy(-value);
-            if (_currPawnData.Level == 0)
-            {
-                damageDealt = value + (health - value);
-                StartCoroutine(DeathCoroutine());
-            }
-            
-            yield return new WaitForSeconds(pawnData.AfterDamageDelay);
-            pawnAnimator.AnimateBlock(false);
-            onDamageDealt?.Invoke(damageDealt);
+            if (_currPawnData.Level == 0) dmgReceived = value + (health - value);
+            onDamageDealt?.Invoke(dmgReceived);
         }
         
+        public void PostDamage(Action onPostDamage)
+        {
+            StartCoroutine(PostDamageCoroutine(onPostDamage));
+        }
+
+        #endregion
+
+        private IEnumerator PostDamageCoroutine(Action onPostDamage)
+        {
+            pawnAnimator.AnimateGetHit();
+            if (_currPawnData.Level == 0) StartCoroutine(DeathCoroutine());
+            yield return new WaitForSeconds(pawnData.AfterDamageDelay);
+            pawnAnimator.AnimateBlock(false);
+            onPostDamage?.Invoke();
+        }
+
         private void TryBlock()
         {
             pawnAnimator.AnimateBlock(true);

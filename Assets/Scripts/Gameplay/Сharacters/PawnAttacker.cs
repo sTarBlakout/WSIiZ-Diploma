@@ -24,13 +24,13 @@ namespace Gameplay.Сharacters
         {
             _targetDamageable = damageable;
             _onAttacked = onAttacked;
-            _targetDamageable.PrepareForDamage(_damageable, () => _pawnAnimator.AnimateAttack());
+            _targetDamageable.PreDamage(_damageable, () => _pawnAnimator.AnimateAttack());
         }
 
         private void OnDamageDealt(int value)
         {
             _pawnData.ModifyLevelBy(value);
-            _onAttacked?.Invoke();
+            _targetDamageable.PostDamage(() => _onAttacked?.Invoke());
         }
 
         #region Animation Events
