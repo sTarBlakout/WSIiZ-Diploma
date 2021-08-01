@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using UnityEngine;
 
@@ -19,6 +18,7 @@ namespace Gameplay.Сharacters
         
         private void Update()
         {
+            if (_pawnData == null) return;
             levelText.text = _pawnData.Level.ToString(); 
             transform.LookAt(_cameraTransform.position);
         }

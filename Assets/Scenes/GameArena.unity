@@ -149,7 +149,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 34224235}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.41, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 559672303}
@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 559672301}
+  pathFinding: {fileID: 559672302}
   pawnsHolder: {fileID: 811779347}
 --- !u!1 &43343908
 GameObject:
@@ -361,7 +362,7 @@ MonoBehaviour:
   MinimumPathIterationsPerFrame: 8
   MaximumPathIterationsPerFrame: 512
   DebugDrawPaths: 0
-  DebugDrawNavGrid: 0
+  DebugDrawNavGrid: 1
   DebugMarkerObject: {fileID: 1250922492522612, guid: 517a8607e4b54054b9216e69695d6e53, type: 3}
 --- !u!4 &559672303
 Transform:
@@ -388,27 +389,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 652872706}
-  - component: {fileID: 652872705}
   - component: {fileID: 652872707}
   m_Layer: 0
-  m_Name: InputManager
+  m_Name: LeanTouch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &652872705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 652872704}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: df0e88fcaf9257c4cb6d39e935c3ac00, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &652872706
 Transform:
   m_ObjectHideFlags: 0

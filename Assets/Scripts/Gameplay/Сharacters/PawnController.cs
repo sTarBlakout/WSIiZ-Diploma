@@ -20,11 +20,6 @@ namespace Gameplay.Сharacters
 
         private PawnData _currPawnData;
 
-        private void Start()
-        {
-            Init();
-        }
-
         public void Init()
         {
             _currPawnData = Instantiate(pawnData);
