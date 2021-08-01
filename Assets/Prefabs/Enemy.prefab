@@ -63,5 +63,6 @@ PrefabInstance:
       propertyPath: pawnData
       value: 
       objectReference: {fileID: 11400000, guid: 21654c360978f9445bd189ae28f8dc4c, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3644765160725660785, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
