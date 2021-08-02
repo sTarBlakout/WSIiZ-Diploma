@@ -55,14 +55,14 @@ public class GameArea : MonoBehaviour
     private IEnumerator WaitGeneratedPath(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
     {
         yield return new WaitUntil(() => _path.IsGenerated());
-        var vectorPath = new List<Vector3>();
-        for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
         BlockTileAtPos(fromPos, true);
         BlockTileAtPos(toPos, true);
+        var vectorPath = new List<Vector3>();
+        for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
         onGeneratedPath(vectorPath);
     }
 
-    private void BlockTileAtPos(Vector3 worldPos, bool block)
+    public void BlockTileAtPos(Vector3 worldPos, bool block)
     {
         var navCords = pathFinding.WorldToNav(worldPos);
         var node = pathFinding.GetNode(navCords);

@@ -20,6 +20,8 @@ namespace Gameplay.Сharacters
 
         private PawnData _currPawnData;
 
+        public Action onDeath;
+
         public void Init()
         {
             _currPawnData = Instantiate(pawnData);
@@ -110,6 +112,7 @@ namespace Gameplay.Сharacters
             pawnMover.enabled = false;
             yield return new WaitForSeconds(1f);
             pawnHealthIndicator.Show(false);
+            onDeath?.Invoke();
         }
     }
 }
