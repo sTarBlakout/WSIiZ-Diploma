@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Gameplay.Core;
 using UnityEngine;
 
 namespace Gameplay.Сharacters

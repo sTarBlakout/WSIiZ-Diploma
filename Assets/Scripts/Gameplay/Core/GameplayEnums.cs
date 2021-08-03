@@ -1,4 +1,4 @@
-namespace Gameplay
+namespace Gameplay.Core
 {
     public enum Order
     {
