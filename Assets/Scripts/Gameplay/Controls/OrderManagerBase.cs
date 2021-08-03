@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
@@ -9,12 +10,16 @@ namespace Gameplay.Controls
 {
     public abstract class OrderManagerBase : MonoBehaviour
     {
+        protected bool isTakingTurn = false;
+        
         protected PawnController _pawnController;
         protected GameArea _gameArea;
 
         protected Order _order;
         protected IInteractable _interactable;
         protected IDamageable _damageable;
+
+        public bool IsTakingTurn => isTakingTurn;
     
         private void Awake()
         {
@@ -24,12 +29,25 @@ namespace Gameplay.Controls
             _pawnController.onDeath += OnDeath;
         }
 
+        public void StartTurn()
+        {
+            Debug.Log($"{gameObject.name} started turn.");
+            isTakingTurn = true;
+        }
+        
+        protected void CompleteTurn()
+        {
+            Debug.Log($"{gameObject.name} completed turn.");
+            isTakingTurn = false;
+            _order = Order.None;
+        }
+
         private void OnReachedDestination()
         {
             switch (_order)
             {
                 case Order.Attack: OrderRotate(_damageable.Position); break;
-                default: _order = Order.None; break;
+                default: CompleteTurn(); break;
             }
         }
     
@@ -38,13 +56,14 @@ namespace Gameplay.Controls
             switch (_order)
             {
                 case Order.Attack: OrderAttack(_damageable); break;
-                default: _order = Order.None; break;
+                default: CompleteTurn(); break;
             }
         }
     
         private void OnAttacked()
         {
             Debug.Log("Just Attacked somebody");
+            CompleteTurn();
         }
             
         protected void OnPathGenerated(List<Vector3> path)
@@ -53,7 +72,7 @@ namespace Gameplay.Controls
             {
                 case Order.Move: OrderSimpleMove(path); break;
                 case Order.Attack: OrderMoveForAttacking(path); break;
-                default: _order = Order.None; break;
+                default: CompleteTurn(); break;
             }
         }
 

@@ -10,26 +10,24 @@ public class GameArea : MonoBehaviour
     [SerializeField] private Grid grid;
     [SerializeField] private SimplePathFinding2D pathFinding;
     [SerializeField] private Transform pawnsHolder;
-
-    private List<PawnController> _pawns = new List<PawnController>();
+    
+    public readonly List<PawnController> pawns = new List<PawnController>();
+    
     private Coroutine _waitPathCor;
     private Path _path;
-
-    private void Awake()
-    {
-        _path = new Path(pathFinding);
-    }
+    private bool _isInit;
 
     private void Start()
     {
-        StartCoroutine(InitPawns());
+        StartCoroutine(InitGameArea());
     }
 
-    private IEnumerator InitPawns()
+    private IEnumerator InitGameArea()
     {
         yield return new WaitUntil(() => pathFinding.IsInitialised());
+        _path = new Path(pathFinding);
         
-        _pawns.Clear();
+        pawns.Clear();
         foreach (Transform pawn in pawnsHolder)
         {
             var pawnController = pawn.GetComponent<PawnController>();
@@ -39,8 +37,15 @@ public class GameArea : MonoBehaviour
             pawn.position = grid.GetCellCenterWorld(cellPosition);
             BlockTileAtPos(pawnController.transform.position, true);
             
-            _pawns.Add(pawnController);
+            pawns.Add(pawnController);
         }
+
+        _isInit = true;
+    }
+
+    public bool IsInitialized()
+    {
+        return _isInit;
     }
     
     public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
