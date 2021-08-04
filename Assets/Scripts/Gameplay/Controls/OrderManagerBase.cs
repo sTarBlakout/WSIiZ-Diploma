@@ -21,7 +21,7 @@ namespace Gameplay.Controls
 
         public bool IsTakingTurn => isTakingTurn;
     
-        private void Awake()
+        protected virtual void Awake()
         {
             _pawnController = GetComponent<PawnController>();
             _gameArea = FindObjectOfType<GameArea>();
@@ -29,15 +29,18 @@ namespace Gameplay.Controls
             _pawnController.onDeath += OnDeath;
         }
 
-        public void StartTurn()
+        public virtual bool CanTakeTurn()
         {
-            Debug.Log($"{gameObject.name} started turn.");
+            return _pawnController.IsAlive();
+        }
+
+        public virtual void StartTurn()
+        {
             isTakingTurn = true;
         }
         
         protected void CompleteTurn()
         {
-            Debug.Log($"{gameObject.name} completed turn.");
             isTakingTurn = false;
             _order = Order.None;
         }

@@ -19,7 +19,7 @@ namespace Gameplay.Сharacters
         [SerializeField] private Collider pawnCollider;
 
         private PawnData _currPawnData;
-
+        
         public Action onDeath;
 
         public void Init()
@@ -58,10 +58,15 @@ namespace Gameplay.Сharacters
         #region IDamageable Implementation
 
         public Vector3 Position => transform.position;
+
+        public bool IsAlive()
+        {
+            return _currPawnData.Level != 0;
+        }
         
         public bool IsInteractable()
         {
-            return _currPawnData.Level != 0;
+            return IsAlive();
         }
         
         public bool IsEnemyFor(PawnController pawn)
