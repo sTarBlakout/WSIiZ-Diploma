@@ -14,6 +14,7 @@ namespace Gameplay.Сharacters
         [SerializeField] private float movementSpeed;
         [SerializeField] private float waitAfterRotate;
         [SerializeField] private float waitAfterMove;
+        [SerializeField] private int distancePerTurn;
 
         [Header("Attacking")] 
         [SerializeField] private float afterDamageDelay;
@@ -37,6 +38,7 @@ namespace Gameplay.Сharacters
         public float MovementSpeed => movementSpeed;
         public float WaitAfterRotate => waitAfterRotate;
         public float WaitAfterMove => waitAfterMove;
+        public int DistancePerTurn => distancePerTurn;
 
         #endregion
 

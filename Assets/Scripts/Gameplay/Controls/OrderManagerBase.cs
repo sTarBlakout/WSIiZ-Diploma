@@ -45,6 +45,25 @@ namespace Gameplay.Controls
             _order = Order.None;
         }
 
+        protected virtual void StartOrderMove(Vector3 fromPos, Vector3 toPos)
+        {
+            if (_gameArea.IsTileBlocked(toPos))
+            {
+                Debug.Log("Tile is blocked!");
+                return;
+            }
+            _order = Order.Move;
+            _gameArea.GeneratePathToPosition(fromPos, toPos, OnPathGenerated);
+        }
+
+        protected virtual void StartOrderAttack(IDamageable damageable)
+        {
+            _damageable = damageable;
+            if (!_damageable.IsInteractable() || !_damageable.IsEnemyFor(_pawnController)) return;
+            _order = Order.Attack;
+            _gameArea.GeneratePathToPosition(_pawnController.transform.position, _damageable.Position, OnPathGenerated);
+        }
+
         private void OnReachedDestination()
         {
             switch (_order)

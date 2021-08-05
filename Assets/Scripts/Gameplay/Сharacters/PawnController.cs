@@ -19,6 +19,7 @@ namespace Gameplay.Сharacters
         [SerializeField] private Collider pawnCollider;
 
         private PawnData _currPawnData;
+        public PawnData Data => _currPawnData;
         
         public Action onDeath;
 

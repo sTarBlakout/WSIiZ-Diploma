@@ -74,6 +74,12 @@ public class GameArea : MonoBehaviour
         node.SetBlocked(block);
     }
 
+    public bool IsTileBlocked(Vector3 worldPos)
+    {
+        var navCords = pathFinding.WorldToNav(worldPos);
+        return pathFinding.GetNode(navCords).IsBlocked();
+    }
+
     [ContextMenu("Center Pawns")]
     public void CenterPawns()
     {

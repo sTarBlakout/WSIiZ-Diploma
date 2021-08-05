@@ -16,9 +16,7 @@ namespace Gameplay.Controls
         private void ProcessTurn()
         {
             _damageable ??= GameManager.Instance.PlayerPawn;
-            
-            _order = Order.Attack;
-            _gameArea.GeneratePathToPosition(_pawnController.transform.position, _damageable.Position, OnPathGenerated);
+            StartOrderAttack(_damageable);
         }
     }
 }
