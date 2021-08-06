@@ -50,18 +50,19 @@ public class GameArea : MonoBehaviour
     
     public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
     {
+        var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
         BlockTileAtPos(fromPos, false);
         BlockTileAtPos(toPos, false);
         _path.CreatePath(fromPos, toPos);
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(WaitGeneratedPath(fromPos, toPos, onGeneratedPath));
+        _waitPathCor = StartCoroutine(WaitGeneratedPath(fromPos, toPos, isFromToBlocked, onGeneratedPath));
     }
 
-    private IEnumerator WaitGeneratedPath(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
+    private IEnumerator WaitGeneratedPath(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<Vector3>> onGeneratedPath)
     {
         yield return new WaitUntil(() => _path.IsGenerated());
-        BlockTileAtPos(fromPos, true);
-        BlockTileAtPos(toPos, true);
+        BlockTileAtPos(fromPos, isFromToBlocked.Item1);
+        BlockTileAtPos(toPos, isFromToBlocked.Item2);
         var vectorPath = new List<Vector3>();
         for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
         onGeneratedPath(vectorPath);

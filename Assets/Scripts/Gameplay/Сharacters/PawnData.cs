@@ -18,6 +18,7 @@ namespace Gameplay.Сharacters
 
         [Header("Attacking")] 
         [SerializeField] private float afterDamageDelay;
+        [SerializeField] private int attacksPerTurn;
 
         #region General
 
@@ -45,6 +46,7 @@ namespace Gameplay.Сharacters
         #region Attacking
 
         public float AfterDamageDelay => afterDamageDelay;
+        public int AttacksPerTurn => attacksPerTurn;
 
         #endregion
     }

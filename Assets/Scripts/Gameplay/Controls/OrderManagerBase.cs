@@ -10,7 +10,9 @@ namespace Gameplay.Controls
 {
     public abstract class OrderManagerBase : MonoBehaviour
     {
-        protected bool isTakingTurn = false;
+        protected bool isTakingTurn;
+        protected int cellsMovedCurrTurn;
+        protected int attacksCurrTurn;
         
         protected PawnController _pawnController;
         protected GameArea _gameArea;
@@ -18,7 +20,7 @@ namespace Gameplay.Controls
         protected Order _order;
         protected IInteractable _interactable;
         protected IDamageable _damageable;
-
+        
         public bool IsTakingTurn => isTakingTurn;
     
         protected virtual void Awake()
@@ -29,6 +31,8 @@ namespace Gameplay.Controls
             _pawnController.onDeath += OnDeath;
         }
 
+        #region Turn Managment
+        
         public virtual bool CanTakeTurn()
         {
             return _pawnController.IsAlive();
@@ -42,8 +46,13 @@ namespace Gameplay.Controls
         protected void CompleteTurn()
         {
             isTakingTurn = false;
-            _order = Order.None;
+            cellsMovedCurrTurn = 0;
+            attacksCurrTurn = 0;
         }
+        
+        #endregion
+
+        #region Start Orders
 
         protected virtual void StartOrderMove(Vector3 fromPos, Vector3 toPos)
         {
@@ -63,46 +72,36 @@ namespace Gameplay.Controls
             _order = Order.Attack;
             _gameArea.GeneratePathToPosition(_pawnController.transform.position, _damageable.Position, OnPathGenerated);
         }
+        
+        #endregion
+        
+        #region Finish Orders
 
-        private void OnReachedDestination()
+        protected void FinishCurrentOrder()
         {
             switch (_order)
             {
-                case Order.Attack: OrderRotate(_damageable.Position); break;
-                default: CompleteTurn(); break;
+                case Order.Attack: FinishOrderAttack(); break;
+                case Order.Move: FinishOrderMove(); break;
             }
-        }
-    
-        private void OnRotated()
-        {
-            switch (_order)
-            {
-                case Order.Attack: OrderAttack(_damageable); break;
-                default: CompleteTurn(); break;
-            }
-        }
-    
-        private void OnAttacked()
-        {
-            Debug.Log("Just Attacked somebody");
-            CompleteTurn();
-        }
-            
-        protected void OnPathGenerated(List<Vector3> path)
-        {
-            switch (_order)
-            {
-                case Order.Move: OrderSimpleMove(path); break;
-                case Order.Attack: OrderMoveForAttacking(path); break;
-                default: CompleteTurn(); break;
-            }
+
+            _order = Order.None;
         }
 
-        private void OnDeath()
+        protected virtual void FinishOrderMove()
         {
-            _gameArea.BlockTileAtPos(transform.position, false);
+            if (_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0) CompleteTurn();
         }
-    
+        
+        protected virtual void FinishOrderAttack()
+        {
+            if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
+        }
+        
+        #endregion
+
+        #region Orders
+
         private void OrderRotate(Vector3 position)
         {
             _pawnController.RotateTo(position, OnRotated);
@@ -110,6 +109,14 @@ namespace Gameplay.Controls
     
         private void OrderSimpleMove(List<Vector3> path)
         {
+            if (cellsMovedCurrTurn + path.Count - 1 > _pawnController.Data.DistancePerTurn)
+            {
+                Debug.Log("Target point is too far!");
+                _order = Order.None;
+                return;
+            }
+            
+            cellsMovedCurrTurn += path.Count - 1;
             _gameArea.BlockTileAtPos(path[0], false);
             _gameArea.BlockTileAtPos(path.Last(), true);
             _pawnController.MovePath(path, OnReachedDestination);
@@ -117,6 +124,14 @@ namespace Gameplay.Controls
             
         private void OrderMoveForAttacking(List<Vector3> path)
         {
+            if (cellsMovedCurrTurn + path.Count - 1 > _pawnController.Data.DistancePerTurn)
+            {
+                Debug.Log("Enemy is too far!");
+                _order = Order.None;
+                return;
+            }
+            
+            cellsMovedCurrTurn += path.Count - 1;
             path.RemoveAt(path.Count - 1);
             _gameArea.BlockTileAtPos(path[0], false);
             _gameArea.BlockTileAtPos(path.Last(), true);
@@ -125,7 +140,54 @@ namespace Gameplay.Controls
             
         private void OrderAttack(IDamageable _damageable)
         {
+            attacksCurrTurn++;
             _pawnController.AttackTarget(_damageable, OnAttacked);
         }
+        
+        #endregion
+        
+        #region Callbacks
+        
+        private void OnRotated()
+        {
+            switch (_order)
+            {
+                case Order.Attack: OrderAttack(_damageable); break;
+                default: FinishCurrentOrder(); break;
+            }
+        }
+
+        private void OnReachedDestination()
+        {
+            switch (_order)
+            {
+                case Order.Attack: OrderRotate(_damageable.Position); break;
+                case Order.Move: FinishCurrentOrder(); break;
+                default: FinishCurrentOrder(); break;
+            }
+        }
+
+        protected void OnPathGenerated(List<Vector3> path)
+        {
+            switch (_order)
+            {
+                case Order.Move: OrderSimpleMove(path); break;
+                case Order.Attack: OrderMoveForAttacking(path); break;
+                default: FinishCurrentOrder(); break;
+            }
+        }
+
+        private void OnAttacked()
+        {
+            Debug.Log("Just Attacked somebody");
+            FinishCurrentOrder();
+        }
+        
+        private void OnDeath()
+        {
+            _gameArea.BlockTileAtPos(transform.position, false);
+        }
+        
+        #endregion
     }
 }
