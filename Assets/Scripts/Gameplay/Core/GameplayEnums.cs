@@ -7,6 +7,21 @@ namespace Gameplay.Core
         Attack
     }
 
+    public enum OrderResult
+    {
+        NotDetermined,
+        Succes,
+        Fail
+    }
+
+    public enum OrderFailReason
+    {
+        None,
+        TooFar,
+        BlockedArea,
+        ExceededLimit
+    }
+
     public enum AnimMovement
     {
         RotateLeft,

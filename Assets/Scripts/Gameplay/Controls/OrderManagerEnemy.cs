@@ -10,7 +10,8 @@ namespace Gameplay.Controls
         public override void StartTurn()
         {
             base.StartTurn();
-            ProcessTurn();
+            CompleteTurn();
+            // ProcessTurn();
         }
 
         private void ProcessTurn()
