@@ -10,14 +10,13 @@ namespace Gameplay.Controls
         public override void StartTurn()
         {
             base.StartTurn();
-            CompleteTurn();
-            // ProcessTurn();
+            ProcessTurn();
         }
 
         private void ProcessTurn()
         {
             _damageable ??= GameManager.Instance.PlayerPawn;
-            StartOrderAttack(_damageable);
+            StartOrderAttack(_damageable, true);
         }
     }
 }

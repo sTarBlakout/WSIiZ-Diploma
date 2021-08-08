@@ -38,14 +38,21 @@ public class OrderAttack : OrderBase
     {
         if (path.Count - 1 > args.MaxSteps)
         {
-            completeArgs.Result = OrderResult.Fail;
-            completeArgs.FailReason = OrderFailReason.TooFar;
-            args.OnCompleted?.Invoke(completeArgs);
-            return;
+            if (args.MoveIfTargetFar)
+            {
+                path = path.Take(args.MaxSteps + 1).ToList();
+            }
+            else
+            {
+                completeArgs.Result = OrderResult.Fail;
+                completeArgs.FailReason = OrderFailReason.TooFar;
+                args.OnCompleted?.Invoke(completeArgs);
+                return;
+            }
         }
             
-        completeArgs.StepsMoved += path.Count - 1;
-        path.RemoveAt(path.Count - 1);
+        if (!args.MoveIfTargetFar) path.RemoveAt(path.Count - 1);
+        completeArgs.StepsMoved += path.Count;
         args.GameArea.BlockTileAtPos(path[0], false);
         args.GameArea.BlockTileAtPos(path.Last(), true);
         args.PawnController.MovePath(path, OnReachedDestination);
@@ -53,6 +60,14 @@ public class OrderAttack : OrderBase
 
     private void OnReachedDestination()
     {
+        if (args.MoveIfTargetFar)
+        {
+            completeArgs.Result = OrderResult.HalfSucces;
+            completeArgs.FailReason = OrderFailReason.TooFar;
+            args.OnCompleted?.Invoke(completeArgs);
+            return;
+        }
+
         args.PawnController.RotateTo(args.Damageable.Position, OnRotated);
     }
 

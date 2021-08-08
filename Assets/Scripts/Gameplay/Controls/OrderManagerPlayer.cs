@@ -19,7 +19,7 @@ namespace Gameplay.Controls
 
         private void HandleFingerTap(LeanFinger finger)
         {
-            if (_order != null) return;
+            if (_order != null || !isTakingTurn) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
             
             // Clicked on map, process simple movement
@@ -34,7 +34,7 @@ namespace Gameplay.Controls
             
             if (_interactable is IDamageable damageable)
             {
-                StartOrderAttack(damageable);
+                StartOrderAttack(damageable, false);
                 return;
             }
         }

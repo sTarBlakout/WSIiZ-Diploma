@@ -11,6 +11,7 @@ namespace Gameplay.Core
     {
         NotDetermined,
         Succes,
+        HalfSucces,
         Fail
     }
 
@@ -19,7 +20,6 @@ namespace Gameplay.Core
         None,
         TooFar,
         BlockedArea,
-        ExceededLimit,
         NotAnEnemy,
         NotInteractable
     }

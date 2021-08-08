@@ -47,7 +47,15 @@ namespace Gameplay.Controls
             cellsMovedCurrTurn = 0;
             attacksCurrTurn = 0;
         }
-        
+
+        //TODO: Finish this
+        protected bool HasMoreActionsToDo()
+        {
+            var canMove = _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0;
+            var canAttack = _pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0;
+            return canAttack || canMove;
+        }
+
         #endregion
 
         #region Order Managment
@@ -75,21 +83,22 @@ namespace Gameplay.Controls
             {
                 Debug.Log($"Order status: {moveArgs.Result}    Moved steps: {moveArgs.StepsMoved}");
                 cellsMovedCurrTurn += moveArgs.StepsMoved;
-                if (_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0) CompleteTurn();
             }
             else
             {
                 Debug.Log($"Order status: {moveArgs.Result}    Reason: {moveArgs.FailReason}");
             }
             
+            if (_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0) CompleteTurn();
             _order = null;
         }
 
-        protected virtual void StartOrderAttack(IDamageable damageable)
+        protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
         {
             var args = new OrderArgsAttack(_pawnController, _gameArea);
             args.SetEnemy(damageable)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetMoveIfTargetFar(moveIfTargetFar)
                 .AddOnCompleteCallback(OnOrderAttackCompleted);
 
             _order = new OrderAttack(args);
@@ -104,13 +113,13 @@ namespace Gameplay.Controls
                 Debug.Log($"Order status: {atkArgs.Result}    Moved steps: {atkArgs.StepsMoved}");
                 attacksCurrTurn++;
                 cellsMovedCurrTurn += atkArgs.StepsMoved;
-                if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
             }
             else
             {
                 Debug.Log($"Order status: {atkArgs.Result}    Reason: {atkArgs.FailReason}");
             }
 
+            if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
             _order = null;
         }
 
