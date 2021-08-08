@@ -39,6 +39,7 @@ namespace Gameplay.Core
         {
             while (IsGameRunning())
             {
+                Debug.Log("NEW TURN");
                 foreach (var participant in _turnParticipants)
                 {
                     if (!participant.CanTakeTurn()) continue;

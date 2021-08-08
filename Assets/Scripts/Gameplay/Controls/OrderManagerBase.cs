@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
 using Gameplay.Interfaces;
@@ -56,7 +53,6 @@ namespace Gameplay.Controls
         #region Order Managment
 
         protected OrderBase _order;
-        protected Order _orderType;
         protected IInteractable _interactable;
         protected IDamageable _damageable;
 
@@ -85,112 +81,47 @@ namespace Gameplay.Controls
             {
                 Debug.Log($"Order status: {moveArgs.Result}    Reason: {moveArgs.FailReason}");
             }
+            
+            _order = null;
         }
-
-        #region Start Orders
 
         protected virtual void StartOrderAttack(IDamageable damageable)
         {
-            _damageable = damageable;
-            if (!_damageable.IsInteractable() || !_damageable.IsEnemyFor(_pawnController)) return;
-            _orderType = Order.Attack;
-            _gameArea.GeneratePathToPosition(_pawnController.transform.position, _damageable.Position, OnPathGenerated);
-        }
-        
-        #endregion
+            var args = new OrderArgsAttack(_pawnController, _gameArea);
+            args.SetEnemy(damageable)
+                .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .AddOnCompleteCallback(OnOrderAttackCompleted);
 
-        #region Make Orders
-
-        private void OrderRotate(Vector3 position)
-        {
-            _pawnController.RotateTo(position, OnRotated);
+            _order = new OrderAttack(args);
+            _order.StartOrder();
         }
 
-        private void OrderMoveForAttacking(List<Vector3> path)
+        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args)
         {
-            if (cellsMovedCurrTurn + path.Count - 1 > _pawnController.Data.DistancePerTurn)
+            var atkArgs = (CompleteOrderArgsAttack) args;
+            if (atkArgs.Result == OrderResult.Succes)
             {
-                Debug.Log("Enemy is too far!");
-                _orderType = Order.None;
-                return;
+                Debug.Log($"Order status: {atkArgs.Result}    Moved steps: {atkArgs.StepsMoved}");
+                attacksCurrTurn++;
+                cellsMovedCurrTurn += atkArgs.StepsMoved;
+                if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
             }
-            
-            cellsMovedCurrTurn += path.Count - 1;
-            path.RemoveAt(path.Count - 1);
-            _gameArea.BlockTileAtPos(path[0], false);
-            _gameArea.BlockTileAtPos(path.Last(), true);
-            _pawnController.MovePath(path, OnReachedDestination);
-        }
-            
-        private void OrderAttack(IDamageable _damageable)
-        {
-            attacksCurrTurn++;
-            _pawnController.AttackTarget(_damageable, OnAttacked);
-        }
-        
-        #endregion
-        
-        #region Finish Orders
-
-        protected void FinishCurrentOrder()
-        {
-            switch (_orderType)
+            else
             {
-                case Order.Attack: FinishOrderAttack(); break;
+                Debug.Log($"Order status: {atkArgs.Result}    Reason: {atkArgs.FailReason}");
             }
 
-            _orderType = Order.None;
+            _order = null;
         }
 
-        protected virtual void FinishOrderAttack()
-        {
-            if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
-        }
-        
         #endregion
         
         #region Callbacks
-        
-        private void OnRotated()
-        {
-            switch (_orderType)
-            {
-                case Order.Attack: OrderAttack(_damageable); break;
-                default: FinishCurrentOrder(); break;
-            }
-        }
 
-        private void OnReachedDestination()
-        {
-            switch (_orderType)
-            {
-                case Order.Attack: OrderRotate(_damageable.Position); break;
-                case Order.Move: FinishCurrentOrder(); break;
-                default: FinishCurrentOrder(); break;
-            }
-        }
-
-        protected void OnPathGenerated(List<Vector3> path)
-        {
-            switch (_orderType)
-            {
-                case Order.Attack: OrderMoveForAttacking(path); break;
-                default: FinishCurrentOrder(); break;
-            }
-        }
-
-        private void OnAttacked()
-        {
-            Debug.Log("Just Attacked somebody");
-            FinishCurrentOrder();
-        }
-        
         private void OnDeath()
         {
             _gameArea.BlockTileAtPos(transform.position, false);
         }
-        
-        #endregion
         
         #endregion
     }

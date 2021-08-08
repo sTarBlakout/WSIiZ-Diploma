@@ -19,7 +19,7 @@ namespace Gameplay.Controls
 
         private void HandleFingerTap(LeanFinger finger)
         {
-            if (_orderType != Order.None) return;
+            if (_order != null) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
             
             // Clicked on map, process simple movement

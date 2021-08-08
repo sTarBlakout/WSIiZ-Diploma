@@ -19,7 +19,9 @@ namespace Gameplay.Core
         None,
         TooFar,
         BlockedArea,
-        ExceededLimit
+        ExceededLimit,
+        NotAnEnemy,
+        NotInteractable
     }
 
     public enum AnimMovement
