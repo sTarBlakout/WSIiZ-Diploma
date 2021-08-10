@@ -1,3 +1,7 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
 using Gameplay.Interfaces;
@@ -12,6 +16,7 @@ namespace Gameplay.Controls
 
         protected PawnController _pawnController;
         protected GameArea _gameArea;
+        protected Dictionary<PawnController, List<Vector3>> _pathsToPawns;
 
         protected virtual void Awake()
         {
@@ -20,14 +25,14 @@ namespace Gameplay.Controls
 
             _pawnController.onDeath += OnDeath;
         }
-        
+
         #endregion
 
         #region Turn Managment
         
         protected bool isTakingTurn;
         protected int cellsMovedCurrTurn;
-        protected int attacksCurrTurn;
+        protected int actionsCurrTurn;
         
         public bool IsTakingTurn => isTakingTurn;
         
@@ -45,15 +50,34 @@ namespace Gameplay.Controls
         {
             isTakingTurn = false;
             cellsMovedCurrTurn = 0;
-            attacksCurrTurn = 0;
+            actionsCurrTurn = 0;
+        }
+        
+        private bool HasMoreActionsToDo()
+        {
+            return CanMove() || CanDoActions() && CanReachAnyEnemy();
+        }
+        
+        // TODO: Fix: enemy "too far" if located in the near cell
+        private bool CanReachAnyEnemy()
+        {
+            foreach (var pawnPath in _pathsToPawns)
+            {
+                if (!_pawnController.IsEnemyFor(pawnPath.Key)) continue;
+                if (pawnPath.Value.Count - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
+            }
+
+            return false;
         }
 
-        //TODO: Finish this
-        protected bool HasMoreActionsToDo()
+        protected virtual bool CanMove()
         {
-            var canMove = _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0;
-            var canAttack = _pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0;
-            return canAttack || canMove;
+            return _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn != 0;
+        }
+
+        protected virtual bool CanDoActions()
+        {
+            return _pawnController.Data.ActionsPerTurn - actionsCurrTurn != 0;
         }
 
         #endregion
@@ -82,15 +106,14 @@ namespace Gameplay.Controls
             if (moveArgs.Result == OrderResult.Succes)
             {
                 Debug.Log($"Order status: {moveArgs.Result}    Moved steps: {moveArgs.StepsMoved}");
-                cellsMovedCurrTurn += moveArgs.StepsMoved;
             }
             else
             {
                 Debug.Log($"Order status: {moveArgs.Result}    Reason: {moveArgs.FailReason}");
             }
+            cellsMovedCurrTurn += moveArgs.StepsMoved;
             
-            if (_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn == 0) CompleteTurn();
-            _order = null;
+            OnAnyOrderCompleted();
         }
 
         protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
@@ -111,21 +134,32 @@ namespace Gameplay.Controls
             if (atkArgs.Result == OrderResult.Succes)
             {
                 Debug.Log($"Order status: {atkArgs.Result}    Moved steps: {atkArgs.StepsMoved}");
-                attacksCurrTurn++;
-                cellsMovedCurrTurn += atkArgs.StepsMoved;
+                actionsCurrTurn++;
             }
             else
             {
                 Debug.Log($"Order status: {atkArgs.Result}    Reason: {atkArgs.FailReason}");
             }
+            cellsMovedCurrTurn += atkArgs.StepsMoved;
 
-            if (_pawnController.Data.AttacksPerTurn - attacksCurrTurn == 0) CompleteTurn();
+            OnAnyOrderCompleted();
+        }
+
+        protected void OnAnyOrderCompleted()
+        {
             _order = null;
+            _gameArea.GeneratePathsToAllPawns(transform.position, OnPathsToAllPawnsGenerated);
         }
 
         #endregion
         
         #region Callbacks
+
+        private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<Vector3>> pathsToPawns)
+        {
+            _pathsToPawns = pathsToPawns;
+            if (!HasMoreActionsToDo()) CompleteTurn();
+        }
 
         private void OnDeath()
         {

@@ -20,4 +20,4 @@ MonoBehaviour:
   waitAfterMove: 0.5
   distancePerTurn: 3
   afterDamageDelay: 1
-  attacksPerTurn: 1
+  actionsPerTurn: 2

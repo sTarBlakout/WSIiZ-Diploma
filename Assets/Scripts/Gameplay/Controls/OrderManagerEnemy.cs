@@ -18,5 +18,10 @@ namespace Gameplay.Controls
             _damageable ??= GameManager.Instance.PlayerPawn;
             StartOrderAttack(_damageable, true);
         }
+
+        protected override bool CanMove()
+        {
+            return base.CanMove() && CanDoActions();
+        }
     }
 }
