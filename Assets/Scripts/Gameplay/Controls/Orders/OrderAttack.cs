@@ -37,7 +37,7 @@ public class OrderAttack : OrderBase
     
     protected void OnPathGenerated(List<Vector3> path)
     {
-        if (path.Count - 1 > args.MaxSteps)
+        if (path.Count - args.PawnController.Data.AttackDistance - 1 > args.MaxSteps)
         {
             isTargetFar = true;
             if (args.MoveIfTargetFar)

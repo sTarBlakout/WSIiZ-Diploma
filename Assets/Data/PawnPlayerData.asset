@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: PawnPlayerData
   m_EditorClassIdentifier: 
   teamId: 0
-  level: 3
+  level: 10
+  actionsPerTurn: 2
   rotationSpeed: 120
   movementSpeed: 1.8
   waitAfterRotate: 0.5
   waitAfterMove: 0.5
   distancePerTurn: 3
   afterDamageDelay: 1
-  actionsPerTurn: 2
+  attackDistance: 1

@@ -8,6 +8,7 @@ namespace Gameplay.Сharacters
         [Header("General")]
         [SerializeField] private int teamId;
         [SerializeField] private int level;
+        [SerializeField] private int actionsPerTurn;
         
         [Header("Movement")]
         [SerializeField] private float rotationSpeed;
@@ -18,13 +19,13 @@ namespace Gameplay.Сharacters
 
         [Header("Attacking")] 
         [SerializeField] private float afterDamageDelay;
-        [SerializeField] private int actionsPerTurn;
+        [SerializeField] private int attackDistance;
 
         #region General
 
         public int TeamId => teamId;
-        public int Damage => level;
         public int Level => level;
+        public int ActionsPerTurn => actionsPerTurn;
 
         public void ModifyLevelBy(int value)
         {
@@ -46,7 +47,8 @@ namespace Gameplay.Сharacters
         #region Attacking
 
         public float AfterDamageDelay => afterDamageDelay;
-        public int ActionsPerTurn => actionsPerTurn;
+        public int AttackDistance => attackDistance;
+        public int Damage => level;
 
         #endregion
     }

@@ -58,13 +58,12 @@ namespace Gameplay.Controls
             return CanMove() || CanDoActions() && CanReachAnyEnemy();
         }
         
-        // TODO: Fix: enemy "too far" if located in the near cell
-        private bool CanReachAnyEnemy()
+        protected bool CanReachAnyEnemy()
         {
             foreach (var pawnPath in _pathsToPawns)
             {
-                if (!_pawnController.IsEnemyFor(pawnPath.Key)) continue;
-                if (pawnPath.Value.Count - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
+                if (!_pawnController.IsEnemyFor(pawnPath.Key) || !pawnPath.Key.IsAlive()) continue;
+                if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
             }
 
             return false;
@@ -145,10 +144,15 @@ namespace Gameplay.Controls
             OnAnyOrderCompleted();
         }
 
-        protected void OnAnyOrderCompleted()
+        protected virtual void OnAnyOrderCompleted()
         {
             _order = null;
             _gameArea.GeneratePathsToAllPawns(transform.position, OnPathsToAllPawnsGenerated);
+        }
+
+        protected virtual void ProcessPostOrder()
+        {
+            if (!HasMoreActionsToDo()) CompleteTurn();
         }
 
         #endregion
@@ -158,7 +162,7 @@ namespace Gameplay.Controls
         private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<Vector3>> pathsToPawns)
         {
             _pathsToPawns = pathsToPawns;
-            if (!HasMoreActionsToDo()) CompleteTurn();
+            ProcessPostOrder();
         }
 
         private void OnDeath()

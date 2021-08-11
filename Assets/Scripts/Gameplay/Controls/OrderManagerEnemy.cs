@@ -23,5 +23,11 @@ namespace Gameplay.Controls
         {
             return base.CanMove() && CanDoActions();
         }
+
+        protected override void ProcessPostOrder()
+        {
+            base.ProcessPostOrder();
+            if (isTakingTurn && CanDoActions() && CanReachAnyEnemy()) StartOrderAttack(_damageable, true);
+        }
     }
 }
