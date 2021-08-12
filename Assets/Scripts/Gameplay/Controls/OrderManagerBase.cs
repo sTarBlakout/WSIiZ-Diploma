@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
 using Gameplay.Interfaces;
@@ -44,6 +41,7 @@ namespace Gameplay.Controls
         public virtual void StartTurn()
         {
             isTakingTurn = true;
+            RefreshPointsIndicator(true);
         }
         
         protected void CompleteTurn()
@@ -51,6 +49,7 @@ namespace Gameplay.Controls
             isTakingTurn = false;
             cellsMovedCurrTurn = 0;
             actionsCurrTurn = 0;
+            RefreshPointsIndicator(false);
         }
         
         private bool HasMoreActionsToDo()
@@ -77,6 +76,15 @@ namespace Gameplay.Controls
         protected virtual bool CanDoActions()
         {
             return _pawnController.Data.ActionsPerTurn - actionsCurrTurn != 0;
+        }
+
+        protected void RefreshPointsIndicator(bool setActive)
+        {
+            Debug.Log(_pawnController + " " + _pawnController.PointsIndicator);
+            _pawnController.PointsIndicator
+                .SetActionPoints(_pawnController.Data.ActionsPerTurn - actionsCurrTurn)
+                .SetMovePoints(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .Show(setActive);
         }
 
         #endregion
@@ -148,6 +156,7 @@ namespace Gameplay.Controls
         {
             _order = null;
             _gameArea.GeneratePathsToAllPawns(transform.position, OnPathsToAllPawnsGenerated);
+            RefreshPointsIndicator(true);
         }
 
         protected virtual void ProcessPostOrder()

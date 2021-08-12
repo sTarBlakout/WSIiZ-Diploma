@@ -10,16 +10,19 @@ namespace Gameplay.Сharacters
     {
         [SerializeField] private PawnData pawnData;
         
-        [SerializeField] private PawnHealthIndicator pawnHealthIndicator;
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private PawnMover pawnMover;
+        
+        [SerializeField] private PawnHealthIndicator pawnHealthIndicator;
+        [SerializeField] private PawnPointsIndicator pawnPointsIndicator;
         
         [SerializeField] private GameObject pawnGraphics;
         [SerializeField] private Collider pawnCollider;
 
         private PawnData _currPawnData;
         public PawnData Data => _currPawnData;
+        public PawnPointsIndicator PointsIndicator => pawnPointsIndicator;
         
         public Action onDeath;
 

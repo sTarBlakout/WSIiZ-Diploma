@@ -9,13 +9,13 @@ namespace Gameplay.Сharacters
         [SerializeField] private int teamId;
         [SerializeField] private int level;
         [SerializeField] private int actionsPerTurn;
+        [SerializeField] private int distancePerTurn;
         
         [Header("Movement")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float movementSpeed;
         [SerializeField] private float waitAfterRotate;
         [SerializeField] private float waitAfterMove;
-        [SerializeField] private int distancePerTurn;
 
         [Header("Attacking")] 
         [SerializeField] private float afterDamageDelay;
