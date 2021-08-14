@@ -410,7 +410,7 @@ MonoBehaviour:
   MinimumPathIterationsPerFrame: 8
   MaximumPathIterationsPerFrame: 512
   DebugDrawPaths: 0
-  DebugDrawNavGrid: 1
+  DebugDrawNavGrid: 0
   DebugMarkerObject: {fileID: 1250922492522612, guid: 517a8607e4b54054b9216e69695d6e53, type: 3}
 --- !u!4 &559672303
 Transform:

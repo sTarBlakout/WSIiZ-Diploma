@@ -53,8 +53,12 @@ public class OrderAttack : OrderBase
             }
         }
             
-        if (!isTargetFar) path.RemoveAt(path.Count - 1);
-        completeArgs.StepsMoved += path.Count - 1;
+        if (!isTargetFar)
+        {
+            path.RemoveAt(path.Count - 1);
+            args.OnUsedActionPointsCallback?.Invoke(1);
+        }
+        args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
         args.GameArea.BlockTileAtPos(path[0], false);
         args.GameArea.BlockTileAtPos(path.Last(), true);
         args.PawnController.MovePath(path, OnReachedDestination);

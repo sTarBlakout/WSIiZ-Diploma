@@ -78,9 +78,20 @@ namespace Gameplay.Controls
             return _pawnController.Data.ActionsPerTurn - actionsCurrTurn != 0;
         }
 
+        protected void UseActionPoints(int value)
+        {
+            actionsCurrTurn += value;
+            RefreshPointsIndicator(true);
+        }
+        
+        protected void UseMovePoints(int value)
+        {
+            cellsMovedCurrTurn += value;
+            RefreshPointsIndicator(true);
+        }
+
         protected void RefreshPointsIndicator(bool setActive)
         {
-            Debug.Log(_pawnController + " " + _pawnController.PointsIndicator);
             _pawnController.PointsIndicator
                 .SetActionPoints(_pawnController.Data.ActionsPerTurn - actionsCurrTurn)
                 .SetMovePoints(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
@@ -101,6 +112,7 @@ namespace Gameplay.Controls
             args.SetToPos(to)
                 .SetFromPos(from)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .AddUsedMovePointsCallback(UseMovePoints)
                 .AddOnCompleteCallback(OnOrderMoveCompleted);
             
             _order = new OrderMove(args);
@@ -112,14 +124,11 @@ namespace Gameplay.Controls
             var moveArgs = (CompleteOrderArgsMove) args;
             if (moveArgs.Result == OrderResult.Succes)
             {
-                Debug.Log($"Order status: {moveArgs.Result}    Moved steps: {moveArgs.StepsMoved}");
             }
             else
             {
-                Debug.Log($"Order status: {moveArgs.Result}    Reason: {moveArgs.FailReason}");
             }
-            cellsMovedCurrTurn += moveArgs.StepsMoved;
-            
+
             OnAnyOrderCompleted();
         }
 
@@ -129,7 +138,9 @@ namespace Gameplay.Controls
             args.SetEnemy(damageable)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
                 .SetMoveIfTargetFar(moveIfTargetFar)
-                .AddOnCompleteCallback(OnOrderAttackCompleted);
+                .AddOnCompleteCallback(OnOrderAttackCompleted)
+                .AddUsedMovePointsCallback(UseMovePoints)
+                .AddUsedActionPointsCallback(UseActionPoints);
 
             _order = new OrderAttack(args);
             _order.StartOrder();
@@ -140,14 +151,11 @@ namespace Gameplay.Controls
             var atkArgs = (CompleteOrderArgsAttack) args;
             if (atkArgs.Result == OrderResult.Succes)
             {
-                Debug.Log($"Order status: {atkArgs.Result}    Moved steps: {atkArgs.StepsMoved}");
-                actionsCurrTurn++;
             }
             else
             {
                 Debug.Log($"Order status: {atkArgs.Result}    Reason: {atkArgs.FailReason}");
             }
-            cellsMovedCurrTurn += atkArgs.StepsMoved;
 
             OnAnyOrderCompleted();
         }
@@ -156,7 +164,6 @@ namespace Gameplay.Controls
         {
             _order = null;
             _gameArea.GeneratePathsToAllPawns(transform.position, OnPathsToAllPawnsGenerated);
-            RefreshPointsIndicator(true);
         }
 
         protected virtual void ProcessPostOrder()
