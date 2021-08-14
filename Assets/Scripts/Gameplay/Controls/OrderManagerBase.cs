@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
@@ -44,8 +45,9 @@ namespace Gameplay.Controls
             RefreshPointsIndicator(true);
         }
         
-        protected void CompleteTurn()
+        public void CompleteTurn()
         {
+            if (_order != null) return;
             isTakingTurn = false;
             cellsMovedCurrTurn = 0;
             actionsCurrTurn = 0;
