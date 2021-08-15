@@ -17,7 +17,7 @@ MonoBehaviour:
   - Custom
   - Example
   - General
-  - GameArenaInput
+  - GameArena
   Categories:
   - {fileID: 11400000, guid: 40f9e81ff80114a47a3721228ba749ed, type: 2}
   - {fileID: 11400000, guid: 9608ae3c42957ab4c83e3cef68f52a0f, type: 2}

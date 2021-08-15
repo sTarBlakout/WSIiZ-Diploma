@@ -38,5 +38,10 @@ namespace Gameplay.Controls
                 return;
             }
         }
+
+        protected override void ProcessPostOrder()
+        {
+            
+        }
     }
 }

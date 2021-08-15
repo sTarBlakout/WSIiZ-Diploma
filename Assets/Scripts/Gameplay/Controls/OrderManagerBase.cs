@@ -16,6 +16,8 @@ namespace Gameplay.Controls
         protected GameArea _gameArea;
         protected Dictionary<PawnController, List<Vector3>> _pathsToPawns;
 
+        public Action<bool> OnTakingTurn;
+
         protected virtual void Awake()
         {
             _pawnController = GetComponent<PawnController>();
@@ -43,6 +45,7 @@ namespace Gameplay.Controls
         {
             isTakingTurn = true;
             RefreshPointsIndicator(true);
+            OnTakingTurn?.Invoke(true);
         }
         
         public void CompleteTurn()
@@ -52,6 +55,7 @@ namespace Gameplay.Controls
             cellsMovedCurrTurn = 0;
             actionsCurrTurn = 0;
             RefreshPointsIndicator(false);
+            OnTakingTurn?.Invoke(false);
         }
         
         private bool HasMoreActionsToDo()
