@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Controls;
+using Gameplay.Environment;
 using Gameplay.Сharacters;
 using UnityEngine;
 
@@ -14,6 +15,7 @@ namespace Gameplay.Core
         
         private List<OrderManagerBase> _turnParticipants = new List<OrderManagerBase>();
         private PawnController _player;
+        private CameraManager _cameraManager;
         private GameArea _gameArea;
         
         public PawnController PlayerPawn => _player;
@@ -27,6 +29,7 @@ namespace Gameplay.Core
         private IEnumerator InitGame()
         {
             _gameArea = FindObjectOfType<GameArea>();
+            _cameraManager = FindObjectOfType<CameraManager>();
             yield return new WaitUntil(() => _gameArea.IsInitialized());
 
             _turnParticipants.Clear();
