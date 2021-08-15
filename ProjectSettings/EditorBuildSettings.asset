@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
+  - enabled: 1
+    path: Assets/Scenes/TestGameArena.unity
+    guid: 93363946c40e1124598936e97116477a
   m_configObjects: {}
