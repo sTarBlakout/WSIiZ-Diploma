@@ -1,4 +1,5 @@
 using Gameplay.Core;
+using Gameplay.Environment;
 using Gameplay.Interfaces;
 using Lean.Touch;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Gameplay.Controls
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
             
             // Clicked on map, process simple movement
-            if (hitInfo.collider.GetComponent<GameArea>() != null)
+            if (hitInfo.collider.GetComponent<GameAreaTile>() != null)
             {
                 StartOrderMove(_pawnController.transform.position, hitInfo.point);
                 return;

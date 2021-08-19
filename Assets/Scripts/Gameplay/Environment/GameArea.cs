@@ -1,15 +1,20 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Сharacters;
 using SimplePF2D;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class GameArea : MonoBehaviour
 {
     [SerializeField] private Grid grid;
     [SerializeField] private SimplePathFinding2D pathFinding;
     [SerializeField] private Transform pawnsHolder;
+    [SerializeField] private Tilemap navTilemap;
+    [SerializeField] private Tilemap visibleTilemap;
+    [SerializeField] private GameObject cellPrefab;
     
     public readonly List<PawnController> pawns = new List<PawnController>();
     
@@ -114,6 +119,30 @@ public class GameArea : MonoBehaviour
         {
             var cellPosition = grid.WorldToCell(pawn.position);
             pawn.position = grid.GetCellCenterWorld(cellPosition);
+        }
+    }
+
+    [ContextMenu("Initialize Tiles")]
+    public void InitializeTiles()
+    {
+        SpawnTilePrefabs(navTilemap);
+        SpawnTilePrefabs(visibleTilemap);
+    }
+
+    private void SpawnTilePrefabs(Tilemap tilemap)
+    {
+        var destroyList = tilemap.transform.Cast<Transform>().ToList();
+        foreach (var cell in destroyList) DestroyImmediate(cell.gameObject);
+
+        foreach (var pos in tilemap.cellBounds.allPositionsWithin)
+        {
+            var sprite = tilemap.GetSprite(pos);
+            if (sprite != null)
+            {
+                var place = tilemap.CellToWorld(pos);
+                var cell = Instantiate(cellPrefab, place, Quaternion.identity);
+                cell.transform.parent = tilemap.transform;
+            }
         }
     }
 }
