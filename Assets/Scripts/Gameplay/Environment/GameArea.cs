@@ -9,11 +9,19 @@ using UnityEngine.Tilemaps;
 
 public class GameArea : MonoBehaviour
 {
+    [Header("Main Components")]
     [SerializeField] private Grid grid;
     [SerializeField] private SimplePathFinding2D pathFinding;
-    [SerializeField] private Transform pawnsHolder;
-    [SerializeField] private Tilemap navTilemap;
-    [SerializeField] private Tilemap visibleTilemap;
+    
+    [Header("Containers")]
+    [SerializeField] private Transform pawnsContainer;
+    [SerializeField] private Transform cellsContainer;
+    
+    [Header("Tilemaps")]
+    [SerializeField] private Tilemap permBlockedTilemap;
+    [SerializeField] private Tilemap traversableTilemap;
+    
+    [Header("Prefabs")]
     [SerializeField] private GameObject cellPrefab;
     
     public readonly List<PawnController> pawns = new List<PawnController>();
@@ -33,7 +41,7 @@ public class GameArea : MonoBehaviour
         _path = new Path(pathFinding);
         
         pawns.Clear();
-        foreach (Transform pawn in pawnsHolder)
+        foreach (Transform pawn in pawnsContainer)
         {
             var pawnController = pawn.GetComponent<PawnController>();
             pawnController.Init();
@@ -115,7 +123,7 @@ public class GameArea : MonoBehaviour
     [ContextMenu("Center Pawns")]
     public void CenterPawns()
     {
-        foreach (Transform pawn in pawnsHolder)
+        foreach (Transform pawn in pawnsContainer)
         {
             var cellPosition = grid.WorldToCell(pawn.position);
             pawn.position = grid.GetCellCenterWorld(cellPosition);
@@ -125,15 +133,14 @@ public class GameArea : MonoBehaviour
     [ContextMenu("Initialize Tiles")]
     public void InitializeTiles()
     {
-        SpawnTilePrefabs(navTilemap);
-        SpawnTilePrefabs(visibleTilemap);
+        var destroyList = cellsContainer.Cast<Transform>().ToList();
+        foreach (var cell in destroyList) DestroyImmediate(cell.gameObject);
+        
+        SpawnTilePrefabs(traversableTilemap);
     }
 
     private void SpawnTilePrefabs(Tilemap tilemap)
     {
-        var destroyList = tilemap.transform.Cast<Transform>().ToList();
-        foreach (var cell in destroyList) DestroyImmediate(cell.gameObject);
-
         foreach (var pos in tilemap.cellBounds.allPositionsWithin)
         {
             var sprite = tilemap.GetSprite(pos);
@@ -141,7 +148,7 @@ public class GameArea : MonoBehaviour
             {
                 var place = tilemap.CellToWorld(pos);
                 var cell = Instantiate(cellPrefab, place, Quaternion.identity);
-                cell.transform.parent = tilemap.transform;
+                cell.transform.parent = cellsContainer;
             }
         }
     }
