@@ -1,6 +1,9 @@
 
 using System;
+using System.Collections.Generic;
+using Gameplay.Environment;
 using Gameplay.Сharacters;
+using UnityEngine;
 
 namespace Gameplay.Controls.Orders
 {
@@ -12,7 +15,10 @@ namespace Gameplay.Controls.Orders
         private Action<CompleteOrderArgsBase> _onCompletedCallback;
         private Action<int> _onUsedActionPointsCallback;
         private Action<int> _onUsedMovePointsCallback;
+        
+        private Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> _pathsToTiles;
 
+        public Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> PathsToTiles => _pathsToTiles;
         public PawnController PawnController => _pawnController;
         public GameArea GameArea => _gameArea;
         public Action<CompleteOrderArgsBase> OnCompleted => _onCompletedCallback;
@@ -23,6 +29,12 @@ namespace Gameplay.Controls.Orders
         {
             _pawnController = pawnController;
             _gameArea = gameArea;
+        }
+        
+        public OrderArgsBase SetPathsToTiles(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
+        {
+            _pathsToTiles = pathsToTiles;
+            return this;
         }
 
         public OrderArgsBase AddOnCompleteCallback(Action<CompleteOrderArgsBase> onCompletedCallback)

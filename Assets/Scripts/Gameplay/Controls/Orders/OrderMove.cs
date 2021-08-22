@@ -16,15 +16,45 @@ namespace Gameplay.Controls.Orders
         public override void StartOrder()
         {
             completeArgs = new CompleteOrderArgsMove();
-            
-            if (args.GameArea.IsTileBlocked(args.To))
+
+            if (args.ToTile == null)
             {
-                completeArgs.Result = OrderResult.Fail;
-                completeArgs.FailReason = OrderFailReason.BlockedArea;
-                args.OnCompleted?.Invoke(completeArgs);
-                return;
+                if (args.GameArea.IsTileBlocked(args.To))
+                {
+                    completeArgs.Result = OrderResult.Fail;
+                    completeArgs.FailReason = OrderFailReason.BlockedArea;
+                    args.OnCompleted?.Invoke(completeArgs);
+                    return;
+                }
+
+                args.GameArea.GeneratePathToPosition(args.From, args.To, OnPathGenerated);
             }
-            args.GameArea.GeneratePathToPosition(args.From, args.To, OnPathGenerated);
+            else
+            {
+                if (args.GameArea.IsTileBlocked(args.ToTile.NavPosition))
+                {
+                    completeArgs.Result = OrderResult.Fail;
+                    completeArgs.FailReason = OrderFailReason.BlockedArea;
+                    args.OnCompleted?.Invoke(completeArgs);
+                    return;
+                }
+
+                var pathTiles = args.PathsToTiles.FirstOrDefault(pair => pair.Key == args.ToTile).Value;
+
+                if (pathTiles == null)
+                {
+                    completeArgs.Result = OrderResult.Fail;
+                    completeArgs.FailReason = OrderFailReason.TooFar;
+                    args.OnCompleted?.Invoke(completeArgs);
+                    return;
+                }
+                
+                var path = pathTiles.Select(pathTile => pathTile.Item1).ToList();
+                args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
+                args.GameArea.BlockTileAtPos(path[0], false);
+                args.GameArea.BlockTileAtPos(path.Last(), true);
+                args.PawnController.MovePath(path, OnReachedDestination);
+            }
         }
         
         protected void OnPathGenerated(List<Vector3> path)
@@ -36,7 +66,7 @@ namespace Gameplay.Controls.Orders
                 args.OnCompleted?.Invoke(completeArgs);
                 return;
             }
-            
+
             args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
             args.GameArea.BlockTileAtPos(path[0], false);
             args.GameArea.BlockTileAtPos(path.Last(), true);

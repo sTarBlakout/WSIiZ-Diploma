@@ -124,10 +124,15 @@ public class GameArea : MonoBehaviour
         node.SetBlocked(block);
     }
 
+    public bool IsTileBlocked(Vector3Int navPos)
+    {
+        return pathFinding.GetNode(navPos).IsBlocked();
+    }
+    
     public bool IsTileBlocked(Vector3 worldPos)
     {
-        var navCords = pathFinding.WorldToNav(worldPos);
-        return pathFinding.GetNode(navCords).IsBlocked();
+        var navPos = pathFinding.WorldToNav(worldPos);
+        return pathFinding.GetNode(navPos).IsBlocked();
     }
 
     public List<GameAreaTile> GetReachableTiles(Vector3 fromPos, int distance)
@@ -137,15 +142,15 @@ public class GameArea : MonoBehaviour
             .ToList();
     }
 
-    public void GetWalkReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<Vector3>>> onGetReachableTiles)
+    public void GetWalkReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
         _waitPathCor = StartCoroutine(GeneratePathsToTiles(fromPos, distance, GetReachableTiles(fromPos, distance), onGetReachableTiles));
     }
     
-    private IEnumerator GeneratePathsToTiles(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<Vector3>>> onGetReachableTiles)
+    private IEnumerator GeneratePathsToTiles(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
     {
-        var reachableTiles = new Dictionary<GameAreaTile, List<Vector3>>();
+        var reachableTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>();
         foreach (var tile in tiles)
         {
             var toPos = tile.transform.position;
@@ -163,8 +168,9 @@ public class GameArea : MonoBehaviour
                 foreach (var point in pathPointsList)
                 {
                     if (tile.NavPosition != point) continue;
-                    var realWorldPath = new List<Vector3>();
-                    for (int i = 0; i < pathPointsList.Count; i++) realWorldPath.Add(_path.GetPathPointWorld(i));
+                    var realWorldPath = new List<(Vector3, GameAreaTile)>();
+                    for (int i = 0; i < pathPointsList.Count; i++) 
+                        realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
                     reachableTiles.Add(tile, realWorldPath);
                     break;
                 }

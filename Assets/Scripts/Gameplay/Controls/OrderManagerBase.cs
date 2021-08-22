@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
 using Gameplay.Environment;
@@ -16,6 +17,7 @@ namespace Gameplay.Controls
         protected PawnController _pawnController;
         protected GameArea _gameArea;
         protected Dictionary<PawnController, List<Vector3>> _pathsToPawns;
+        protected Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> _pathsToTiles;
 
         public Action<bool> OnTakingTurn;
 
@@ -126,6 +128,19 @@ namespace Gameplay.Controls
             _order = new OrderMove(args);
             _order.StartOrder();
         }
+        
+        protected void StartOrderMove(GameAreaTile toTile)
+        {
+            var args = new OrderArgsMove(_pawnController, _gameArea);
+            args.SetToTile(toTile)
+                .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .AddUsedMovePointsCallback(UseMovePoints)
+                .AddOnCompleteCallback(OnOrderMoveCompleted)
+                .SetPathsToTiles(_pathsToTiles);
+            
+            _order = new OrderMove(args);
+            _order.StartOrder();
+        }
 
         protected void OnOrderMoveCompleted(CompleteOrderArgsBase args)
         {
@@ -183,8 +198,9 @@ namespace Gameplay.Controls
         
         #region Callbacks
 
-        protected virtual void OnGetReachableTiles(Dictionary<GameAreaTile, List<Vector3>> reachableTiles)
+        protected virtual void OnGetReachableTiles(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
         {
+            _pathsToTiles = pathsToTiles;
         }
 
         private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<Vector3>> pathsToPawns)

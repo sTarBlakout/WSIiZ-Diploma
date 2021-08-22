@@ -25,9 +25,10 @@ namespace Gameplay.Controls
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
 
             // Clicked on map, process simple movement
-            if (hitInfo.collider.transform.parent.GetComponent<GameAreaTile>() != null)
+            var tile = hitInfo.collider.transform.parent.GetComponent<GameAreaTile>();
+            if (tile != null)
             {
-                StartOrderMove(_pawnController.transform.position, hitInfo.point);
+                StartOrderMove(tile);
                 return;
             }
             

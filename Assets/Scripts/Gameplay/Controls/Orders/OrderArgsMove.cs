@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Gameplay.Environment;
 using Gameplay.Сharacters;
 using UnityEngine;
 
@@ -5,17 +7,25 @@ namespace Gameplay.Controls.Orders
 {
     public class OrderArgsMove : OrderArgsBase
     {
+        private GameAreaTile _toTile;
         private Vector3 _from;
         private Vector3 _to;
         private int _maxSteps;
 
+        public GameAreaTile ToTile => _toTile;
         public Vector3 From => _from;
         public Vector3 To => _to;
         public int MaxSteps => _maxSteps;
-        
-        
+
+
         public OrderArgsMove(PawnController pawnController, GameArea gameArea) : base(pawnController, gameArea) { }
 
+        public OrderArgsMove SetToTile(GameAreaTile toTile)
+        {
+            _toTile = toTile;
+            return this;
+        }
+        
         public OrderArgsMove SetFromPos(Vector3 from)
         {
             _from = from;
