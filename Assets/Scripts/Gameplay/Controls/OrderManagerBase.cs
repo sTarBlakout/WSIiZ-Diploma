@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
+using Gameplay.Environment;
 using Gameplay.Interfaces;
 using Gameplay.Сharacters;
 using UnityEngine;
@@ -45,6 +46,7 @@ namespace Gameplay.Controls
         {
             isTakingTurn = true;
             RefreshPointsIndicator(true);
+            _gameArea.GetWalkReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnGetReachableTiles);
             OnTakingTurn?.Invoke(true);
         }
         
@@ -180,6 +182,10 @@ namespace Gameplay.Controls
         #endregion
         
         #region Callbacks
+
+        protected virtual void OnGetReachableTiles(Dictionary<GameAreaTile, List<Vector3>> reachableTiles)
+        {
+        }
 
         private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<Vector3>> pathsToPawns)
         {

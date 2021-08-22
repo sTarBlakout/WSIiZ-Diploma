@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
@@ -22,9 +23,9 @@ namespace Gameplay.Controls
         {
             if (_order != null || !isTakingTurn) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
-            
+
             // Clicked on map, process simple movement
-            if (hitInfo.collider.GetComponent<GameAreaTile>() != null)
+            if (hitInfo.collider.transform.parent.GetComponent<GameAreaTile>() != null)
             {
                 StartOrderMove(_pawnController.transform.position, hitInfo.point);
                 return;
@@ -40,9 +41,6 @@ namespace Gameplay.Controls
             }
         }
 
-        protected override void ProcessPostOrder()
-        {
-            
-        }
+        protected override void ProcessPostOrder() { }
     }
 }

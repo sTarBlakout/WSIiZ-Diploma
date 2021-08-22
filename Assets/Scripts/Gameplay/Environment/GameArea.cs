@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Environment;
 using Gameplay.Сharacters;
 using SimplePF2D;
 using UnityEngine;
@@ -9,10 +10,11 @@ using UnityEngine.Tilemaps;
 
 public class GameArea : MonoBehaviour
 {
-    [Header("Main Components")]
+    [Header("General")]
     [SerializeField] private Grid grid;
     [SerializeField] private SimplePathFinding2D pathFinding;
-    
+    [SerializeField] private LayerMask tilesLayer;
+
     [Header("Containers")]
     [SerializeField] private Transform pawnsContainer;
     [SerializeField] private Transform cellsContainer;
@@ -25,6 +27,7 @@ public class GameArea : MonoBehaviour
     [SerializeField] private GameObject cellPrefab;
     
     public readonly List<PawnController> pawns = new List<PawnController>();
+    public readonly List<GameAreaTile> tiles = new List<GameAreaTile>();
     
     private Coroutine _waitPathCor;
     private Path _path;
@@ -49,8 +52,15 @@ public class GameArea : MonoBehaviour
             var cellPosition = grid.WorldToCell(pawn.position);
             pawn.position = grid.GetCellCenterWorld(cellPosition);
             BlockTileAtPos(pawnController.transform.position, true);
-            
+
             pawns.Add(pawnController);
+        }
+        
+        foreach (Transform cell in cellsContainer)
+        {
+            var tile = cell.GetComponent<GameAreaTile>();
+            tile.SetNavPosition(pathFinding.WorldToNav(cell.position));
+            tiles.Add(tile);
         }
 
         _isInit = true;
@@ -118,6 +128,50 @@ public class GameArea : MonoBehaviour
     {
         var navCords = pathFinding.WorldToNav(worldPos);
         return pathFinding.GetNode(navCords).IsBlocked();
+    }
+
+    public List<GameAreaTile> GetReachableTiles(Vector3 fromPos, int distance)
+    {
+        return Physics.OverlapSphere(fromPos, distance * 2, tilesLayer)
+            .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>())
+            .ToList();
+    }
+
+    public void GetWalkReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<Vector3>>> onGetReachableTiles)
+    {
+        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
+        _waitPathCor = StartCoroutine(GeneratePathsToTiles(fromPos, distance, GetReachableTiles(fromPos, distance), onGetReachableTiles));
+    }
+    
+    private IEnumerator GeneratePathsToTiles(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<Vector3>>> onGetReachableTiles)
+    {
+        var reachableTiles = new Dictionary<GameAreaTile, List<Vector3>>();
+        foreach (var tile in tiles)
+        {
+            var toPos = tile.transform.position;
+            var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
+            BlockTileAtPos(fromPos, false);
+            BlockTileAtPos(toPos, false);
+            _path.CreatePath(fromPos, toPos);
+            yield return new WaitUntil(() => _path.IsGenerated());
+            BlockTileAtPos(fromPos, isFromToBlocked.Item1);
+            BlockTileAtPos(toPos, isFromToBlocked.Item2);
+            
+            var pathPointsList = _path.GetPathPointList();
+            if (pathPointsList.Count - 1 <= distance)
+            {
+                foreach (var point in pathPointsList)
+                {
+                    if (tile.NavPosition != point) continue;
+                    var realWorldPath = new List<Vector3>();
+                    for (int i = 0; i < pathPointsList.Count; i++) realWorldPath.Add(_path.GetPathPointWorld(i));
+                    reachableTiles.Add(tile, realWorldPath);
+                    break;
+                }
+            }
+        }
+        
+        onGetReachableTiles?.Invoke(reachableTiles);
     }
 
     [ContextMenu("Center Pawns")]

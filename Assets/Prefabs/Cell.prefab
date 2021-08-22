@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1862816880533730827}
-  - component: {fileID: 7883473179448682181}
   - component: {fileID: 8401510418002504842}
   m_Layer: 3
   m_Name: Collider
@@ -32,18 +31,6 @@ Transform:
   m_Father: {fileID: 241393574270350736}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 30, z: 0}
---- !u!114 &7883473179448682181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6362503945308171785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91aca0124a414db4784e8b27d3695aa0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &8401510418002504842
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -67,6 +54,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 241393574270350736}
+  - component: {fileID: 107791688338691460}
   m_Layer: 3
   m_Name: Cell
   m_TagString: Untagged
@@ -89,3 +77,15 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &107791688338691460
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7867227416865174845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91aca0124a414db4784e8b27d3695aa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
