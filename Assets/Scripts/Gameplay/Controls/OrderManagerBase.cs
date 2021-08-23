@@ -16,7 +16,8 @@ namespace Gameplay.Controls
 
         protected PawnController _pawnController;
         protected GameArea _gameArea;
-        protected Dictionary<PawnController, List<Vector3>> _pathsToPawns;
+        
+        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> _pathsToPawns;
         protected Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> _pathsToTiles;
 
         public Action<bool> OnTakingTurn;
@@ -48,7 +49,7 @@ namespace Gameplay.Controls
         {
             isTakingTurn = true;
             RefreshPointsIndicator(true);
-            _gameArea.GetWalkReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnGetReachableTiles);
+            _gameArea.GeneratePathToReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnGetReachableTiles);
             OnTakingTurn?.Invoke(true);
         }
         
@@ -77,6 +78,8 @@ namespace Gameplay.Controls
 
             return false;
         }
+        
+        // TODO: Make all orders do ONLY ONE THING!!!!
 
         protected virtual bool CanMove()
         {
@@ -142,19 +145,6 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args)
-        {
-            var moveArgs = (CompleteOrderArgsMove) args;
-            if (moveArgs.Result == OrderResult.Succes)
-            {
-            }
-            else
-            {
-            }
-
-            OnAnyOrderCompleted();
-        }
-
         protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
         {
             var args = new OrderArgsAttack(_pawnController, _gameArea);
@@ -169,24 +159,14 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args)
-        {
-            var atkArgs = (CompleteOrderArgsAttack) args;
-            if (atkArgs.Result == OrderResult.Succes)
-            {
-            }
-            else
-            {
-                Debug.Log($"Order status: {atkArgs.Result}    Reason: {atkArgs.FailReason}");
-            }
-
-            OnAnyOrderCompleted();
-        }
+        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args) { OnAnyOrderCompleted(); }
+        
+        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args) { OnAnyOrderCompleted(); }
 
         protected virtual void OnAnyOrderCompleted()
         {
             _order = null;
-            _gameArea.GeneratePathsToAllPawns(transform.position, OnPathsToAllPawnsGenerated);
+            _gameArea.GeneratePathsToAllEnemies(_pawnController, OnPathsToAllPawnsGenerated);
         }
 
         protected virtual void ProcessPostOrder()
@@ -203,7 +183,7 @@ namespace Gameplay.Controls
             _pathsToTiles = pathsToTiles;
         }
 
-        private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<Vector3>> pathsToPawns)
+        private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
         {
             _pathsToPawns = pathsToPawns;
             ProcessPostOrder();

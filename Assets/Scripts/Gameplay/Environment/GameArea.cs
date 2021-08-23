@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Core;
 using Gameplay.Environment;
+using Gameplay.Interfaces;
 using Gameplay.Сharacters;
 using SimplePF2D;
 using UnityEngine;
@@ -10,6 +12,8 @@ using UnityEngine.Tilemaps;
 
 public class GameArea : MonoBehaviour
 {
+    #region Data
+
     [Header("General")]
     [SerializeField] private Grid grid;
     [SerializeField] private SimplePathFinding2D pathFinding;
@@ -32,11 +36,19 @@ public class GameArea : MonoBehaviour
     private Coroutine _waitPathCor;
     private Path _path;
     private bool _isInit;
+    
+    #endregion
+
+    #region Unity Events
 
     private void Start()
     {
         StartCoroutine(InitGameArea());
     }
+    
+    #endregion
+
+    #region Initialization
 
     private IEnumerator InitGameArea()
     {
@@ -70,116 +82,7 @@ public class GameArea : MonoBehaviour
     {
         return _isInit;
     }
-
-    public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
-    {
-        var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
-        BlockTileAtPos(fromPos, false);
-        BlockTileAtPos(toPos, false);
-        _path.CreatePath(fromPos, toPos);
-        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(WaitGeneratedPath(fromPos, toPos, isFromToBlocked, onGeneratedPath));
-    }
-
-    private IEnumerator WaitGeneratedPath(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<Vector3>> onGeneratedPath)
-    {
-        yield return new WaitUntil(() => _path.IsGenerated());
-        BlockTileAtPos(fromPos, isFromToBlocked.Item1);
-        BlockTileAtPos(toPos, isFromToBlocked.Item2);
-        var vectorPath = new List<Vector3>();
-        for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
-        onGeneratedPath(vectorPath);
-    }
-
-    public void GeneratePathsToAllPawns(Vector3 fromPos, Action<Dictionary<PawnController, List<Vector3>>> onGeneratedPaths)
-    {
-        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(GeneratePathsToAllPawnsCor(fromPos, onGeneratedPaths));
-    }
     
-    private IEnumerator GeneratePathsToAllPawnsCor(Vector3 fromPos, Action<Dictionary<PawnController, List<Vector3>>> onGeneratedPaths)
-    {
-        var pathsToPawns = new Dictionary<PawnController, List<Vector3>>();
-        foreach (var pawn in pawns)
-        {
-            var toPos = pawn.transform.position;
-            var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
-            BlockTileAtPos(fromPos, false);
-            BlockTileAtPos(toPos, false);
-            _path.CreatePath(fromPos, toPos);
-            yield return new WaitUntil(() => _path.IsGenerated());
-            BlockTileAtPos(fromPos, isFromToBlocked.Item1);
-            BlockTileAtPos(toPos, isFromToBlocked.Item2);
-            var vectorPath = new List<Vector3>();
-            for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
-            pathsToPawns.Add(pawn, vectorPath);
-        }
-        onGeneratedPaths?.Invoke(pathsToPawns);
-    }
-
-    public void BlockTileAtPos(Vector3 worldPos, bool block)
-    {
-        var navCords = pathFinding.WorldToNav(worldPos);
-        var node = pathFinding.GetNode(navCords);
-        node.SetBlocked(block);
-    }
-
-    public bool IsTileBlocked(Vector3Int navPos)
-    {
-        return pathFinding.GetNode(navPos).IsBlocked();
-    }
-    
-    public bool IsTileBlocked(Vector3 worldPos)
-    {
-        var navPos = pathFinding.WorldToNav(worldPos);
-        return pathFinding.GetNode(navPos).IsBlocked();
-    }
-
-    public List<GameAreaTile> GetReachableTiles(Vector3 fromPos, int distance)
-    {
-        return Physics.OverlapSphere(fromPos, distance * 2, tilesLayer)
-            .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>())
-            .ToList();
-    }
-
-    public void GetWalkReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
-    {
-        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(GeneratePathsToTiles(fromPos, distance, GetReachableTiles(fromPos, distance), onGetReachableTiles));
-    }
-    
-    private IEnumerator GeneratePathsToTiles(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
-    {
-        var reachableTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>();
-        foreach (var tile in tiles)
-        {
-            var toPos = tile.transform.position;
-            var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
-            BlockTileAtPos(fromPos, false);
-            BlockTileAtPos(toPos, false);
-            _path.CreatePath(fromPos, toPos);
-            yield return new WaitUntil(() => _path.IsGenerated());
-            BlockTileAtPos(fromPos, isFromToBlocked.Item1);
-            BlockTileAtPos(toPos, isFromToBlocked.Item2);
-            
-            var pathPointsList = _path.GetPathPointList();
-            if (pathPointsList.Count - 1 <= distance)
-            {
-                foreach (var point in pathPointsList)
-                {
-                    if (tile.NavPosition != point) continue;
-                    var realWorldPath = new List<(Vector3, GameAreaTile)>();
-                    for (int i = 0; i < pathPointsList.Count; i++) 
-                        realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
-                    reachableTiles.Add(tile, realWorldPath);
-                    break;
-                }
-            }
-        }
-        
-        onGetReachableTiles?.Invoke(reachableTiles);
-    }
-
     [ContextMenu("Center Pawns")]
     public void CenterPawns()
     {
@@ -212,4 +115,130 @@ public class GameArea : MonoBehaviour
             }
         }
     }
+    
+    #endregion
+
+    #region Utilities
+
+    public void BlockTileAtPos(Vector3 worldPos, bool block)
+    {
+        var navCords = pathFinding.WorldToNav(worldPos);
+        var node = pathFinding.GetNode(navCords);
+        node.SetBlocked(block);
+    }
+
+    public bool IsTileBlocked(Vector3Int navPos)
+    {
+        return pathFinding.GetNode(navPos).IsBlocked();
+    }
+    
+    public bool IsTileBlocked(Vector3 worldPos)
+    {
+        var navPos = pathFinding.WorldToNav(worldPos);
+        return pathFinding.GetNode(navPos).IsBlocked();
+    }
+    
+    public List<GameAreaTile> GetTilesByDistance(Vector3 fromPos, int distance)
+    {
+        return Physics.OverlapSphere(fromPos, distance * 2, tilesLayer)
+            .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>())
+            .ToList();
+    }
+
+    #endregion
+
+    #region Generating Paths
+    
+    public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
+    {
+        var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
+        BlockTileAtPos(fromPos, false);
+        BlockTileAtPos(toPos, false);
+        _path.CreatePath(fromPos, toPos);
+        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
+        _waitPathCor = StartCoroutine(GeneratePathToPositionCor(fromPos, toPos, isFromToBlocked, onGeneratedPath));
+    }
+
+    private IEnumerator GeneratePathToPositionCor(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<Vector3>> onGeneratedPath)
+    {
+        yield return new WaitUntil(() => _path.IsGenerated());
+        BlockTileAtPos(fromPos, isFromToBlocked.Item1);
+        BlockTileAtPos(toPos, isFromToBlocked.Item2);
+        var vectorPath = new List<Vector3>();
+        for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
+        onGeneratedPath(vectorPath);
+    }
+
+    public void GeneratePathsToAllEnemies(PawnController fromPawn, Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    {
+        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
+        _waitPathCor = StartCoroutine(GeneratePathsToAllEnemiesCor(fromPawn, onGeneratedPaths));
+    }
+    
+    private IEnumerator GeneratePathsToAllEnemiesCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    {
+        var pathsToPawns = new Dictionary<PawnController, List<(Vector3, GameAreaTile)>>();
+        foreach (var pawn in pawns)
+        {
+            if (fromPawn == pawn) continue;
+            if (!fromPawn.IsEnemyFor(pawn)) continue;
+            
+            var toPos = pawn.transform.position;
+            var fromPos = fromPawn.Position;
+            var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
+            BlockTileAtPos(fromPos, false);
+            BlockTileAtPos(toPos, false);
+            _path.CreatePath(fromPos, toPos);
+            yield return new WaitUntil(() => _path.IsGenerated());
+            BlockTileAtPos(fromPos, isFromToBlocked.Item1);
+            BlockTileAtPos(toPos, isFromToBlocked.Item2);
+            
+            var pathPointsList = _path.GetPathPointList();
+            var realWorldPath = new List<(Vector3, GameAreaTile)>();
+            for (int i = 0; i < pathPointsList.Count; i++) 
+                realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
+            pathsToPawns.Add(pawn, realWorldPath);
+        }
+        onGeneratedPaths?.Invoke(pathsToPawns);
+    }
+
+    public void GeneratePathToReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
+    {
+        if (_waitPathCor != null) StopCoroutine(_waitPathCor);
+        _waitPathCor = StartCoroutine(GeneratePathToReachableTilesCor(fromPos, distance, GetTilesByDistance(fromPos, distance), onGetReachableTiles));
+    }
+    
+    private IEnumerator GeneratePathToReachableTilesCor(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
+    {
+        var reachableTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>();
+        foreach (var tile in tiles)
+        {
+            var toPos = tile.transform.position;
+            var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
+            BlockTileAtPos(fromPos, false);
+            BlockTileAtPos(toPos, false);
+            _path.CreatePath(fromPos, toPos);
+            yield return new WaitUntil(() => _path.IsGenerated());
+            BlockTileAtPos(fromPos, isFromToBlocked.Item1);
+            BlockTileAtPos(toPos, isFromToBlocked.Item2);
+            
+            var pathPointsList = _path.GetPathPointList();
+            if (pathPointsList.Count - 1 <= distance)
+            {
+                foreach (var point in pathPointsList)
+                {
+                    if (tile.NavPosition != point) continue;
+                    var realWorldPath = new List<(Vector3, GameAreaTile)>();
+                    for (int i = 0; i < pathPointsList.Count; i++) 
+                        realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
+                    reachableTiles.Add(tile, realWorldPath);
+                    break;
+                }
+            }
+        }
+        
+        onGetReachableTiles?.Invoke(reachableTiles);
+    }
+    
+    #endregion
 }

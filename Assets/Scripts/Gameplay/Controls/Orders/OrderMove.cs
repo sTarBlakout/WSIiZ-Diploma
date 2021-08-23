@@ -40,7 +40,6 @@ namespace Gameplay.Controls.Orders
                 }
 
                 var pathTiles = args.PathsToTiles.FirstOrDefault(pair => pair.Key == args.ToTile).Value;
-
                 if (pathTiles == null)
                 {
                     completeArgs.Result = OrderResult.Fail;
@@ -49,11 +48,7 @@ namespace Gameplay.Controls.Orders
                     return;
                 }
                 
-                var path = pathTiles.Select(pathTile => pathTile.Item1).ToList();
-                args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
-                args.GameArea.BlockTileAtPos(path[0], false);
-                args.GameArea.BlockTileAtPos(path.Last(), true);
-                args.PawnController.MovePath(path, OnReachedDestination);
+                TraversePath(pathTiles.Select(pathTile => pathTile.Item1).ToList());
             }
         }
         
@@ -66,7 +61,11 @@ namespace Gameplay.Controls.Orders
                 args.OnCompleted?.Invoke(completeArgs);
                 return;
             }
+            TraversePath(path);
+        }
 
+        private void TraversePath(List<Vector3> path)
+        {
             args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
             args.GameArea.BlockTileAtPos(path[0], false);
             args.GameArea.BlockTileAtPos(path.Last(), true);

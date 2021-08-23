@@ -1,12 +1,5 @@
 namespace Gameplay.Core
 {
-    public enum Order
-    {
-        None,
-        Move,
-        Attack
-    }
-
     public enum OrderResult
     {
         NotDetermined,
