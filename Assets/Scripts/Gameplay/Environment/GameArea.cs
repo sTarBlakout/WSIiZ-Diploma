@@ -202,13 +202,13 @@ public class GameArea : MonoBehaviour
         onGeneratedPaths?.Invoke(pathsToPawns);
     }
 
-    public void GeneratePathToReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
+    public void GeneratePathsToReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(GeneratePathToReachableTilesCor(fromPos, distance, GetTilesByDistance(fromPos, distance), onGetReachableTiles));
+        _waitPathCor = StartCoroutine(GeneratePathToReachableTilesCor(fromPos, distance, GetTilesByDistance(fromPos, distance), onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathToReachableTilesCor(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGetReachableTiles)
+    private IEnumerator GeneratePathToReachableTilesCor(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
     {
         var reachableTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>();
         foreach (var tile in tiles)
@@ -237,7 +237,7 @@ public class GameArea : MonoBehaviour
             }
         }
         
-        onGetReachableTiles?.Invoke(reachableTiles);
+        onGeneratedPaths?.Invoke(reachableTiles);
     }
     
     #endregion

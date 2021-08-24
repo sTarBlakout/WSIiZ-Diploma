@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Gameplay.Core;
 using Gameplay.Environment;
@@ -21,7 +22,7 @@ namespace Gameplay.Controls
 
         private void HandleFingerTap(LeanFinger finger)
         {
-            if (_order != null || !isTakingTurn) return;
+            if (_order != null || !isTakingTurn || !areAllPathsGenerated) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
 
             // Clicked on map, process simple movement
@@ -42,6 +43,8 @@ namespace Gameplay.Controls
             }
         }
 
-        protected override void ProcessPostOrder() { }
+        protected override bool CanDoActions() { return true; }
+
+        protected override bool CanMove() { return true; }
     }
 }

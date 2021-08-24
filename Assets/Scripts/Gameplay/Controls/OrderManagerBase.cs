@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Controls.Orders;
@@ -16,9 +17,10 @@ namespace Gameplay.Controls
 
         protected PawnController _pawnController;
         protected GameArea _gameArea;
-        
-        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> _pathsToPawns;
-        protected Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> _pathsToTiles;
+
+        protected bool areAllPathsGenerated;
+        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToEnemies;
+        protected Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles;
 
         public Action<bool> OnTakingTurn;
 
@@ -48,8 +50,8 @@ namespace Gameplay.Controls
         public virtual void StartTurn()
         {
             isTakingTurn = true;
+            GeneratePaths();
             RefreshPointsIndicator(true);
-            _gameArea.GeneratePathToReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnGetReachableTiles);
             OnTakingTurn?.Invoke(true);
         }
         
@@ -63,14 +65,14 @@ namespace Gameplay.Controls
             OnTakingTurn?.Invoke(false);
         }
         
-        private bool HasMoreActionsToDo()
+        protected virtual bool HasMoreActionsToDo()
         {
             return CanMove() || CanDoActions() && CanReachAnyEnemy();
         }
         
         protected bool CanReachAnyEnemy()
         {
-            foreach (var pawnPath in _pathsToPawns)
+            foreach (var pawnPath in pathsToEnemies)
             {
                 if (!_pawnController.IsEnemyFor(pawnPath.Key) || !pawnPath.Key.IsAlive()) continue;
                 if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
@@ -78,8 +80,6 @@ namespace Gameplay.Controls
 
             return false;
         }
-        
-        // TODO: Make all orders do ONLY ONE THING!!!!
 
         protected virtual bool CanMove()
         {
@@ -139,7 +139,7 @@ namespace Gameplay.Controls
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
                 .AddUsedMovePointsCallback(UseMovePoints)
                 .AddOnCompleteCallback(OnOrderMoveCompleted)
-                .SetPathsToTiles(_pathsToTiles);
+                .SetPathsToTiles(pathsToTiles);
             
             _order = new OrderMove(args);
             _order.StartOrder();
@@ -159,14 +159,16 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args) { OnAnyOrderCompleted(); }
+        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args) { StartCoroutine(OnAnyOrderCompleted()); }
         
-        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args) { OnAnyOrderCompleted(); }
+        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args) { StartCoroutine(OnAnyOrderCompleted()); }
 
-        protected virtual void OnAnyOrderCompleted()
+        protected virtual IEnumerator OnAnyOrderCompleted()
         {
             _order = null;
-            _gameArea.GeneratePathsToAllEnemies(_pawnController, OnPathsToAllPawnsGenerated);
+            GeneratePaths();
+            yield return new WaitUntil(() => areAllPathsGenerated);
+            ProcessPostOrder();
         }
 
         protected virtual void ProcessPostOrder()
@@ -174,19 +176,45 @@ namespace Gameplay.Controls
             if (!HasMoreActionsToDo()) CompleteTurn();
         }
 
+        protected virtual void GeneratePaths()
+        {
+            areAllPathsGenerated = false;
+            pathsToEnemies = null;
+            pathsToTiles = null;
+            CheckGeneratedPaths();
+        }
+
+        protected virtual void CheckGeneratedPaths()
+        {
+            if (pathsToEnemies == null)
+            {
+                _gameArea.GeneratePathsToAllEnemies(_pawnController, OnPathsToEnemiesGenerated);
+                return;
+            }
+
+            if (pathsToTiles == null)
+            {
+                _gameArea.GeneratePathsToReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnPathReachableTilesGenerated);
+                return;
+            }
+
+            areAllPathsGenerated = true;
+        }
+
         #endregion
         
         #region Callbacks
 
-        protected virtual void OnGetReachableTiles(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
+        protected virtual void OnPathReachableTilesGenerated(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
         {
-            _pathsToTiles = pathsToTiles;
+            this.pathsToTiles = pathsToTiles;
+            CheckGeneratedPaths();
         }
 
-        private void OnPathsToAllPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
+        private void OnPathsToEnemiesGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToEnemies)
         {
-            _pathsToPawns = pathsToPawns;
-            ProcessPostOrder();
+            this.pathsToEnemies = pathsToEnemies;
+            CheckGeneratedPaths();
         }
 
         private void OnDeath()
