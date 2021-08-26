@@ -1,9 +1,19 @@
 
+using System;
+
 namespace Gameplay.Controls.Orders
 {
     public abstract class OrderBase
     {
-        public OrderBase(OrderArgsBase args) { }
+        private OrderArgsBase _args;
+
+        protected OrderBase(OrderArgsBase args) { _args = args; }
+        
         public abstract void StartOrder();
+
+        public void AddOnCompleteCallback(Action<CompleteOrderArgsBase> onCompletedCallback)
+        {
+            _args.AddOnCompleteCallback(onCompletedCallback);
+        }
     }
 }

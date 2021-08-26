@@ -42,7 +42,7 @@ namespace Gameplay.Controls.Orders
             _onCompletedCallback += onCompletedCallback;
             return this;
         }
-        
+
         public OrderArgsBase AddUsedActionPointsCallback(Action<int> onUsedActionPointsCallback)
         {
             _onUsedActionPointsCallback = onUsedActionPointsCallback;

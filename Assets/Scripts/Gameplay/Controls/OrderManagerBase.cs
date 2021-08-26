@@ -137,9 +137,9 @@ namespace Gameplay.Controls
             var args = new OrderArgsMove(_pawnController, _gameArea);
             args.SetToTile(toTile)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetPathsToTiles(pathsToTiles)
                 .AddUsedMovePointsCallback(UseMovePoints)
-                .AddOnCompleteCallback(OnOrderMoveCompleted)
-                .SetPathsToTiles(pathsToTiles);
+                .AddOnCompleteCallback(OnOrderMoveCompleted);
             
             _order = new OrderMove(args);
             _order.StartOrder();
@@ -147,15 +147,28 @@ namespace Gameplay.Controls
 
         protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
         {
-            var args = new OrderArgsAttack(_pawnController, _gameArea);
-            args.SetEnemy(damageable)
+            var pathToEnemy = pathsToEnemies.First(enemy => enemy.Key == (PawnController) damageable).Value;
+            var argsMove = new OrderArgsMove(_pawnController, _gameArea);
+            argsMove.SetToTile(pathToEnemy[pathToEnemy.Count - 2].Item2)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
-                .SetMoveIfTargetFar(moveIfTargetFar)
-                .AddOnCompleteCallback(OnOrderAttackCompleted)
+                .SetMoveAsFarAsCan(moveIfTargetFar)
+                .SetPathsToTiles(pathsToTiles)
+                .AddUsedMovePointsCallback(UseMovePoints)
+                .AddOnCompleteCallback(OnOrderMoveCompleted);
+            var orderMove = new OrderMove(argsMove);
+
+            var argsAttack = new OrderArgsAttack(_pawnController, _gameArea);
+            argsAttack.SetEnemy(damageable)
                 .AddUsedMovePointsCallback(UseMovePoints)
                 .AddUsedActionPointsCallback(UseActionPoints);
+            var orderAttack = new OrderAttack(argsAttack);
+            
+            var argsComplex = new OrderArgsComplex(_pawnController, _gameArea);
+            argsComplex.AddOrder(orderMove)
+                .AddOrder(orderAttack)
+                .AddOnCompleteCallback(OnOrderAttackCompleted);
+            _order = new OrderComplex(argsComplex);
 
-            _order = new OrderAttack(args);
             _order.StartOrder();
         }
 

@@ -11,11 +11,13 @@ namespace Gameplay.Controls.Orders
         private Vector3 _from;
         private Vector3 _to;
         private int _maxSteps;
+        private bool _moveAsFarAsCan;
 
         public GameAreaTile ToTile => _toTile;
         public Vector3 From => _from;
         public Vector3 To => _to;
         public int MaxSteps => _maxSteps;
+        public bool MoveAsFarAsCan => _moveAsFarAsCan;
 
 
         public OrderArgsMove(PawnController pawnController, GameArea gameArea) : base(pawnController, gameArea) { }
@@ -41,6 +43,12 @@ namespace Gameplay.Controls.Orders
         public OrderArgsMove SetMaxSteps(int maxSteps)
         {
             _maxSteps = maxSteps;
+            return this;
+        }
+        
+        public OrderArgsMove SetMoveAsFarAsCan(bool value)
+        {
+            _moveAsFarAsCan = value;
             return this;
         }
     }
