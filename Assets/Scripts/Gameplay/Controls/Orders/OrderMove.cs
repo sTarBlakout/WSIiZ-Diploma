@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
+using Gameplay.Сharacters;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders
@@ -16,20 +17,8 @@ namespace Gameplay.Controls.Orders
         public override void StartOrder()
         {
             completeArgs = new CompleteOrderArgsMove();
-
-            if (args.ToTile == null)
-            {
-                if (args.GameArea.IsTileBlocked(args.To))
-                {
-                    completeArgs.Result = OrderResult.Fail;
-                    completeArgs.FailReason = OrderFailReason.BlockedArea;
-                    args.OnCompleted?.Invoke(completeArgs);
-                    return;
-                }
-
-                args.GameArea.GeneratePathToPosition(args.From, args.To, OnPathGenerated);
-            }
-            else
+            
+            if (args.ToTile != null)
             {
                 if (args.GameArea.IsTileBlocked(args.ToTile.NavPosition))
                 {
@@ -49,6 +38,40 @@ namespace Gameplay.Controls.Orders
                 }
                 
                 TraversePath(pathTiles.Select(pathTile => pathTile.Item1).ToList());
+            }
+            else if (args.ToPawn != null)
+            {
+                var pathToPawn = args.PathsToPawns.First(pawn => pawn.Key == args.ToPawn).Value;
+                pathToPawn.RemoveAt(pathToPawn.Count - 1);
+                
+                if (pathToPawn.Count > args.MaxSteps)
+                {
+                    if (args.MoveAsFarAsCan)
+                    {
+                        pathToPawn = pathToPawn.Take(args.MaxSteps).ToList();
+                    }
+                    else
+                    {
+                        completeArgs.Result = OrderResult.Fail;
+                        completeArgs.FailReason = OrderFailReason.TooFar;
+                        args.OnCompleted?.Invoke(completeArgs);
+                        return;
+                    }
+                }
+                
+                TraversePath(pathToPawn.Select(pathTile => pathTile.Item1).ToList());
+            }
+            else
+            {
+                if (args.GameArea.IsTileBlocked(args.To))
+                {
+                    completeArgs.Result = OrderResult.Fail;
+                    completeArgs.FailReason = OrderFailReason.BlockedArea;
+                    args.OnCompleted?.Invoke(completeArgs);
+                    return;
+                }
+
+                args.GameArea.GeneratePathToPosition(args.PawnController.transform.position, args.To, OnPathGenerated);
             }
         }
         

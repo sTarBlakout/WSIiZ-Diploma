@@ -169,20 +169,19 @@ public class GameArea : MonoBehaviour
         onGeneratedPath(vectorPath);
     }
 
-    public void GeneratePathsToAllEnemies(PawnController fromPawn, Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
-        _waitPathCor = StartCoroutine(GeneratePathsToAllEnemiesCor(fromPawn, onGeneratedPaths));
+        _waitPathCor = StartCoroutine(GeneratePathsToPawnsCor(fromPawn, onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathsToAllEnemiesCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
     {
         var pathsToPawns = new Dictionary<PawnController, List<(Vector3, GameAreaTile)>>();
         foreach (var pawn in pawns)
         {
             if (fromPawn == pawn) continue;
-            if (!fromPawn.IsEnemyFor(pawn)) continue;
-            
+
             var toPos = pawn.transform.position;
             var fromPos = fromPawn.Position;
             var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
@@ -196,7 +195,7 @@ public class GameArea : MonoBehaviour
             var pathPointsList = _path.GetPathPointList();
             var realWorldPath = new List<(Vector3, GameAreaTile)>();
             for (int i = 0; i < pathPointsList.Count; i++) 
-                realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
+                realWorldPath.Add((_path.GetPathPointWorld(i), tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
             pathsToPawns.Add(pawn, realWorldPath);
         }
         onGeneratedPaths?.Invoke(pathsToPawns);

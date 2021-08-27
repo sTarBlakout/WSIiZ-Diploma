@@ -17,8 +17,10 @@ namespace Gameplay.Controls.Orders
         private Action<int> _onUsedMovePointsCallback;
         
         private Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> _pathsToTiles;
+        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> _pathsToPawns;
 
         public Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> PathsToTiles => _pathsToTiles;
+        public Dictionary<PawnController, List<(Vector3, GameAreaTile)>> PathsToPawns => _pathsToPawns;
         public PawnController PawnController => _pawnController;
         public GameArea GameArea => _gameArea;
         public Action<CompleteOrderArgsBase> OnCompleted => _onCompletedCallback;
@@ -33,7 +35,13 @@ namespace Gameplay.Controls.Orders
         
         public OrderArgsBase SetPathsToTiles(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
         {
-            _pathsToTiles = pathsToTiles;
+            _pathsToTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>(pathsToTiles);
+            return this;
+        }
+        
+        public OrderArgsBase SetPathsToPawns(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
+        {
+            _pathsToPawns = new Dictionary<PawnController, List<(Vector3, GameAreaTile)>>(pathsToPawns);
             return this;
         }
 

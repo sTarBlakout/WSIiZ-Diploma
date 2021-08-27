@@ -1,4 +1,5 @@
 using System;
+using Gameplay.Core;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders
@@ -19,7 +20,7 @@ namespace Gameplay.Controls.Orders
         private void StartNextOrder(CompleteOrderArgsBase prevOrderCompleteArgs)
         {
             var nextOrder = args.GetNextOrder();
-            if (nextOrder == null)
+            if (nextOrder == null || prevOrderCompleteArgs is { Result: OrderResult.Fail })
             {
                 args.OnCompleted?.Invoke(completeArgs);
                 return;

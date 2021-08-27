@@ -19,7 +19,7 @@ namespace Gameplay.Controls
         protected GameArea _gameArea;
 
         protected bool areAllPathsGenerated;
-        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToEnemies;
+        protected Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns;
         protected Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles;
 
         public Action<bool> OnTakingTurn;
@@ -72,7 +72,7 @@ namespace Gameplay.Controls
         
         protected bool CanReachAnyEnemy()
         {
-            foreach (var pawnPath in pathsToEnemies)
+            foreach (var pawnPath in pathsToPawns)
             {
                 if (!_pawnController.IsEnemyFor(pawnPath.Key) || !pawnPath.Key.IsAlive()) continue;
                 if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
@@ -119,11 +119,10 @@ namespace Gameplay.Controls
         protected IInteractable _interactable;
         protected IDamageable _damageable;
 
-        protected void StartOrderMove(Vector3 from, Vector3 to)
+        protected void StartOrderMove(Vector3 toPos)
         {
             var args = new OrderArgsMove(_pawnController, _gameArea);
-            args.SetToPos(to)
-                .SetFromPos(from)
+            args.SetToPos(toPos)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
                 .AddUsedMovePointsCallback(UseMovePoints)
                 .AddOnCompleteCallback(OnOrderMoveCompleted);
@@ -147,20 +146,16 @@ namespace Gameplay.Controls
 
         protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
         {
-            var pathToEnemy = pathsToEnemies.First(enemy => enemy.Key == (PawnController) damageable).Value;
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
-            argsMove.SetToTile(pathToEnemy[pathToEnemy.Count - 2].Item2)
+            argsMove.SetToPawn((PawnController) damageable)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
                 .SetMoveAsFarAsCan(moveIfTargetFar)
-                .SetPathsToTiles(pathsToTiles)
-                .AddUsedMovePointsCallback(UseMovePoints)
-                .AddOnCompleteCallback(OnOrderMoveCompleted);
+                .SetPathsToPawns(pathsToPawns)
+                .AddUsedMovePointsCallback(UseMovePoints);
             var orderMove = new OrderMove(argsMove);
 
             var argsAttack = new OrderArgsAttack(_pawnController, _gameArea);
-            argsAttack.SetEnemy(damageable)
-                .AddUsedMovePointsCallback(UseMovePoints)
-                .AddUsedActionPointsCallback(UseActionPoints);
+            argsAttack.SetEnemy(damageable).AddUsedActionPointsCallback(UseActionPoints);
             var orderAttack = new OrderAttack(argsAttack);
             
             var argsComplex = new OrderArgsComplex(_pawnController, _gameArea);
@@ -192,16 +187,16 @@ namespace Gameplay.Controls
         protected virtual void GeneratePaths()
         {
             areAllPathsGenerated = false;
-            pathsToEnemies = null;
+            pathsToPawns = null;
             pathsToTiles = null;
             CheckGeneratedPaths();
         }
 
         protected virtual void CheckGeneratedPaths()
         {
-            if (pathsToEnemies == null)
+            if (pathsToPawns == null)
             {
-                _gameArea.GeneratePathsToAllEnemies(_pawnController, OnPathsToEnemiesGenerated);
+                _gameArea.GeneratePathsToPawns(_pawnController, OnPathsToPawnsGenerated);
                 return;
             }
 
@@ -224,9 +219,9 @@ namespace Gameplay.Controls
             CheckGeneratedPaths();
         }
 
-        private void OnPathsToEnemiesGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToEnemies)
+        private void OnPathsToPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
         {
-            this.pathsToEnemies = pathsToEnemies;
+            this.pathsToPawns = pathsToPawns;
             CheckGeneratedPaths();
         }
 

@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Gameplay.Core;
 using Gameplay.Сharacters;
+using UnityEngine;
 
 namespace Gameplay.Controls
 {
@@ -10,11 +12,12 @@ namespace Gameplay.Controls
         public override void StartTurn()
         {
             base.StartTurn();
-            ProcessTurn();
+            StartCoroutine(ProcessTurn());
         }
 
-        private void ProcessTurn()
+        private IEnumerator ProcessTurn()
         {
+            yield return new WaitUntil(() => areAllPathsGenerated);
             _damageable ??= GameManager.Instance.PlayerPawn;
             StartOrderAttack(_damageable, true);
         }

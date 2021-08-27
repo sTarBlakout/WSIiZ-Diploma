@@ -15,7 +15,7 @@ namespace Gameplay.Controls.Orders
 
         public OrderBase GetNextOrder()
         {
-            if (_orders.Count == _currentOrderIndex) return null;
+            if (_orders.Count == _currentOrderIndex + 1) return null;
             _currentOrderIndex++;
             return _orders[_currentOrderIndex];
         }
