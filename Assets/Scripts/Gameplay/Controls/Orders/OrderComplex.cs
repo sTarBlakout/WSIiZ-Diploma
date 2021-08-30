@@ -20,7 +20,7 @@ namespace Gameplay.Controls.Orders
         private void StartNextOrder(CompleteOrderArgsBase prevOrderCompleteArgs)
         {
             var nextOrder = args.GetNextOrder();
-            if (nextOrder == null || prevOrderCompleteArgs is { Result: OrderResult.Fail })
+            if (nextOrder == null || prevOrderCompleteArgs != null && prevOrderCompleteArgs.Result != OrderResult.Succes)
             {
                 args.OnCompleted?.Invoke(completeArgs);
                 return;

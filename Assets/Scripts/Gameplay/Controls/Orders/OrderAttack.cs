@@ -1,4 +1,5 @@
 using Gameplay.Core;
+using UnityEngine;
 
 namespace Gameplay.Controls.Orders
 {
@@ -33,6 +34,7 @@ namespace Gameplay.Controls.Orders
 
         private void OnRotated()
         {
+            args.OnUsedActionPointsCallback?.Invoke(1);
             args.PawnController.AttackTarget(args.Damageable, OnAttacked);
         }
 

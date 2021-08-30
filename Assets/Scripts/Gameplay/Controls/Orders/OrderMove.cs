@@ -14,6 +14,8 @@ namespace Gameplay.Controls.Orders
 
         public OrderMove(OrderArgsBase args) : base(args) { this.args = (OrderArgsMove) args; }
 
+        private bool _isFullRoute = true;
+
         public override void StartOrder()
         {
             completeArgs = new CompleteOrderArgsMove();
@@ -37,29 +39,13 @@ namespace Gameplay.Controls.Orders
                     return;
                 }
                 
-                TraversePath(pathTiles.Select(pathTile => pathTile.Item1).ToList());
+                TryTraversePath(pathTiles.Select(pathTile => pathTile.Item1).ToList());
             }
             else if (args.ToPawn != null)
             {
                 var pathToPawn = args.PathsToPawns.First(pawn => pawn.Key == args.ToPawn).Value;
                 pathToPawn.RemoveAt(pathToPawn.Count - 1);
-                
-                if (pathToPawn.Count > args.MaxSteps)
-                {
-                    if (args.MoveAsFarAsCan)
-                    {
-                        pathToPawn = pathToPawn.Take(args.MaxSteps).ToList();
-                    }
-                    else
-                    {
-                        completeArgs.Result = OrderResult.Fail;
-                        completeArgs.FailReason = OrderFailReason.TooFar;
-                        args.OnCompleted?.Invoke(completeArgs);
-                        return;
-                    }
-                }
-                
-                TraversePath(pathToPawn.Select(pathTile => pathTile.Item1).ToList());
+                TryTraversePath(pathToPawn.Select(pathTile => pathTile.Item1).ToList());
             }
             else
             {
@@ -74,16 +60,25 @@ namespace Gameplay.Controls.Orders
                 args.GameArea.GeneratePathToPosition(args.PawnController.transform.position, args.To, OnPathGenerated);
             }
         }
-        
-        protected void OnPathGenerated(List<Vector3> path)
+
+        protected void TryTraversePath(List<Vector3> path)
         {
             if (path.Count - 1 > args.MaxSteps)
             {
-                completeArgs.Result = OrderResult.Fail;
-                completeArgs.FailReason = OrderFailReason.TooFar;
-                args.OnCompleted?.Invoke(completeArgs);
-                return;
+                if (args.MoveAsFarAsCan)
+                {
+                    _isFullRoute = false;
+                    path = path.Take(args.MaxSteps + 1).ToList();
+                }
+                else
+                {
+                    completeArgs.Result = OrderResult.Fail;
+                    completeArgs.FailReason = OrderFailReason.TooFar;
+                    args.OnCompleted?.Invoke(completeArgs);
+                    return;
+                }
             }
+            
             TraversePath(path);
         }
 
@@ -95,9 +90,21 @@ namespace Gameplay.Controls.Orders
             args.PawnController.MovePath(path, OnReachedDestination);
         }
         
+        protected void OnPathGenerated(List<Vector3> path)
+        {
+            if (path.Count - 1 > args.MaxSteps)
+            {
+                completeArgs.Result = OrderResult.Fail;
+                completeArgs.FailReason = OrderFailReason.TooFar;
+                args.OnCompleted?.Invoke(completeArgs);
+                return;
+            }
+            TryTraversePath(path);
+        }
+        
         private void OnReachedDestination()
         {
-            completeArgs.Result = OrderResult.Succes;
+            completeArgs.Result = _isFullRoute ? OrderResult.Succes : OrderResult.HalfSucces;
             args.OnCompleted?.Invoke(completeArgs);
         }
     }
