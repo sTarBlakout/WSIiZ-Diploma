@@ -58,5 +58,15 @@ namespace Gameplay.Core
         {
             return _player.IsAlive();
         }
+
+        #region Uitilities
+
+        public void PlayParticle(ParticleSystem particle, bool activate)
+        {
+            if (activate) particle.Play();
+            else particle.Stop();
+        }
+
+        #endregion
     }
 }

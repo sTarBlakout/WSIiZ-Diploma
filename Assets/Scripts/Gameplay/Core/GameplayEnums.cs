@@ -1,5 +1,10 @@
 namespace Gameplay.Core
 {
+    public enum TileParticleType
+    {
+        Reachable
+    }
+    
     public enum OrderResult
     {
         NotDetermined,

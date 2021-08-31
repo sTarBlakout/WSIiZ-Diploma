@@ -36,7 +36,7 @@ public class GameArea : MonoBehaviour
     private Coroutine _waitPathCor;
     private Path _path;
     private bool _isInit;
-    
+
     #endregion
 
     #region Unity Events
@@ -239,5 +239,14 @@ public class GameArea : MonoBehaviour
         onGeneratedPaths?.Invoke(reachableTiles);
     }
     
+    #endregion
+
+    #region Visuals
+
+    public void HighlightReachableTiles(List<GameAreaTile> tilesList, bool highlight)
+    {
+        foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.Reachable, highlight);
+    }
+
     #endregion
 }

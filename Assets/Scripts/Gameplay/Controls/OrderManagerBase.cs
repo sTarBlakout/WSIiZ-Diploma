@@ -219,7 +219,7 @@ namespace Gameplay.Controls
             CheckGeneratedPaths();
         }
 
-        private void OnPathsToPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
+        protected virtual void OnPathsToPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
         {
             this.pathsToPawns = pathsToPawns;
             CheckGeneratedPaths();
