@@ -2,7 +2,8 @@ namespace Gameplay.Core
 {
     public enum TileParticleType
     {
-        Reachable
+        ReachableTile,
+        ReachableEnemy
     }
     
     public enum OrderResult

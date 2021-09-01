@@ -7,6 +7,7 @@ using Gameplay.Environment;
 using Gameplay.Interfaces;
 using Gameplay.Сharacters;
 using SimplePF2D;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -110,7 +111,8 @@ public class GameArea : MonoBehaviour
             if (sprite != null)
             {
                 var place = tilemap.CellToWorld(pos);
-                var cell = Instantiate(cellPrefab, place, Quaternion.identity);
+                var cell = (GameObject) PrefabUtility.InstantiatePrefab(cellPrefab);
+                cell.transform.position = place;
                 cell.transform.parent = cellsContainer;
             }
         }
@@ -239,14 +241,5 @@ public class GameArea : MonoBehaviour
         onGeneratedPaths?.Invoke(reachableTiles);
     }
     
-    #endregion
-
-    #region Visuals
-
-    public void HighlightReachableTiles(List<GameAreaTile> tilesList, bool highlight)
-    {
-        foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.Reachable, highlight);
-    }
-
     #endregion
 }

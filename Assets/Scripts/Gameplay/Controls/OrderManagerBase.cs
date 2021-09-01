@@ -206,12 +206,17 @@ namespace Gameplay.Controls
                 return;
             }
 
-            areAllPathsGenerated = true;
+            OnAllPathsGenerated();
         }
 
         #endregion
         
         #region Callbacks
+
+        protected virtual void OnAllPathsGenerated()
+        {
+            areAllPathsGenerated = true;
+        }
 
         protected virtual void OnPathReachableTilesGenerated(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
         {

@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
@@ -30,7 +30,8 @@ namespace Gameplay.Controls
             var tile = hitInfo.collider.transform.parent.GetComponent<GameAreaTile>();
             if (tile != null)
             {
-                _gameArea.HighlightReachableTiles(new List<GameAreaTile>(pathsToTiles.Keys), false);
+                HighlightReachableTiles(false);
+                HighlightEnemyTiles(false);
                 StartOrderMove(tile);
                 return;
             }
@@ -40,21 +41,32 @@ namespace Gameplay.Controls
             
             if (_interactable is IDamageable damageable)
             {
-                _gameArea.HighlightReachableTiles(new List<GameAreaTile>(pathsToTiles.Keys), false);
+                HighlightReachableTiles(false);
+                HighlightEnemyTiles(false);
                 StartOrderAttack(damageable, false);
                 return;
             }
         }
 
-        protected override void OnPathReachableTilesGenerated(Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>> pathsToTiles)
+        private void HighlightReachableTiles(bool highlight)
         {
-            base.OnPathReachableTilesGenerated(pathsToTiles);
-            _gameArea.HighlightReachableTiles(new List<GameAreaTile>(pathsToTiles.Keys), true);
+            var tilesList = new List<GameAreaTile>(pathsToTiles.Keys);
+            foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableTile, highlight);
+        }
+        
+        private void HighlightEnemyTiles(bool highlight)
+        {
+            var pathsToEnemies = pathsToPawns.Where(pawnPath => 
+                pawnPath.Key.IsEnemyFor(_pawnController) && pawnPath.Value.Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn && pawnPath.Key.IsAlive());
+            var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1].Item2).ToList();
+            foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
 
-        protected override void OnPathsToPawnsGenerated(Dictionary<PawnController, List<(Vector3, GameAreaTile)>> pathsToPawns)
+        protected override void OnAllPathsGenerated()
         {
-            base.OnPathsToPawnsGenerated(pathsToPawns);
+            base.OnAllPathsGenerated();
+            HighlightReachableTiles(true);
+            HighlightEnemyTiles(true);
         }
 
         protected override bool CanDoActions() { return true; }
