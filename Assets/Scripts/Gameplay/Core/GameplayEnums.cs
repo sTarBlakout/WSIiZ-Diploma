@@ -1,5 +1,11 @@
 namespace Gameplay.Core
 {
+    public enum OrderType
+    {
+        Attack,
+        Move
+    }
+    
     public enum TileParticleType
     {
         ReachableTile,

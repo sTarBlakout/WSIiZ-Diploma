@@ -15,4 +15,7 @@ MonoBehaviour:
   CategoryName: GameArena
   DatabaseType: 0
   Names:
+  - CancelOrder
   - EndTurn
+  - MoveOrder
+  - Ok

@@ -15,4 +15,5 @@ MonoBehaviour:
   CategoryName: GameArena
   DatabaseType: 2
   Names:
+  - ClickedTile
   - PlayerTurn
