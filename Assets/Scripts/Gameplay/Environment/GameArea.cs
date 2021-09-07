@@ -171,15 +171,15 @@ public class GameArea : MonoBehaviour
         onGeneratedPath(vectorPath);
     }
 
-    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<PawnController, List<GameAreaTile>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
         _waitPathCor = StartCoroutine(GeneratePathsToPawnsCor(fromPawn, onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<GameAreaTile>>> onGeneratedPaths)
     {
-        var pathsToPawns = new Dictionary<PawnController, List<(Vector3, GameAreaTile)>>();
+        var pathsToPawns = new Dictionary<PawnController, List<GameAreaTile>>();
         foreach (var pawn in pawns)
         {
             if (fromPawn == pawn) continue;
@@ -195,23 +195,21 @@ public class GameArea : MonoBehaviour
             BlockTileAtPos(toPos, isFromToBlocked.Item2);
             
             var pathPointsList = _path.GetPathPointList();
-            var realWorldPath = new List<(Vector3, GameAreaTile)>();
-            for (int i = 0; i < pathPointsList.Count; i++) 
-                realWorldPath.Add((_path.GetPathPointWorld(i), tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
+            var realWorldPath = pathPointsList.Select(pathPoint => tiles.First(thisTile => thisTile.NavPos == pathPoint)).ToList();
             pathsToPawns.Add(pawn, realWorldPath);
         }
         onGeneratedPaths?.Invoke(pathsToPawns);
     }
 
-    public void GeneratePathsToReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    public void GeneratePathsToReachableTiles(Vector3 fromPos, int distance, Action<Dictionary<GameAreaTile, List<GameAreaTile>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
         _waitPathCor = StartCoroutine(GeneratePathToReachableTilesCor(fromPos, distance, GetTilesByDistance(fromPos, distance), onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathToReachableTilesCor(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>> onGeneratedPaths)
+    private IEnumerator GeneratePathToReachableTilesCor(Vector3 fromPos, int distance, List<GameAreaTile> tiles, Action<Dictionary<GameAreaTile, List<GameAreaTile>>> onGeneratedPaths)
     {
-        var reachableTiles = new Dictionary<GameAreaTile, List<(Vector3, GameAreaTile)>>();
+        var reachableTiles = new Dictionary<GameAreaTile, List<GameAreaTile>>();
         foreach (var tile in tiles)
         {
             var toPos = tile.transform.position;
@@ -228,10 +226,8 @@ public class GameArea : MonoBehaviour
             {
                 foreach (var point in pathPointsList)
                 {
-                    if (tile.NavPosition != point) continue;
-                    var realWorldPath = new List<(Vector3, GameAreaTile)>();
-                    for (int i = 0; i < pathPointsList.Count; i++) 
-                        realWorldPath.Add((_path.GetPathPointWorld(i), this.tiles.First(thisTile => thisTile.NavPosition == pathPointsList[i])));
+                    if (tile.NavPos != point) continue;
+                    var realWorldPath = pathPointsList.Select(pathPoint => this.tiles.First(thisTile => thisTile.NavPos == pathPoint)).ToList();
                     reachableTiles.Add(tile, realWorldPath);
                     break;
                 }

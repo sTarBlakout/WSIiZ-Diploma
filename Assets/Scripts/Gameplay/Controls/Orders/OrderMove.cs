@@ -22,7 +22,7 @@ namespace Gameplay.Controls.Orders
             
             if (args.ToTile != null)
             {
-                if (args.GameArea.IsTileBlocked(args.ToTile.NavPosition))
+                if (args.GameArea.IsTileBlocked(args.ToTile.NavPos))
                 {
                     completeArgs.Result = OrderResult.Fail;
                     completeArgs.FailReason = OrderFailReason.BlockedArea;
@@ -39,13 +39,13 @@ namespace Gameplay.Controls.Orders
                     return;
                 }
                 
-                TryTraversePath(pathTiles.Select(pathTile => pathTile.Item1).ToList());
+                TryTraversePath(pathTiles.Select(pathTile => pathTile.WorldPos).ToList());
             }
             else if (args.ToPawn != null)
             {
                 var pathToPawn = args.PathsToPawns.First(pawn => pawn.Key == args.ToPawn).Value;
                 pathToPawn.RemoveAt(pathToPawn.Count - 1);
-                TryTraversePath(pathToPawn.Select(pathTile => pathTile.Item1).ToList());
+                TryTraversePath(pathToPawn.Select(pathTile => pathTile.WorldPos).ToList());
             }
             else
             {

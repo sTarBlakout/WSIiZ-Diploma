@@ -109,7 +109,7 @@ namespace Gameplay.Controls
         {
             var pathsToEnemies = pathsToPawns.Where(pawnPath => 
                 pawnPath.Key.IsEnemyFor(_pawnController) && pawnPath.Value.Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn && pawnPath.Key.IsAlive());
-            var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1].Item2).ToList();
+            var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
 

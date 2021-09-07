@@ -9,11 +9,12 @@ namespace Gameplay.Environment
         [SerializeField] private ParticleSystem reachableTileParticle;
         [SerializeField] private ParticleSystem reachableEnemyParticle;
         
-        public Vector3Int NavPosition { get; private set; }
+        public Vector3Int NavPos { get; private set; }
+        public Vector3 WorldPos => transform.position;
 
         public GameAreaTile SetNavPosition(Vector3Int position)
         {
-            NavPosition = position;
+            NavPos = position;
             return this;
         }
         
