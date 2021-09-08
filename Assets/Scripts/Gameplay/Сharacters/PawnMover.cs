@@ -15,7 +15,7 @@ namespace Gameplay.Сharacters
         private bool _waitedAfterRotate;
         private bool _waitedAfterMove;
         
-        private List<(Vector3 pos, bool rot)> _vectorPath;
+        private List<Vector3> _vectorPath;
         private PawnAnimator _pawnAnimator;
         private Vector3 _rotateToPos;
 
@@ -46,36 +46,8 @@ namespace Gameplay.Сharacters
         public void MovePath(List<Vector3> path, Action onReachedDestination)
         {
             _onReachedDestination = onReachedDestination;
-            _vectorPath = TraversePath(path);
+            _vectorPath = path;
             TargetNextPoint();
-        }
-
-        private List<(Vector3 pos, bool rot)> TraversePath(List<Vector3> path)
-        {
-            var rez = new List<(Vector3 pos, bool rot)>();
-
-            var traverser = new GameObject("Traverser");
-            traverser.transform.position = transform.position;
-            traverser.transform.rotation = transform.rotation;
-            
-            foreach (var point in path)
-            {
-                (Vector3 pos, bool rot) posRot = (point, false);
-                if (Vector3.Angle(traverser.transform.forward, point - traverser.transform.position) > 5f)
-                {
-                    rez[rez.Count - 1] = (rez[rez.Count - 1].pos, true);
-                    traverser.transform.LookAt(point);
-                }
-            
-                traverser.transform.position = point;
-                rez.Add(posRot);
-            }
-            
-            rez[rez.Count - 1] = (rez[rez.Count - 1].pos, true);
-            rez.RemoveAll(posRot => !posRot.rot);
-            Destroy(traverser);
-            
-            return rez;
         }
 
         private void ProcessRotation()
@@ -100,14 +72,14 @@ namespace Gameplay.Сharacters
 
             if (_vectorPath.Count != 0)
             {
-                if (Rotate(_vectorPath[0].pos)) return;
+                if (Rotate(_vectorPath[0])) return;
                 if (!_waitedAfterRotate)
                 {
                     InitWaiting(_pawnData.WaitAfterRotate, () => _waitedAfterRotate = true);
                     return;
                 }
                 
-                if (Move(_vectorPath[0].pos)) return;
+                if (Move(_vectorPath[0])) return;
                 if (!_waitedAfterMove)
                 {
                     InitWaiting(_pawnData.WaitAfterMove,  () => _waitedAfterMove = true);

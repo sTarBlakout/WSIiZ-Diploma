@@ -121,6 +121,12 @@ public class GameArea : MonoBehaviour
     #endregion
 
     #region Utilities
+    
+    public void BlockTile(GameAreaTile tile, bool block)
+    {
+        var node = pathFinding.GetNode(tile.NavPos);
+        node.SetBlocked(block);
+    }
 
     public void BlockTileAtPos(Vector3 worldPos, bool block)
     {
@@ -146,12 +152,40 @@ public class GameArea : MonoBehaviour
             .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>())
             .ToList();
     }
+    
+    public List<GameAreaTile> OptimizePathForPawn(List<GameAreaTile> path, Transform pawn)
+    {
+        var rez = new List<(GameAreaTile tile, bool rot)>();
+
+        var traverser = new GameObject("Traverser");
+        traverser.transform.position = pawn.position;
+        traverser.transform.rotation = pawn.rotation;
+            
+        foreach (var point in path)
+        {
+            var posRot = (point, false);
+            if (Vector3.Angle(traverser.transform.forward, point.WorldPos - traverser.transform.position) > 5f)
+            {
+                rez[rez.Count - 1] = (rez[rez.Count - 1].tile, true);
+                traverser.transform.LookAt(point.WorldPos);
+            }
+            
+            traverser.transform.position = point.WorldPos;
+            rez.Add(posRot);
+        }
+            
+        rez[rez.Count - 1] = (rez[rez.Count - 1].tile, true);
+        rez.RemoveAll(posRot => !posRot.rot);
+        Destroy(traverser);
+            
+        return rez.Select(tuple => tuple.tile).ToList();
+    }
 
     #endregion
 
     #region Generating Paths
     
-    public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<Vector3>> onGeneratedPath)
+    public void GeneratePathToPosition(Vector3 fromPos, Vector3 toPos, Action<List<GameAreaTile>> onGeneratedPath)
     {
         var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
         BlockTileAtPos(fromPos, false);
@@ -161,14 +195,14 @@ public class GameArea : MonoBehaviour
         _waitPathCor = StartCoroutine(GeneratePathToPositionCor(fromPos, toPos, isFromToBlocked, onGeneratedPath));
     }
 
-    private IEnumerator GeneratePathToPositionCor(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<Vector3>> onGeneratedPath)
+    private IEnumerator GeneratePathToPositionCor(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<GameAreaTile>> onGeneratedPath)
     {
         yield return new WaitUntil(() => _path.IsGenerated());
         BlockTileAtPos(fromPos, isFromToBlocked.Item1);
         BlockTileAtPos(toPos, isFromToBlocked.Item2);
-        var vectorPath = new List<Vector3>();
-        for (int i = 0; i < _path.GetPathPointList().Count; i++) vectorPath.Add(_path.GetPathPointWorld(i));
-        onGeneratedPath(vectorPath);
+        var tilePath = new List<GameAreaTile>();
+        for (int i = 0; i < _path.GetPathPointList().Count; i++) tilePath.Add(tiles.First(tile => tile.WorldPos == _path.GetPathPointWorld(i)));
+        onGeneratedPath(tilePath);
     }
 
     public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<PawnController, List<GameAreaTile>>> onGeneratedPaths)

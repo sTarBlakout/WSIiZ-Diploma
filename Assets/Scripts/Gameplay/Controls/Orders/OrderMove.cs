@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
+using Gameplay.Environment;
 using Gameplay.Сharacters;
 using UnityEngine;
 
@@ -39,13 +40,13 @@ namespace Gameplay.Controls.Orders
                     return;
                 }
                 
-                TryTraversePath(pathTiles.Select(pathTile => pathTile.WorldPos).ToList());
+                TryTraversePath(pathTiles);
             }
             else if (args.ToPawn != null)
             {
                 var pathToPawn = args.PathsToPawns.First(pawn => pawn.Key == args.ToPawn).Value;
                 pathToPawn.RemoveAt(pathToPawn.Count - 1);
-                TryTraversePath(pathToPawn.Select(pathTile => pathTile.WorldPos).ToList());
+                TryTraversePath(pathToPawn);
             }
             else
             {
@@ -61,7 +62,7 @@ namespace Gameplay.Controls.Orders
             }
         }
 
-        protected void TryTraversePath(List<Vector3> path)
+        protected void TryTraversePath(List<GameAreaTile> path)
         {
             if (path.Count - 1 > args.MaxSteps)
             {
@@ -82,15 +83,16 @@ namespace Gameplay.Controls.Orders
             TraversePath(path);
         }
 
-        private void TraversePath(List<Vector3> path)
+        private void TraversePath(List<GameAreaTile> path)
         {
             args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
-            args.GameArea.BlockTileAtPos(path[0], false);
-            args.GameArea.BlockTileAtPos(path.Last(), true);
-            args.PawnController.MovePath(path, OnReachedDestination);
+            path = args.GameArea.OptimizePathForPawn(path, args.PawnController.transform);
+            args.GameArea.BlockTile(path[0], false);
+            args.GameArea.BlockTile(path.Last(), true);
+            args.PawnController.MovePath(path.Select(tile => tile.WorldPos).ToList(), OnReachedDestination);
         }
         
-        protected void OnPathGenerated(List<Vector3> path)
+        protected void OnPathGenerated(List<GameAreaTile> path)
         {
             if (path.Count - 1 > args.MaxSteps)
             {
