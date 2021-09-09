@@ -32,6 +32,11 @@ namespace Gameplay.Controls
             _pawnController.onDeath += OnDeath;
         }
 
+        private void Update()
+        {
+            _order?.Update();
+        }
+
         #endregion
 
         #region Turn Managment
@@ -118,6 +123,7 @@ namespace Gameplay.Controls
         protected OrderBase _order;
         protected IInteractable _interactable;
         protected IDamageable _damageable;
+        protected GameAreaWay _way;
 
         protected void StartOrderMove(Vector3 toPos)
         {
@@ -136,10 +142,11 @@ namespace Gameplay.Controls
             var args = new OrderArgsMove(_pawnController, _gameArea);
             args.SetToTile(toTile)
                 .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetWay(_way)
                 .SetPathsToTiles(pathsToTiles)
                 .AddUsedMovePointsCallback(UseMovePoints)
                 .AddOnCompleteCallback(OnOrderMoveCompleted);
-            
+
             _order = new OrderMove(args);
             _order.StartOrder();
         }

@@ -15,10 +15,11 @@ MonoBehaviour:
   teamId: 0
   level: 10
   actionsPerTurn: 2
+  distancePerTurn: 3
   rotationSpeed: 120
   movementSpeed: 1.8
   waitAfterRotate: 0.5
   waitAfterMove: 0.5
-  distancePerTurn: 3
   afterDamageDelay: 1
   attackDistance: 1
+  wayMoveLinePrefab: {fileID: 1512719256159936, guid: 66bd5cf96ce70d84d83c3e8f93f5b9d8, type: 3}

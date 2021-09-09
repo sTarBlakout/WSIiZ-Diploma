@@ -9,17 +9,25 @@ namespace Gameplay.Controls.Orders
     {
         private PawnController _toPawn;
         private GameAreaTile _toTile;
+        private GameAreaWay _way;
         private Vector3 _to;
         private int _maxSteps;
         private bool _moveAsFarAsCan;
 
         public PawnController ToPawn => _toPawn;
         public GameAreaTile ToTile => _toTile;
+        public GameAreaWay Way => _way;
         public Vector3 To => _to;
         public int MaxSteps => _maxSteps;
         public bool MoveAsFarAsCan => _moveAsFarAsCan;
         
         public OrderArgsMove(PawnController pawnController, GameArea gameArea) : base(pawnController, gameArea) { }
+        
+        public OrderArgsMove SetWay(GameAreaWay way)
+        {
+            _way = way;
+            return this;
+        }
         
         public OrderArgsMove SetToPawn(PawnController toPawn)
         {

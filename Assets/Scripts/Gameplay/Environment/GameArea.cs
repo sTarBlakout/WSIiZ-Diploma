@@ -181,6 +181,14 @@ public class GameArea : MonoBehaviour
         return rez.Select(tuple => tuple.tile).ToList();
     }
 
+    public GameAreaWay CreateWay()
+    {
+        var way = new GameObject("Way").AddComponent<GameAreaWay>();
+        way.transform.position = Vector3.zero;
+        way.transform.parent = pawnsContainer;
+        return way;
+    }
+
     #endregion
 
     #region Generating Paths

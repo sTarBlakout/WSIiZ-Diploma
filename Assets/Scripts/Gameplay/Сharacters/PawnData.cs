@@ -21,6 +21,9 @@ namespace Gameplay.Сharacters
         [SerializeField] private float afterDamageDelay;
         [SerializeField] private int attackDistance;
 
+        [Header("Prefabs")] 
+        [SerializeField] private GameObject wayMoveLinePrefab;
+
         #region General
 
         public int TeamId => teamId;
@@ -49,6 +52,12 @@ namespace Gameplay.Сharacters
         public float AfterDamageDelay => afterDamageDelay;
         public int AttackDistance => attackDistance;
         public int Damage => level;
+
+        #endregion
+
+        #region Prefabs
+
+        public GameObject WayMoveLinePrefab => wayMoveLinePrefab;
 
         #endregion
     }

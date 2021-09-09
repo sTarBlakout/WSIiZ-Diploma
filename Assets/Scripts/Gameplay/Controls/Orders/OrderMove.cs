@@ -86,7 +86,9 @@ namespace Gameplay.Controls.Orders
         private void TraversePath(List<GameAreaTile> path)
         {
             args.OnUsedMovePointsCallback?.Invoke(path.Count - 1);
-            path = args.GameArea.OptimizePathForPawn(path, args.PawnController.transform);
+
+            path = args.Way != null ? args.Way.Path : args.GameArea.OptimizePathForPawn(path, args.PawnController.transform);
+            
             args.GameArea.BlockTile(path[0], false);
             args.GameArea.BlockTile(path.Last(), true);
             args.PawnController.MovePath(path.Select(tile => tile.WorldPos).ToList(), OnReachedDestination);

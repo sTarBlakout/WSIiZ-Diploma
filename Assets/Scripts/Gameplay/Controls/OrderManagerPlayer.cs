@@ -63,6 +63,7 @@ namespace Gameplay.Controls
                 if (pathsToTiles.ContainsKey(tile))
                 {
                     selectedTile = tile;
+                    DrawWay(true);
                     OnTileClicked?.Invoke(tile);
                 }
                 return;
@@ -96,7 +97,24 @@ namespace Gameplay.Controls
 
         public void ResetOrder()
         {
+            DrawWay(false);
             selectedTile = null;
+        }
+
+        private void DrawWay(bool draw)
+        {
+            if (draw)
+            {
+                _way = _gameArea.CreateWay();
+                _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
+                    .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform))
+                    .SetFollowPawn(_pawnController.transform);
+            }
+            else
+            {
+                if (_way == null) return;
+                _way.DestroyWay();
+            }
         }
 
         private void HighlightReachableTiles(bool highlight)
