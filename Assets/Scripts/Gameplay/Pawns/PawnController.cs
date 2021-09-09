@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Gameplay.Interfaces;
 using UnityEngine;
 
-namespace Gameplay.Сharacters
+namespace Gameplay.Pawns
 {
     public class PawnController : MonoBehaviour, IDamageable
     {

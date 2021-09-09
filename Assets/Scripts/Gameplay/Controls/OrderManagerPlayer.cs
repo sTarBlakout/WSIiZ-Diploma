@@ -4,7 +4,6 @@ using System.Linq;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
-using Gameplay.Сharacters;
 using Lean.Touch;
 using UnityEngine;
 

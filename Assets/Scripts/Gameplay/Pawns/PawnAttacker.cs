@@ -2,7 +2,7 @@ using System;
 using Gameplay.Interfaces;
 using UnityEngine;
 
-namespace Gameplay.Сharacters
+namespace Gameplay.Pawns
 {
     public class PawnAttacker : MonoBehaviour
     {

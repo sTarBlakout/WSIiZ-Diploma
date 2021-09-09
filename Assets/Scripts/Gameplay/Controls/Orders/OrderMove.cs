@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
 using Gameplay.Environment;
-using Gameplay.Сharacters;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders

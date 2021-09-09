@@ -1,5 +1,5 @@
+using Gameplay.Pawns;
 using Gameplay.Interfaces;
-using Gameplay.Сharacters;
 
 namespace Gameplay.Controls.Orders
 {

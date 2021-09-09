@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Gameplay.Сharacters;
+using Gameplay.Pawns;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders

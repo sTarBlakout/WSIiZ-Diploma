@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Pawns;
 using Gameplay.Controls.Orders;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
-using Gameplay.Сharacters;
 using UnityEngine;
 
 namespace Gameplay.Controls

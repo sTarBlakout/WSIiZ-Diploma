@@ -1,8 +1,8 @@
 
 using System;
 using System.Collections.Generic;
+using Gameplay.Pawns;
 using Gameplay.Environment;
-using Gameplay.Сharacters;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders

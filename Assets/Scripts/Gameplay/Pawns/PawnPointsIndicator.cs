@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Gameplay.Сharacters
+namespace Gameplay.Pawns
 {
     public class PawnPointsIndicator : MonoBehaviour
     {

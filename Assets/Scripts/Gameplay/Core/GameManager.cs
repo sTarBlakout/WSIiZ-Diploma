@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Gameplay.Pawns;
 using Gameplay.Controls;
 using Gameplay.Environment;
-using Gameplay.Сharacters;
 using UnityEngine;
 
 namespace Gameplay.Core

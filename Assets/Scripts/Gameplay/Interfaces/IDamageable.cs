@@ -1,5 +1,5 @@
 using System;
-using Gameplay.Сharacters;
+using Gameplay.Pawns;
 
 namespace Gameplay.Interfaces
 {
