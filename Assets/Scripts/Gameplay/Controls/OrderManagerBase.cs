@@ -60,7 +60,7 @@ namespace Gameplay.Controls
             OnTakingTurn?.Invoke(true);
         }
         
-        public void CompleteTurn()
+        public virtual void CompleteTurn()
         {
             if (_order != null) return;
             isTakingTurn = false;
@@ -79,7 +79,7 @@ namespace Gameplay.Controls
         {
             foreach (var pawnPath in pathsToPawns)
             {
-                if (!_pawnController.IsEnemyFor(pawnPath.Key) || !pawnPath.Key.IsAlive()) continue;
+                if (_pawnController.RelationTo(pawnPath.Key) != PawnRelation.Enemy || !pawnPath.Key.IsAlive()) continue;
                 if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
             }
 
@@ -121,9 +121,8 @@ namespace Gameplay.Controls
         #region Order Managment
 
         protected OrderBase _order;
-        protected IInteractable _interactable;
-        protected IDamageable _damageable;
         protected GameAreaWay _way;
+        protected IPawn _targetPawn;
 
         protected void StartOrderMove(Vector3 toPos)
         {
@@ -151,7 +150,7 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected virtual void StartOrderAttack(IDamageable damageable, bool moveIfTargetFar)
+        protected virtual void StartOrderAttack(IPawn damageable, bool moveIfTargetFar)
         {
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
             argsMove.SetToPawn((PawnController) damageable)

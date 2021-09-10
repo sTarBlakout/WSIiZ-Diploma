@@ -6,38 +6,36 @@ namespace Gameplay.Pawns
 {
     public class PawnAttacker : MonoBehaviour
     {
-        private PawnData _pawnData;
+        private IPawn _pawn;
         private PawnAnimator _pawnAnimator;
-        private IDamageable _damageable;
         
-        private IDamageable _targetDamageable;
+        private IPawn _target;
         private Action _onAttacked;
         
-        public void Init(PawnData pawnData, PawnAnimator pawnAnimator, IDamageable damageable)
+        public void Init(IPawn pawn, PawnAnimator pawnAnimator)
         {
-            _pawnData = pawnData;
+            _pawn = pawn;
             _pawnAnimator = pawnAnimator;
-            _damageable = damageable;
         }
 
-        public void AttackTarget(IDamageable damageable, Action onAttacked)
+        public void AttackTarget(IPawn target, Action onAttacked)
         {
-            _targetDamageable = damageable;
+            _target = target;
             _onAttacked = onAttacked;
-            _targetDamageable.PreDamage(_damageable, () => _pawnAnimator.AnimateAttack());
+            _target.Damageable.PreDamage(_pawn, () => _pawnAnimator.AnimateAttack());
         }
 
         private void OnDamageDealt(int value)
         {
-            _pawnData.ModifyLevelBy(value);
-            _targetDamageable.PostDamage(() => _onAttacked?.Invoke());
+            _pawn.PawnData.ModifyLevelBy(value);
+            _target.Damageable.PostDamage(() => _onAttacked?.Invoke());
         }
 
         #region Animation Events
        
         public void Hit()
         {
-            _targetDamageable.Damage(_pawnData.Damage, OnDamageDealt);
+            _target.Damageable.Damage(_pawn.PawnData.DamageValue, OnDamageDealt);
         }
         
         #endregion

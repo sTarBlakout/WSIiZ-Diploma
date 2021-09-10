@@ -3,11 +3,10 @@ using Gameplay.Pawns;
 
 namespace Gameplay.Interfaces
 {
-    public interface IDamageable : IInteractable
+    public interface IDamageable
     {
-        void PreDamage(IDamageable attacker, Action onPreDamage);
+        void PreDamage(IPawn attacker, Action onPreDamage);
         void PostDamage(Action onPostDamage);
         void Damage(int value, Action<int> onDamageDealt);
-        bool IsEnemyFor(PawnController pawn);
     }
 }

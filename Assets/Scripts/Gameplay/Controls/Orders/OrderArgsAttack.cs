@@ -5,17 +5,17 @@ namespace Gameplay.Controls.Orders
 {
     public class OrderArgsAttack : OrderArgsBase
     {
-        private IDamageable _damageable;
+        private IPawn _target;
 
-        public IDamageable Damageable => _damageable;
+        public IPawn Target => _target;
 
         public OrderArgsAttack(PawnController pawnController, GameArea gameArea) : base(pawnController, gameArea)
         {
         }
 
-        public OrderArgsAttack SetEnemy(IDamageable damageable)
+        public OrderArgsAttack SetEnemy(IPawn target)
         {
-            _damageable = damageable;
+            _target = target;
             return this;
         }
     }

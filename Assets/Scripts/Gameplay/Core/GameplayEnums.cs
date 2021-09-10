@@ -1,5 +1,11 @@
 namespace Gameplay.Core
 {
+    public enum PawnRelation
+    {
+        Friend,
+        Enemy
+    }
+    
     public enum OrderType
     {
         Attack,

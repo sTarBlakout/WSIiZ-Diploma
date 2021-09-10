@@ -14,14 +14,14 @@ namespace Gameplay.Controls.Orders
         {
             completeArgs = new CompleteOrderArgsAttack();
         
-            if (!args.Damageable.IsInteractable())
+            if (!args.Target.IsInteractable())
             {
                 completeArgs.Result = OrderResult.Fail;
                 completeArgs.FailReason = OrderFailReason.NotInteractable;
                 args.OnCompleted?.Invoke(completeArgs);
                 return;
             }
-            if (!args.Damageable.IsEnemyFor(args.PawnController))
+            if (args.Target.RelationTo(args.PawnController) != PawnRelation.Enemy)
             {
                 completeArgs.Result = OrderResult.Fail;
                 completeArgs.FailReason = OrderFailReason.NotAnEnemy;
@@ -29,13 +29,13 @@ namespace Gameplay.Controls.Orders
                 return;
             }
         
-            args.PawnController.RotateTo(args.Damageable.Position, OnRotated);
+            args.PawnController.RotateTo(args.Target.PawnData.Position, OnRotated);
         }
 
         private void OnRotated()
         {
             args.OnUsedActionPointsCallback?.Invoke(1);
-            args.PawnController.AttackTarget(args.Damageable, OnAttacked);
+            args.PawnController.AttackTarget(args.Target, OnAttacked);
         }
 
         private void OnAttacked()

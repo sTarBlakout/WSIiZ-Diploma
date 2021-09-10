@@ -42,7 +42,6 @@ namespace Gameplay.Core
         {
             while (IsGameRunning())
             {
-                Debug.Log("NEW TURN");
                 foreach (var participant in _turnParticipants)
                 {
                     if (!participant.CanTakeTurn()) continue;
@@ -51,7 +50,6 @@ namespace Gameplay.Core
                     yield return new WaitWhile(() => participant.IsTakingTurn);
                 }
             }
-            Debug.Log("Game Over");
         }
 
         private bool IsGameRunning()

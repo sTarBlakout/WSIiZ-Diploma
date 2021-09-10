@@ -1,12 +1,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Gameplay.Core;
 using Gameplay.Interfaces;
 using UnityEngine;
 
 namespace Gameplay.Pawns
 {
-    public class PawnController : MonoBehaviour, IDamageable
+    public class PawnController : MonoBehaviour, IPawn, IPawnData, IDamageable
     {
         [SerializeField] private PawnData pawnData;
         
@@ -31,7 +32,7 @@ namespace Gameplay.Pawns
             _currPawnData = Instantiate(pawnData);
 
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
-            pawnAttacker.Init(_currPawnData, pawnAnimator, this);
+            pawnAttacker.Init(this, pawnAnimator);
             pawnHealthIndicator.Init(_currPawnData);
         }
 
@@ -51,54 +52,13 @@ namespace Gameplay.Pawns
                 pawnMover.RotateTo(position, onRotated);
         }
 
-        public void AttackTarget(IDamageable damageable, Action onAttacked)
+        public void AttackTarget(IPawn target, Action onAttacked)
         {
             if (pawnAttacker == null)
                 Debug.LogError($"{gameObject.name} does not have any attacker component!");
             else
-                pawnAttacker.AttackTarget(damageable, onAttacked);
+                pawnAttacker.AttackTarget(target, onAttacked);
         }
-
-        #region IDamageable Implementation
-
-        public Vector3 Position => transform.position;
-
-        public bool IsAlive()
-        {
-            return _currPawnData.Level != 0;
-        }
-        
-        public bool IsInteractable()
-        {
-            return IsAlive();
-        }
-        
-        public bool IsEnemyFor(PawnController pawn)
-        {
-            return pawnData.TeamId != pawn.pawnData.TeamId;
-        }
-        
-        public void PreDamage(IDamageable attacker, Action onPrepared)
-        {
-            onPrepared += TryBlock;
-            RotateTo(attacker.Position, onPrepared);
-        }
-
-        public void Damage(int value, Action<int> onDamageDealt)
-        {
-            var health = _currPawnData.Level;
-            var dmgReceived = value;
-            _currPawnData.ModifyLevelBy(-value);
-            if (_currPawnData.Level == 0) dmgReceived = value + (health - value);
-            onDamageDealt?.Invoke(dmgReceived);
-        }
-        
-        public void PostDamage(Action onPostDamage)
-        {
-            StartCoroutine(PostDamageCoroutine(onPostDamage));
-        }
-
-        #endregion
 
         private IEnumerator PostDamageCoroutine(Action onPostDamage)
         {
@@ -123,5 +83,60 @@ namespace Gameplay.Pawns
             pawnHealthIndicator.Show(false);
             onDeath?.Invoke();
         }
+
+        #region IPawn Implementation
+
+        public IPawnData PawnData => this;
+        public IDamageable Damageable => this;
+
+        public bool IsInteractable()
+        {
+            return IsAlive();
+        }
+        
+        public bool IsAlive()
+        {
+            return _currPawnData.Level != 0;
+        }
+        
+        public PawnRelation RelationTo(IPawn pawn)
+        {
+            return pawn.PawnData.TeamId == _currPawnData.TeamId ? PawnRelation.Friend : PawnRelation.Enemy;
+        }
+
+        #endregion
+        
+        #region IPawnData Implementation
+
+        public Vector3 Position => transform.position;
+        public int TeamId => _currPawnData.TeamId;
+        public int DamageValue => _currPawnData.Damage;
+        public void ModifyLevelBy(int value) { _currPawnData.ModifyLevelBy(value); }
+
+        #endregion
+        
+        #region IDamageable Implementation
+
+        public void PreDamage(IPawn attacker, Action onPrepared)
+        {
+            onPrepared += TryBlock;
+            RotateTo(attacker.PawnData.Position, onPrepared);
+        }
+
+        public void Damage(int value, Action<int> onDamageDealt)
+        {
+            var health = _currPawnData.Level;
+            var dmgReceived = value;
+            _currPawnData.ModifyLevelBy(-value);
+            if (_currPawnData.Level == 0) dmgReceived = value + (health - value);
+            onDamageDealt?.Invoke(dmgReceived);
+        }
+        
+        public void PostDamage(Action onPostDamage)
+        {
+            StartCoroutine(PostDamageCoroutine(onPostDamage));
+        }
+
+        #endregion
     }
 }

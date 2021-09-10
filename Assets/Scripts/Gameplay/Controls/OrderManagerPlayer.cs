@@ -69,14 +69,16 @@ namespace Gameplay.Controls
             }
             
             // Checking if interactable
-            _interactable = hitInfo.collider.transform.parent.GetComponent<IInteractable>();
-            
-            if (_interactable is IDamageable damageable)
+            _targetPawn = hitInfo.collider.transform.parent.GetComponent<IPawn>();
+            if (_targetPawn != null)
             {
-                HighlightReachableTiles(false);
-                HighlightEnemyTiles(false);
-                StartOrderAttack(damageable, false);
-                return;
+                if (_targetPawn.Damageable != null)
+                {
+                    HighlightReachableTiles(false);
+                    HighlightEnemyTiles(false);
+                    StartOrderAttack(_targetPawn, false);
+                    return;
+                }
             }
         }
         
@@ -125,7 +127,9 @@ namespace Gameplay.Controls
         private void HighlightEnemyTiles(bool highlight)
         {
             var pathsToEnemies = pathsToPawns.Where(pawnPath => 
-                pawnPath.Key.IsEnemyFor(_pawnController) && pawnPath.Value.Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn && pawnPath.Key.IsAlive());
+                pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
+                && pawnPath.Value.Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn 
+                && pawnPath.Key.IsAlive());
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
@@ -141,6 +145,13 @@ namespace Gameplay.Controls
         {
             base.ProcessPostOrder();
             ResetOrder();
+        }
+
+        public override void CompleteTurn()
+        {
+            HighlightReachableTiles(false);
+            HighlightEnemyTiles(false);
+            base.CompleteTurn();
         }
 
         protected override bool CanDoActions() { return true; }
