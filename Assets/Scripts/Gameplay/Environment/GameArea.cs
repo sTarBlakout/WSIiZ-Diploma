@@ -213,15 +213,15 @@ public class GameArea : MonoBehaviour
         onGeneratedPath(tilePath);
     }
 
-    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<PawnController, List<GameAreaTile>>> onGeneratedPaths)
+    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
         _waitPathCor = StartCoroutine(GeneratePathsToPawnsCor(fromPawn, onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<PawnController, List<GameAreaTile>>> onGeneratedPaths)
+    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
     {
-        var pathsToPawns = new Dictionary<PawnController, List<GameAreaTile>>();
+        var pathsToPawns = new Dictionary<IPawn, List<GameAreaTile>>();
         foreach (var pawn in pawns)
         {
             if (fromPawn == pawn) continue;

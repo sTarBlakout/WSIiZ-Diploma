@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Gameplay.Pawns;
 using Gameplay.Environment;
+using Gameplay.Interfaces;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders
@@ -17,10 +18,10 @@ namespace Gameplay.Controls.Orders
         private Action<int> _onUsedMovePointsCallback;
         
         private Dictionary<GameAreaTile, List<GameAreaTile>> _pathsToTiles;
-        protected Dictionary<PawnController, List<GameAreaTile>> _pathsToPawns;
+        protected Dictionary<IPawn, List<GameAreaTile>> _pathsToPawns;
 
         public Dictionary<GameAreaTile, List<GameAreaTile>> PathsToTiles => _pathsToTiles;
-        public Dictionary<PawnController, List<GameAreaTile>> PathsToPawns => _pathsToPawns;
+        public Dictionary<IPawn, List<GameAreaTile>> PathsToPawns => _pathsToPawns;
         public PawnController PawnController => _pawnController;
         public GameArea GameArea => _gameArea;
         public Action<CompleteOrderArgsBase> OnCompleted => _onCompletedCallback;
@@ -39,9 +40,9 @@ namespace Gameplay.Controls.Orders
             return this;
         }
         
-        public OrderArgsBase SetPathsToPawns(Dictionary<PawnController, List<GameAreaTile>> pathsToPawns)
+        public OrderArgsBase SetPathsToPawns(Dictionary<IPawn, List<GameAreaTile>> pathsToPawns)
         {
-            _pathsToPawns = new Dictionary<PawnController, List<GameAreaTile>>(pathsToPawns);
+            _pathsToPawns = new Dictionary<IPawn, List<GameAreaTile>>(pathsToPawns);
             return this;
         }
 

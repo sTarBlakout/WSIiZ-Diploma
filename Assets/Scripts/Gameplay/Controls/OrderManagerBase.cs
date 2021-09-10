@@ -19,7 +19,7 @@ namespace Gameplay.Controls
         protected GameArea _gameArea;
 
         protected bool areAllPathsGenerated;
-        protected Dictionary<PawnController, List<GameAreaTile>> pathsToPawns;
+        protected Dictionary<IPawn, List<GameAreaTile>> pathsToPawns;
         protected Dictionary<GameAreaTile, List<GameAreaTile>> pathsToTiles;
 
         public Action<bool> OnTakingTurn;
@@ -230,7 +230,7 @@ namespace Gameplay.Controls
             CheckGeneratedPaths();
         }
 
-        protected virtual void OnPathsToPawnsGenerated(Dictionary<PawnController, List<GameAreaTile>> pathsToPawns)
+        protected virtual void OnPathsToPawnsGenerated(Dictionary<IPawn, List<GameAreaTile>> pathsToPawns)
         {
             this.pathsToPawns = pathsToPawns;
             CheckGeneratedPaths();

@@ -1,20 +1,21 @@
 using System.Collections.Generic;
 using Gameplay.Pawns;
 using Gameplay.Environment;
+using Gameplay.Interfaces;
 using UnityEngine;
 
 namespace Gameplay.Controls.Orders
 {
     public class OrderArgsMove : OrderArgsBase
     {
-        private PawnController _toPawn;
+        private IPawn _toPawn;
         private GameAreaTile _toTile;
         private GameAreaWay _way;
         private Vector3 _to;
         private int _maxSteps;
         private bool _moveAsFarAsCan;
 
-        public PawnController ToPawn => _toPawn;
+        public IPawn ToPawn => _toPawn;
         public GameAreaTile ToTile => _toTile;
         public GameAreaWay Way => _way;
         public Vector3 To => _to;
@@ -29,7 +30,7 @@ namespace Gameplay.Controls.Orders
             return this;
         }
         
-        public OrderArgsMove SetToPawn(PawnController toPawn)
+        public OrderArgsMove SetToPawn(IPawn toPawn)
         {
             _toPawn = toPawn;
             return this;
