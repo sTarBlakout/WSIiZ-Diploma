@@ -22,6 +22,7 @@ namespace Gameplay.Pawns
         [SerializeField] private Collider pawnCollider;
 
         private PawnData _currPawnData;
+        
         public PawnData Data => _currPawnData;
         public PawnPointsIndicator PointsIndicator => pawnPointsIndicator;
         

@@ -23,6 +23,7 @@ namespace Gameplay.Pawns
 
         [Header("Prefabs")] 
         [SerializeField] private GameObject wayMoveLinePrefab;
+        [SerializeField] private GameObject wayAttackLinePrefab;
 
         #region General
 
@@ -58,6 +59,7 @@ namespace Gameplay.Pawns
         #region Prefabs
 
         public GameObject WayMoveLinePrefab => wayMoveLinePrefab;
+        public GameObject WayAttackeLinePrefab => wayAttackLinePrefab;
 
         #endregion
     }

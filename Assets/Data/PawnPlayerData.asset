@@ -23,3 +23,4 @@ MonoBehaviour:
   afterDamageDelay: 1
   attackDistance: 1
   wayMoveLinePrefab: {fileID: 1512719256159936, guid: 66bd5cf96ce70d84d83c3e8f93f5b9d8, type: 3}
+  wayAttackLinePrefab: {fileID: 1512719256159936, guid: bf918fc68cf14484886554d218c7e337, type: 3}

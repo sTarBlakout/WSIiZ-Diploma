@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4986909603669226}
   - component: {fileID: 120488824348970428}
   m_Layer: 0
-  m_Name: WayBeam
+  m_Name: WayAttackBeam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94,8 +94,8 @@ LineRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 0.28627452, g: 1, b: 0.28627452, a: 1}
-      key1: {r: 0.28627452, g: 1, b: 0.28627452, a: 1}
+      key0: {r: 1, g: 0.33387303, b: 0.25, a: 1}
+      key1: {r: 1, g: 0.3372549, b: 0.2509804, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}

@@ -2,6 +2,7 @@ using System;
 using Doozy.Engine.UI;
 using Gameplay.Core;
 using Gameplay.Environment;
+using Gameplay.Interfaces;
 using UnityEngine;
 
 namespace Gameplay.Controls
@@ -11,6 +12,7 @@ namespace Gameplay.Controls
         [Header("Views")]
         [SerializeField] private UIView playerTurnView;
         [SerializeField] private UIView clickedTileView;
+        [SerializeField] private UIView clickedEnemyView;
 
         [Header("Buttons")] 
         [SerializeField] private UIButton endTurnButton;
@@ -28,18 +30,21 @@ namespace Gameplay.Controls
         {
             playerTurnView.Hide(true);
             clickedTileView.Hide(true);
+            clickedEnemyView.Hide(true);
         }
 
         private void OnEnable()
         {
             _player.OnTakingTurn += ProcessPlayerTakingTurn;
             _player.OnTileClicked += ProcessClickedTile;
+            _player.OnPawnClicked += ProcessClickedPawn;
         }
 
         private void OnDisable()
         {
             _player.OnTakingTurn -= ProcessPlayerTakingTurn;
             _player.OnTileClicked -= ProcessClickedTile;
+            _player.OnPawnClicked -= ProcessClickedPawn;
         }
         
         #endregion
@@ -54,6 +59,11 @@ namespace Gameplay.Controls
         private void ProcessClickedTile(GameAreaTile tile)
         {
             ShowClickedTileView(true);
+        }
+        
+        private void ProcessClickedPawn(IPawn pawn)
+        {
+            if (pawn.RelationTo(_player.Player) == PawnRelation.Enemy) ShowClickedEnemyView(true);
         }
         
         #endregion
@@ -72,6 +82,12 @@ namespace Gameplay.Controls
             else clickedTileView.Hide();
         }
         
+        private void ShowClickedEnemyView(bool show)
+        {
+            if (show) clickedEnemyView.Show();
+            else clickedEnemyView.Hide();
+        }
+        
         #endregion
 
         #region UI Events
@@ -81,10 +97,17 @@ namespace Gameplay.Controls
             ShowClickedTileView(false);
             _player.StartOrder(OrderType.Move);
         }
+        
+        public void ButtonAttackOrder()
+        {
+            ShowClickedEnemyView(false);
+            _player.StartOrder(OrderType.Attack);
+        }
 
         public void ButtonCancelOrder()
         {
             ShowClickedTileView(false);
+            ShowClickedEnemyView(false);
             _player.ResetOrder();
         }
         

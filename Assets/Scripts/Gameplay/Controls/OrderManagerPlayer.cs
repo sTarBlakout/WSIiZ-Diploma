@@ -11,9 +11,11 @@ namespace Gameplay.Controls
 {
     public class OrderManagerPlayer : OrderManagerBase
     {
+        public IPawn Player => _pawnController;
         public GameAreaTile selectedTile;
-        
+
         public Action<GameAreaTile> OnTileClicked;
+        public Action<IPawn> OnPawnClicked;
 
         #region Finger Handling
 
@@ -62,7 +64,7 @@ namespace Gameplay.Controls
                 if (pathsToTiles.ContainsKey(tile))
                 {
                     selectedTile = tile;
-                    DrawWay(true);
+                    DrawWay(true, OrderType.Move);
                     OnTileClicked?.Invoke(tile);
                 }
                 return;
@@ -72,11 +74,15 @@ namespace Gameplay.Controls
             _targetPawn = hitInfo.collider.transform.parent.GetComponent<IPawn>();
             if (_targetPawn != null)
             {
-                if (_targetPawn.Damageable != null)
+                if (_targetPawn.RelationTo(_pawnController) == PawnRelation.Enemy 
+                    && _targetPawn.Damageable != null
+                    && pathsToPawns[_targetPawn].Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn
+                    && _targetPawn.IsAlive())
                 {
-                    HighlightReachableTiles(false);
-                    HighlightEnemyTiles(false);
-                    StartOrderAttack(_targetPawn, false);
+                    var pathToPawn = pathsToPawns[_targetPawn];
+                    selectedTile = pathToPawn[pathToPawn.Count - 2];
+                    DrawWay(true, OrderType.Attack);
+                    OnPawnClicked?.Invoke(_targetPawn);
                     return;
                 }
             }
@@ -91,7 +97,7 @@ namespace Gameplay.Controls
             
             switch (order)
             {
-                case OrderType.Attack: break;
+                case OrderType.Attack: StartOrderAttack(_targetPawn, false); break;
                 case OrderType.Move: StartOrderMove(selectedTile); break;
             }
         }
@@ -102,14 +108,22 @@ namespace Gameplay.Controls
             selectedTile = null;
         }
 
-        private void DrawWay(bool draw)
+        private void DrawWay(bool draw, OrderType order = OrderType.None)
         {
             if (draw)
             {
+                if (order == OrderType.None) return;
+                
                 _way = _gameArea.CreateWay();
                 _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
                     .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform))
                     .SetFollowPawn(_pawnController.transform);
+
+                if (order == OrderType.Attack)
+                {
+                    _way.SetAttackLine(_pawnController.Data.WayAttackeLinePrefab)
+                        .BuildAttack(_targetPawn);
+                }
             }
             else
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gameplay.Interfaces;
 using UnityEngine;
 
 namespace Gameplay.Environment
@@ -7,6 +8,7 @@ namespace Gameplay.Environment
     public class GameAreaWay : MonoBehaviour
     {
         private LineRenderer _wayLine;
+        private LineRenderer _attackLine;
         private Transform _followPawn;
         private List<GameAreaTile> _path;
 
@@ -47,6 +49,34 @@ namespace Gameplay.Environment
             }
 
             _wayLine.enabled = true;
+            return this;
+        }
+
+        public GameAreaWay SetAttackLine(GameObject atkLinePrefab)
+        {
+            _attackLine = Instantiate(atkLinePrefab).GetComponent<LineRenderer>();
+            _attackLine.transform.parent = transform;
+            _attackLine.enabled = false;
+            
+            return this;
+        }
+
+        public GameAreaWay BuildAttack(IPawn target)
+        {
+            _attackLine.positionCount = 2;
+            
+            if (_wayLine != null && _wayLine.positionCount > 1)
+            {
+                _attackLine.SetPosition(0, _wayLine.GetPosition(_wayLine.positionCount - 1));
+            }
+            else
+            {
+                _attackLine.SetPosition(0, _followPawn.position);
+            }
+            
+            _attackLine.SetPosition(1, target.PawnData.Position);
+            _attackLine.enabled = true;
+            
             return this;
         }
 

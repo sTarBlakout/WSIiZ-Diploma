@@ -8,6 +8,7 @@ namespace Gameplay.Core
     
     public enum OrderType
     {
+        None,
         Attack,
         Move
     }
