@@ -76,7 +76,7 @@ namespace Gameplay.Controls
             {
                 if (_targetPawn.RelationTo(_pawnController) == PawnRelation.Enemy 
                     && _targetPawn.Damageable != null
-                    && pathsToPawns[_targetPawn].Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn
+                    && pathsToPawns[_targetPawn].Count - 2 <= remainMovePoints
                     && _targetPawn.IsAlive())
                 {
                     var pathToPawn = pathsToPawns[_targetPawn];
@@ -114,6 +114,7 @@ namespace Gameplay.Controls
             {
                 if (order == OrderType.None) return;
                 
+                // Bug here if close to an enemy and doesn't have move points
                 _way = _gameArea.CreateWay();
                 _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
                     .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform))
@@ -142,7 +143,7 @@ namespace Gameplay.Controls
         {
             var pathsToEnemies = pathsToPawns.Where(pawnPath => 
                 pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
-                && pawnPath.Value.Count - 2 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn 
+                && pawnPath.Value.Count - 2 <= remainMovePoints 
                 && pawnPath.Key.IsAlive());
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);

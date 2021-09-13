@@ -92,6 +92,10 @@ namespace SimplePF2D{
         public bool IsGenerated() {
             return pathpoints.Count != 0 && !aStarSearch.hasFailedFlag;
         }
+        
+        public bool IsGenerationFailed() {
+            return aStarSearch.hasFailedFlag;
+        }
 
         // Gets the next point in the path point list based on the passed in index.
         // This point is returned by reference as a world position (nextPoint). Returns true if there is a valid next point.

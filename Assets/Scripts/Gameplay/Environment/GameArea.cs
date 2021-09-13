@@ -188,6 +188,11 @@ public class GameArea : MonoBehaviour
         way.transform.parent = pawnsContainer;
         return way;
     }
+    
+    private bool IsPathGeneratedOrBlocked()
+    {
+        return _path.IsGenerated() || _path.IsGenerationFailed();
+    }
 
     #endregion
 
@@ -205,7 +210,7 @@ public class GameArea : MonoBehaviour
 
     private IEnumerator GeneratePathToPositionCor(Vector3 fromPos, Vector3 toPos, (bool, bool) isFromToBlocked, Action<List<GameAreaTile>> onGeneratedPath)
     {
-        yield return new WaitUntil(() => _path.IsGenerated());
+        yield return new WaitUntil(IsPathGeneratedOrBlocked);
         BlockTileAtPos(fromPos, isFromToBlocked.Item1);
         BlockTileAtPos(toPos, isFromToBlocked.Item2);
         var tilePath = new List<GameAreaTile>();
@@ -232,7 +237,7 @@ public class GameArea : MonoBehaviour
             BlockTileAtPos(fromPos, false);
             BlockTileAtPos(toPos, false);
             _path.CreatePath(fromPos, toPos);
-            yield return new WaitUntil(() => _path.IsGenerated());
+            yield return new WaitUntil(IsPathGeneratedOrBlocked);
             BlockTileAtPos(fromPos, isFromToBlocked.Item1);
             BlockTileAtPos(toPos, isFromToBlocked.Item2);
             
@@ -259,7 +264,7 @@ public class GameArea : MonoBehaviour
             BlockTileAtPos(fromPos, false);
             BlockTileAtPos(toPos, false);
             _path.CreatePath(fromPos, toPos);
-            yield return new WaitUntil(() => _path.IsGenerated());
+            yield return new WaitUntil(IsPathGeneratedOrBlocked);
             BlockTileAtPos(fromPos, isFromToBlocked.Item1);
             BlockTileAtPos(toPos, isFromToBlocked.Item2);
             
@@ -278,6 +283,6 @@ public class GameArea : MonoBehaviour
         
         onGeneratedPaths?.Invoke(reachableTiles);
     }
-    
+
     #endregion
 }

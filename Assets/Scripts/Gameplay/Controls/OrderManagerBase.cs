@@ -42,8 +42,8 @@ namespace Gameplay.Controls
         #region Turn Managment
         
         protected bool isTakingTurn;
-        protected int cellsMovedCurrTurn;
-        protected int actionsCurrTurn;
+        protected int remainMovePoints;
+        protected int remainActionPoints;
         
         public bool IsTakingTurn => isTakingTurn;
         
@@ -55,6 +55,8 @@ namespace Gameplay.Controls
         public virtual void StartTurn()
         {
             isTakingTurn = true;
+            remainMovePoints = _pawnController.Data.DistancePerTurn;
+            remainActionPoints = _pawnController.Data.ActionsPerTurn;
             GeneratePaths();
             RefreshPointsIndicator(true);
             OnTakingTurn?.Invoke(true);
@@ -64,8 +66,6 @@ namespace Gameplay.Controls
         {
             if (_order != null) return;
             isTakingTurn = false;
-            cellsMovedCurrTurn = 0;
-            actionsCurrTurn = 0;
             RefreshPointsIndicator(false);
             OnTakingTurn?.Invoke(false);
         }
@@ -80,7 +80,7 @@ namespace Gameplay.Controls
             foreach (var pawnPath in pathsToPawns)
             {
                 if (_pawnController.RelationTo(pawnPath.Key) != PawnRelation.Enemy || !pawnPath.Key.IsAlive()) continue;
-                if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn) return true;
+                if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= remainMovePoints) return true;
             }
 
             return false;
@@ -88,31 +88,31 @@ namespace Gameplay.Controls
 
         protected virtual bool CanMove()
         {
-            return _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn != 0;
+            return remainMovePoints != 0;
         }
 
         protected virtual bool CanDoActions()
         {
-            return _pawnController.Data.ActionsPerTurn - actionsCurrTurn != 0;
+            return remainActionPoints != 0;
         }
 
         protected void UseActionPoints(int value)
         {
-            actionsCurrTurn += value;
+            remainActionPoints -= value;
             RefreshPointsIndicator(true);
         }
         
         protected void UseMovePoints(int value)
         {
-            cellsMovedCurrTurn += value;
+            remainMovePoints -= value;
             RefreshPointsIndicator(true);
         }
 
         protected void RefreshPointsIndicator(bool setActive)
         {
             _pawnController.PointsIndicator
-                .SetActionPoints(_pawnController.Data.ActionsPerTurn - actionsCurrTurn)
-                .SetMovePoints(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetActionPoints(remainActionPoints)
+                .SetMovePoints(remainMovePoints)
                 .Show(setActive);
         }
 
@@ -128,7 +128,7 @@ namespace Gameplay.Controls
         {
             var args = new OrderArgsMove(_pawnController, _gameArea);
             args.SetToPos(toPos)
-                .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetMaxSteps(remainMovePoints)
                 .AddUsedMovePointsCallback(UseMovePoints)
                 .AddOnCompleteCallback(OnOrderMoveCompleted);
             
@@ -140,7 +140,7 @@ namespace Gameplay.Controls
         {
             var args = new OrderArgsMove(_pawnController, _gameArea);
             args.SetToTile(toTile)
-                .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+                .SetMaxSteps(remainMovePoints)
                 .SetWay(_way)
                 .SetPathsToTiles(pathsToTiles)
                 .AddUsedMovePointsCallback(UseMovePoints)
@@ -150,18 +150,18 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected virtual void StartOrderAttack(IPawn damageable, bool moveIfTargetFar)
+        protected virtual void StartOrderAttack(IPawn target, bool moveIfTargetFar)
         {
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
-            argsMove.SetToPawn((PawnController) damageable)
-                .SetMaxSteps(_pawnController.Data.DistancePerTurn - cellsMovedCurrTurn)
+            argsMove.SetToPawn((PawnController) target)
+                .SetMaxSteps(remainMovePoints)
                 .SetMoveAsFarAsCan(moveIfTargetFar)
                 .SetPathsToPawns(pathsToPawns)
                 .AddUsedMovePointsCallback(UseMovePoints);
             var orderMove = new OrderMove(argsMove);
 
             var argsAttack = new OrderArgsAttack(_pawnController, _gameArea);
-            argsAttack.SetEnemy(damageable).AddUsedActionPointsCallback(UseActionPoints);
+            argsAttack.SetEnemy(target).AddUsedActionPointsCallback(UseActionPoints);
             var orderAttack = new OrderAttack(argsAttack);
             
             var argsComplex = new OrderArgsComplex(_pawnController, _gameArea);
@@ -208,7 +208,7 @@ namespace Gameplay.Controls
 
             if (pathsToTiles == null)
             {
-                _gameArea.GeneratePathsToReachableTiles(transform.position, _pawnController.Data.DistancePerTurn - cellsMovedCurrTurn, OnPathReachableTilesGenerated);
+                _gameArea.GeneratePathsToReachableTiles(transform.position, remainMovePoints, OnPathReachableTilesGenerated);
                 return;
             }
 
