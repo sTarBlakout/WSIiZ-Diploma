@@ -121,7 +121,7 @@ public class GameArea : MonoBehaviour
     #endregion
 
     #region Utilities
-    
+
     public void BlockTile(GameAreaTile tile, bool block)
     {
         var node = pathFinding.GetNode(tile.NavPos);

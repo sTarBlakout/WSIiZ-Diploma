@@ -106,6 +106,7 @@ namespace Gameplay.Controls
         {
             DrawWay(false);
             selectedTile = null;
+            _targetPawn = null;
         }
 
         private void DrawWay(bool draw, OrderType order = OrderType.None)
@@ -113,12 +114,14 @@ namespace Gameplay.Controls
             if (draw)
             {
                 if (order == OrderType.None) return;
+
+                _way = _gameArea.CreateWay().SetFollowPawn(_pawnController.transform).SetOrder(order);
                 
-                // Bug here if close to an enemy and doesn't have move points
-                _way = _gameArea.CreateWay();
-                _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
-                    .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform))
-                    .SetFollowPawn(_pawnController.transform);
+                if (selectedTile != currLocationTile)
+                {
+                    _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
+                        .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform));
+                }
 
                 if (order == OrderType.Attack)
                 {
@@ -130,6 +133,7 @@ namespace Gameplay.Controls
             {
                 if (_way == null) return;
                 _way.DestroyWay();
+                _way = null;
             }
         }
 

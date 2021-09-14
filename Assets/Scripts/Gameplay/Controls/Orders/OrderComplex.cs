@@ -19,6 +19,8 @@ namespace Gameplay.Controls.Orders
 
         private void StartNextOrder(CompleteOrderArgsBase prevOrderCompleteArgs)
         {
+            if (prevOrderCompleteArgs != null) completeArgs.CompleteOrderArgsList.Add(prevOrderCompleteArgs);
+            
             var nextOrder = args.GetNextOrder();
             if (nextOrder == null || prevOrderCompleteArgs != null && prevOrderCompleteArgs.Result != OrderResult.Succes)
             {

@@ -22,6 +22,8 @@ namespace Gameplay.Controls
         protected Dictionary<IPawn, List<GameAreaTile>> pathsToPawns;
         protected Dictionary<GameAreaTile, List<GameAreaTile>> pathsToTiles;
 
+        protected GameAreaTile currLocationTile;
+
         public Action<bool> OnTakingTurn;
 
         protected virtual void Awake()
@@ -153,7 +155,7 @@ namespace Gameplay.Controls
         protected virtual void StartOrderAttack(IPawn target, bool moveIfTargetFar)
         {
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
-            argsMove.SetToPawn((PawnController) target)
+            argsMove.SetToPawn(target)
                 .SetMaxSteps(remainMovePoints)
                 .SetMoveAsFarAsCan(moveIfTargetFar)
                 .SetPathsToPawns(pathsToPawns)
@@ -173,9 +175,22 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args) { StartCoroutine(OnAnyOrderCompleted()); }
-        
-        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args) { StartCoroutine(OnAnyOrderCompleted()); }
+        protected void OnOrderMoveCompleted(CompleteOrderArgsBase args)
+        {
+            var moveArgs = (CompleteOrderArgsMove) args;
+            currLocationTile = moveArgs.MovedToTile;
+
+            StartCoroutine(OnAnyOrderCompleted());
+        }
+
+        protected void OnOrderAttackCompleted(CompleteOrderArgsBase args)
+        {
+            var complexArgs = (CompleteOrderArgsComplex) args;
+            var moveArgs = (CompleteOrderArgsMove) complexArgs.CompleteOrderArgsList.First(completeArgs => completeArgs is CompleteOrderArgsMove);
+            currLocationTile = moveArgs.MovedToTile;
+            
+            StartCoroutine(OnAnyOrderCompleted());
+        }
 
         protected virtual IEnumerator OnAnyOrderCompleted()
         {

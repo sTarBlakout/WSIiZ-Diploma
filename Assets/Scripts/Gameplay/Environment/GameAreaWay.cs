@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Gameplay.Core;
 using Gameplay.Interfaces;
 using UnityEngine;
 
@@ -11,12 +12,15 @@ namespace Gameplay.Environment
         private LineRenderer _attackLine;
         private Transform _followPawn;
         private List<GameAreaTile> _path;
+        private OrderType _orderType = OrderType.None;
 
         public List<GameAreaTile> Path => _path;
 
         private void Update()
         {
-            if (_followPawn != null)
+            if (_orderType == OrderType.None) return;
+            
+            if (_followPawn != null && _wayLine != null)
             {
                 _wayLine.SetPosition(0, _followPawn.position);
                 if (_wayLine.positionCount > 1 && _wayLine.GetPosition(0) == _wayLine.GetPosition(1))
@@ -24,7 +28,7 @@ namespace Gameplay.Environment
                     for (int i = 0; i < _wayLine.positionCount - 1; i++)
                         _wayLine.SetPosition(i, _wayLine.GetPosition(i + 1));
                     _wayLine.positionCount--;
-                    if (_wayLine.positionCount == 1) DestroyWay();
+                    if (_wayLine.positionCount == 1 && _orderType == OrderType.Move) DestroyWay();
                 }
             }
         }
@@ -83,6 +87,12 @@ namespace Gameplay.Environment
         public GameAreaWay SetFollowPawn(Transform followPawn)
         {
             _followPawn = followPawn;
+            return this;
+        }
+        
+        public GameAreaWay SetOrder(OrderType orderType)
+        {
+            _orderType = orderType;
             return this;
         }
 

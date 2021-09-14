@@ -78,7 +78,8 @@ namespace Gameplay.Controls.Orders
                     return;
                 }
             }
-            
+
+            completeArgs.MovedToTile = path.Last();
             TraversePath(path);
         }
 
