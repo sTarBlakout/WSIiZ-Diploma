@@ -113,6 +113,8 @@ namespace Gameplay.Controls
         
         public void ButtonEndTurn()
         {
+            ShowClickedTileView(false);
+            ShowClickedEnemyView(false);
             _player.CompleteTurn();
         }
         

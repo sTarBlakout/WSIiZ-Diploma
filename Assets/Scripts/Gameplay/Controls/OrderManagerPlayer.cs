@@ -101,6 +101,7 @@ namespace Gameplay.Controls
                 case OrderType.Move: StartOrderMove(selectedTile); break;
             }
         }
+        
 
         public void ResetOrder()
         {
@@ -170,6 +171,7 @@ namespace Gameplay.Controls
         {
             HighlightReachableTiles(false);
             HighlightEnemyTiles(false);
+            ResetOrder();
             base.CompleteTurn();
         }
 
