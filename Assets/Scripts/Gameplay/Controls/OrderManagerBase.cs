@@ -257,5 +257,14 @@ namespace Gameplay.Controls
         }
         
         #endregion
+
+        #region Utilities
+
+        protected bool IsPawnReachable(IPawn pawn)
+        {
+            return pathsToPawns[pawn].Count - 2 <= remainMovePoints;
+        }
+
+        #endregion
     }
 }

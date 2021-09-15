@@ -76,7 +76,7 @@ namespace Gameplay.Controls
             {
                 if (_targetPawn.RelationTo(_pawnController) == PawnRelation.Enemy 
                     && _targetPawn.Damageable != null
-                    && pathsToPawns[_targetPawn].Count - 2 <= remainMovePoints
+                    && IsPawnReachable(_targetPawn)
                     && _targetPawn.IsAlive())
                 {
                     var pathToPawn = pathsToPawns[_targetPawn];
@@ -89,6 +89,8 @@ namespace Gameplay.Controls
         }
         
         #endregion
+
+        #region OrderManagment
 
         public void StartOrder(OrderType order)
         {
@@ -109,7 +111,12 @@ namespace Gameplay.Controls
             selectedTile = null;
             _targetPawn = null;
         }
+        
+        #endregion
 
+
+        #region Visuals Managment
+        
         private void DrawWay(bool draw, OrderType order = OrderType.None)
         {
             if (draw)
@@ -148,11 +155,15 @@ namespace Gameplay.Controls
         {
             var pathsToEnemies = pathsToPawns.Where(pawnPath => 
                 pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
-                && pawnPath.Value.Count - 2 <= remainMovePoints 
+                && IsPawnReachable(pawnPath.Key)
                 && pawnPath.Key.IsAlive());
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
+        
+        #endregion
+
+        #region Overrides
 
         protected override void OnAllPathsGenerated()
         {
@@ -178,5 +189,7 @@ namespace Gameplay.Controls
         protected override bool CanDoActions() { return true; }
 
         protected override bool CanMove() { return true; }
+        
+        #endregion
     }
 }
