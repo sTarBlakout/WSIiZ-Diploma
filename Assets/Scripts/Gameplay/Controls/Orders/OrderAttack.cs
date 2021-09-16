@@ -14,10 +14,10 @@ namespace Gameplay.Controls.Orders
         {
             completeArgs = new CompleteOrderArgsAttack();
         
-            if (!args.Target.IsInteractable())
+            if (!args.Target.IsAlive())
             {
                 completeArgs.Result = OrderResult.Fail;
-                completeArgs.FailReason = OrderFailReason.NotInteractable;
+                completeArgs.FailReason = OrderFailReason.Dead;
                 args.OnCompleted?.Invoke(completeArgs);
                 return;
             }

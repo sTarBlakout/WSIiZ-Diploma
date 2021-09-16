@@ -61,20 +61,6 @@ namespace Gameplay.Pawns
                 pawnAttacker.AttackTarget(target, onAttacked);
         }
 
-        private IEnumerator PostDamageCoroutine(Action onPostDamage)
-        {
-            pawnAnimator.AnimateGetHit();
-            if (_currPawnData.Level == 0) StartCoroutine(DeathCoroutine());
-            yield return new WaitForSeconds(pawnData.AfterDamageDelay);
-            pawnAnimator.AnimateBlock(false);
-            onPostDamage?.Invoke();
-        }
-
-        private void TryBlock()
-        {
-            pawnAnimator.AnimateBlock(true);
-        }
-
         private IEnumerator DeathCoroutine()
         {
             pawnAnimator.AnimateDie();
@@ -90,11 +76,6 @@ namespace Gameplay.Pawns
         public IPawnData PawnData => this;
         public IDamageable Damageable => this;
 
-        public bool IsInteractable()
-        {
-            return IsAlive();
-        }
-        
         public bool IsAlive()
         {
             return _currPawnData.Level != 0;
@@ -123,6 +104,11 @@ namespace Gameplay.Pawns
             onPrepared += TryBlock;
             RotateTo(attacker.PawnData.Position, onPrepared);
         }
+        
+        private void TryBlock()
+        {
+            pawnAnimator.AnimateBlock(true);
+        }
 
         public void Damage(int value, Action<int> onDamageDealt)
         {
@@ -136,6 +122,15 @@ namespace Gameplay.Pawns
         public void PostDamage(Action onPostDamage)
         {
             StartCoroutine(PostDamageCoroutine(onPostDamage));
+        }
+        
+        private IEnumerator PostDamageCoroutine(Action onPostDamage)
+        {
+            pawnAnimator.AnimateGetHit();
+            if (_currPawnData.Level == 0) StartCoroutine(DeathCoroutine());
+            yield return new WaitForSeconds(pawnData.AfterDamageDelay);
+            pawnAnimator.AnimateBlock(false);
+            onPostDamage?.Invoke();
         }
 
         #endregion

@@ -33,7 +33,7 @@ namespace Gameplay.Core
         TooFar,
         BlockedArea,
         NotAnEnemy,
-        NotInteractable
+        Dead
     }
 
     public enum AnimMovement

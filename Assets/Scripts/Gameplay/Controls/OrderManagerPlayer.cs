@@ -22,34 +22,11 @@ namespace Gameplay.Controls
         private void OnEnable()
         {
             LeanTouch.OnFingerTap += HandleFingerTap;
-            
-            LeanTouch.OnFingerDown += HandleFingerDown;
-            LeanTouch.OnFingerUpdate += HandleFingerUpdate;
-            LeanTouch.OnFingerUp += HandleFingerUp;
         }
         
         private void OnDisable()
         {
             LeanTouch.OnFingerTap -= HandleFingerTap;
-            
-            LeanTouch.OnFingerDown -= HandleFingerDown;
-            LeanTouch.OnFingerUpdate -= HandleFingerUpdate;
-            LeanTouch.OnFingerUp -= HandleFingerUp;
-        }
-
-        private void HandleFingerDown(LeanFinger finger)
-        {
-            
-        }
-        
-        private void HandleFingerUpdate(LeanFinger finger)
-        {
-            
-        }
-
-        private void HandleFingerUp(LeanFinger finger)
-        {
-            
         }
 
         private void HandleFingerTap(LeanFinger finger)
@@ -70,7 +47,7 @@ namespace Gameplay.Controls
                 return;
             }
             
-            // Checking if interactable
+            // Checking if pawn
             _targetPawn = hitInfo.collider.transform.parent.GetComponent<IPawn>();
             if (_targetPawn != null)
             {
