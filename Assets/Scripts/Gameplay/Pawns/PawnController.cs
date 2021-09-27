@@ -168,7 +168,10 @@ namespace Gameplay.Pawns
             vesselCount = Mathf.Min(vesselCount, tiles.Count);
             tiles = tiles.Take(vesselCount).ToList();
 
-            // TODO: Finish here
+            foreach (var tile in tiles)
+            {
+                // TODO: Finish
+            }
         }
 
         #endregion

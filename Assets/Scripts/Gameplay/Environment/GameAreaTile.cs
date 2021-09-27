@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Gameplay.Core;
 using Gameplay.Interfaces;
 using UnityEngine;
@@ -7,19 +8,45 @@ namespace Gameplay.Environment
 {
     public class GameAreaTile : MonoBehaviour
     {
+        [Header("Components")]
+        [SerializeField] private GameAreaTileCollider colliderHandler;
+        
+        [Header("Native Particles")]
         [SerializeField] private ParticleSystem reachableTileParticle;
         [SerializeField] private ParticleSystem reachableEnemyParticle;
 
-        public IPawn ContainedPawn { private get; set; }
+        private List<IPawn> _containedPawns = new List<IPawn>();
+
         public Vector3Int NavPos { get; private set; }
         public Vector3 WorldPos => transform.position;
 
-        public GameAreaTile SetNavPosition(Vector3Int position)
+        private void OnEnable()
         {
-            NavPos = position;
-            return this;
+            colliderHandler.OnPawnEnter += PawnEntered;
+            colliderHandler.OnPawnExit += PawnExited;
+        }
+
+        private void OnDisable()
+        {
+            colliderHandler.OnPawnEnter -= PawnEntered;
+            colliderHandler.OnPawnExit -= PawnExited;
+        }
+
+        private void PawnEntered(IPawn pawn)
+        {
+            _containedPawns.Add(pawn);
         }
         
+        private void PawnExited(IPawn pawn)
+        {
+            _containedPawns.Remove(pawn);
+        }
+
+        public void SetNavPosition(Vector3Int position)
+        {
+            NavPos = position;
+        }
+
         public void ActivateParticle(TileParticleType type, bool activate)
         {
             switch (type)
@@ -35,22 +62,6 @@ namespace Gameplay.Environment
                 
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {Debug.Log("here");
-            var pawn = other.transform.parent.GetComponent<IPawn>();
-            if (pawn == null) return;
-            Debug.Log("Enter");
-            ContainedPawn = pawn;
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            var pawn = other.transform.parent.GetComponent<IPawn>();
-            if (pawn == null) return;
-            Debug.Log("Exit");
-            ContainedPawn = null;
         }
     }
 }

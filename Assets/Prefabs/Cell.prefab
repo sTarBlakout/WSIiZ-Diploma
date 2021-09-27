@@ -41,6 +41,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1862816880533730827}
+  - component: {fileID: 1625137366006451276}
   - component: {fileID: 8401510418002504842}
   m_Layer: 3
   m_Name: Collider
@@ -63,6 +64,18 @@ Transform:
   m_Father: {fileID: 241393574270350736}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 30, z: 0}
+--- !u!114 &1625137366006451276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6362503945308171785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4b7dbf26be9d9a45befd72e2c909283, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!64 &8401510418002504842
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -122,6 +135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91aca0124a414db4784e8b27d3695aa0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  colliderHandler: {fileID: 1625137366006451276}
   reachableTileParticle: {fileID: 2421676705906490154}
   reachableEnemyParticle: {fileID: 8399757332264159427}
 --- !u!1001 &3101867341107558525
