@@ -27,7 +27,7 @@ namespace Gameplay.Pawns
 
         private void OnDamageDealt(int value)
         {
-            _pawn.PawnData.ModifyLevelBy(value);
+            //_pawn.PawnData.ModifyLevelBy(value);
             _target.Damageable.PostDamage(() => _onAttacked?.Invoke());
         }
 

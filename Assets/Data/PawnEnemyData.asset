@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: PawnEnemyData
   m_EditorClassIdentifier: 
   teamId: 1
-  level: 2
+  level: 15
   actionsPerTurn: 2
+  distancePerTurn: 2
   rotationSpeed: 120
   movementSpeed: 1.8
   waitAfterRotate: 0.5
   waitAfterMove: 0.5
-  distancePerTurn: 2
   afterDamageDelay: 1
   attackDistance: 1
+  wayMoveLinePrefab: {fileID: 0}
+  wayAttackLinePrefab: {fileID: 0}

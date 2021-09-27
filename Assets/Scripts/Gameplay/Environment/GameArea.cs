@@ -146,11 +146,17 @@ public class GameArea : MonoBehaviour
         return pathFinding.GetNode(navPos).IsBlocked();
     }
     
-    public List<GameAreaTile> GetTilesByDistance(Vector3 fromPos, int distance)
+    public List<GameAreaTile> GetTilesByDistance(Vector3 fromPos, int distance, TilesFilter filter = null)
     {
-        return Physics.OverlapSphere(fromPos, distance * 2, tilesLayer)
-            .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>())
-            .ToList();
+        var result =  Physics.OverlapSphere(fromPos, distance * 2, tilesLayer)
+            .Select(coll => coll.transform.parent.GetComponent<GameAreaTile>()).ToList();
+        
+        if (filter == null) return result;
+
+        if (filter.excludeTileWithSamePos) result.RemoveAll(tile => tile.WorldPos == fromPos);
+        if (filter.excludeBlockedTiles) result.RemoveAll(tile => IsTileBlocked(tile.NavPos));
+
+        return result;
     }
     
     public List<GameAreaTile> OptimizePathForPawn(List<GameAreaTile> path, Transform pawn)
@@ -192,6 +198,16 @@ public class GameArea : MonoBehaviour
     private bool IsPathGeneratedOrBlocked()
     {
         return _path.IsGenerated() || _path.IsGenerationFailed();
+    }
+
+    #endregion
+    
+    #region Utility Classes
+
+    public class TilesFilter
+    {
+        public bool excludeTileWithSamePos;
+        public bool excludeBlockedTiles;
     }
 
     #endregion

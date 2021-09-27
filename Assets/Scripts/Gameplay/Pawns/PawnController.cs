@@ -1,27 +1,36 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Core;
+using Gameplay.Environment;
 using Gameplay.Interfaces;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gameplay.Pawns
 {
     public class PawnController : MonoBehaviour, IPawn, IPawnData, IDamageable
     {
+        [Header("Logic Components")]
         [SerializeField] private PawnData pawnData;
-        
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private PawnMover pawnMover;
         
+        [Header("Indicators")]
         [SerializeField] private PawnHealthIndicator pawnHealthIndicator;
         [SerializeField] private PawnPointsIndicator pawnPointsIndicator;
         
+        [Header("Other Components")]
         [SerializeField] private GameObject pawnGraphics;
         [SerializeField] private Collider pawnCollider;
 
+        [Header("Particles")] 
+        [SerializeField] private ParticleSystem onHitParticle;
+
         private PawnData _currPawnData;
+        private GameArea _gameArea;
         
         public PawnData Data => _currPawnData;
         public PawnPointsIndicator PointsIndicator => pawnPointsIndicator;
@@ -31,6 +40,7 @@ namespace Gameplay.Pawns
         public void Init()
         {
             _currPawnData = Instantiate(pawnData);
+            _gameArea = FindObjectOfType<GameArea>();
 
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
             pawnAttacker.Init(this, pawnAnimator);
@@ -99,6 +109,8 @@ namespace Gameplay.Pawns
         
         #region IDamageable Implementation
 
+        private int _dmgRec;
+
         public void PreDamage(IPawn attacker, Action onPrepared)
         {
             onPrepared += TryBlock;
@@ -113,10 +125,10 @@ namespace Gameplay.Pawns
         public void Damage(int value, Action<int> onDamageDealt)
         {
             var health = _currPawnData.Level;
-            var dmgReceived = value;
+            _dmgRec = value;
             _currPawnData.ModifyLevelBy(-value);
-            if (_currPawnData.Level == 0) dmgReceived = value + (health - value);
-            onDamageDealt?.Invoke(dmgReceived);
+            if (_currPawnData.Level == 0) _dmgRec = value + (health - value);
+            onDamageDealt?.Invoke(_dmgRec);
         }
         
         public void PostDamage(Action onPostDamage)
@@ -127,10 +139,36 @@ namespace Gameplay.Pawns
         private IEnumerator PostDamageCoroutine(Action onPostDamage)
         {
             pawnAnimator.AnimateGetHit();
+            onHitParticle.Play();
+            SpawnBloodVessels();
             if (_currPawnData.Level == 0) StartCoroutine(DeathCoroutine());
             yield return new WaitForSeconds(pawnData.AfterDamageDelay);
             pawnAnimator.AnimateBlock(false);
             onPostDamage?.Invoke();
+        }
+
+        private void SpawnBloodVessels()
+        {
+            var maxVesselCount = 3;
+            var vesselCount = Random.Range(1, maxVesselCount);
+            var tiles = default(List<GameAreaTile>);
+            
+            var dist = 1;
+            var filter = new GameArea.TilesFilter
+            {
+                excludeBlockedTiles = true,
+                excludeTileWithSamePos = true
+            };
+            while (tiles == null || tiles.Count == 0)
+            {
+                tiles = _gameArea.GetTilesByDistance(transform.position, dist, filter);
+                dist++;
+            }
+            
+            vesselCount = Mathf.Min(vesselCount, tiles.Count);
+            tiles = tiles.Take(vesselCount).ToList();
+
+            // TODO: Finish here
         }
 
         #endregion
