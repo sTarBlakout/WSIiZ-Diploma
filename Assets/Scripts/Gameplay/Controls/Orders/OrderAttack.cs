@@ -14,7 +14,7 @@ namespace Gameplay.Controls.Orders
         {
             completeArgs = new CompleteOrderArgsAttack();
         
-            if (!args.Target.IsAlive())
+            if (!args.Target.IsAlive)
             {
                 completeArgs.Result = OrderResult.Fail;
                 completeArgs.FailReason = OrderFailReason.Dead;

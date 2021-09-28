@@ -33,28 +33,22 @@ namespace Gameplay.Controls
         {
             if (_order != null || !isTakingTurn || !areAllPathsGenerated || selectedTile != null) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
-
-            // Clicked on map, process simple movement
+            
             var tile = hitInfo.collider.transform.parent.GetComponent<GameAreaTile>();
             if (tile != null)
             {
-                if (pathsToTiles.ContainsKey(tile))
+                // Clicked on empty tile, proceed with movement
+                if (tile.CanWalkIn(_pawnController) && pathsToTiles.ContainsKey(tile))
                 {
                     selectedTile = tile;
                     DrawWay(true, OrderType.Move);
                     OnTileClicked?.Invoke(tile);
+                    return;
                 }
-                return;
-            }
-            
-            // Checking if pawn
-            _targetPawn = hitInfo.collider.transform.parent.GetComponent<IPawn>();
-            if (_targetPawn != null)
-            {
-                if (_targetPawn.RelationTo(_pawnController) == PawnRelation.Enemy 
-                    && _targetPawn.Damageable != null
-                    && IsPawnReachable(_targetPawn)
-                    && _targetPawn.IsAlive())
+
+                // Clicked on tile with enemy pawn, proceed with attack
+                _targetPawn = tile.HasEnemyForPawn(_pawnController);
+                if (_targetPawn != null && _targetPawn.Damageable != null && IsPawnReachable(_targetPawn) && _targetPawn.IsAlive)
                 {
                     var pathToPawn = pathsToPawns[_targetPawn];
                     selectedTile = pathToPawn[pathToPawn.Count - 2];
@@ -133,7 +127,7 @@ namespace Gameplay.Controls
             var pathsToEnemies = pathsToPawns.Where(pawnPath => 
                 pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
                 && IsPawnReachable(pawnPath.Key)
-                && pawnPath.Key.IsAlive());
+                && pawnPath.Key.IsAlive);
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }

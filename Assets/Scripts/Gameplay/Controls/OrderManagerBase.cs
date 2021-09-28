@@ -51,7 +51,7 @@ namespace Gameplay.Controls
         
         public virtual bool CanTakeTurn()
         {
-            return _pawnController.IsAlive();
+            return _pawnController.IsAlive;
         }
 
         public virtual void StartTurn()
@@ -81,7 +81,7 @@ namespace Gameplay.Controls
         {
             foreach (var pawnPath in pathsToPawns)
             {
-                if (_pawnController.RelationTo(pawnPath.Key) != PawnRelation.Enemy || !pawnPath.Key.IsAlive()) continue;
+                if (_pawnController.RelationTo(pawnPath.Key) != PawnRelation.Enemy || !pawnPath.Key.IsAlive) continue;
                 if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= remainMovePoints) return true;
             }
 

@@ -40,6 +40,8 @@ namespace Gameplay.Core
 
         private IEnumerator GameCoroutine()
         {
+            yield return new WaitUntil(_gameArea.IsInitialized);
+            
             while (IsGameRunning())
             {
                 foreach (var participant in _turnParticipants)
@@ -54,7 +56,7 @@ namespace Gameplay.Core
 
         private bool IsGameRunning()
         {
-            return _player.IsAlive();
+            return _player.IsAlive;
         }
 
         #region Uitilities

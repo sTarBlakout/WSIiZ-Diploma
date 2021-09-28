@@ -37,8 +37,14 @@ namespace Gameplay.Pawns
         
         public Action onDeath;
 
+        private void Awake()
+        {
+            pawnCollider.enabled = false;
+        }
+
         public void Init()
         {
+            pawnCollider.enabled = true;
             _currPawnData = Instantiate(pawnData);
             _gameArea = FindObjectOfType<GameArea>();
 
@@ -83,18 +89,16 @@ namespace Gameplay.Pawns
 
         #region IPawn Implementation
 
+        public bool IsBlockingTile => IsAlive;
+        public bool IsAlive => _currPawnData.Level != 0;
         public IPawnData PawnData => this;
         public IDamageable Damageable => this;
 
-        public bool IsAlive()
-        {
-            return _currPawnData.Level != 0;
-        }
-        
         public PawnRelation RelationTo(IPawn pawn)
         {
             return pawn.PawnData.TeamId == _currPawnData.TeamId ? PawnRelation.Friend : PawnRelation.Enemy;
         }
+        
 
         #endregion
         

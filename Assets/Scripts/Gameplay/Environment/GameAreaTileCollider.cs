@@ -9,7 +9,7 @@ namespace Gameplay.Environment
     {
         public Action<IPawn> OnPawnEnter;
         public Action<IPawn> OnPawnExit;
-        
+
         private void OnTriggerEnter(Collider other)
         {
             var pawn = other.GetComponent<IPawn>();

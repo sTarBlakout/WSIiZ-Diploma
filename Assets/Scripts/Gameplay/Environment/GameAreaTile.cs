@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gameplay.Core;
 using Gameplay.Interfaces;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Gameplay.Environment
     {
         [Header("Components")]
         [SerializeField] private GameAreaTileCollider colliderHandler;
-        
+
         [Header("Native Particles")]
         [SerializeField] private ParticleSystem reachableTileParticle;
         [SerializeField] private ParticleSystem reachableEnemyParticle;
@@ -20,31 +21,40 @@ namespace Gameplay.Environment
         public Vector3Int NavPos { get; private set; }
         public Vector3 WorldPos => transform.position;
 
-        private void OnEnable()
+        public Action<GameAreaTile, bool> OnTileBlocked;
+
+        private void Start()
         {
             colliderHandler.OnPawnEnter += PawnEntered;
             colliderHandler.OnPawnExit += PawnExited;
         }
 
-        private void OnDisable()
-        {
-            colliderHandler.OnPawnEnter -= PawnEntered;
-            colliderHandler.OnPawnExit -= PawnExited;
-        }
-
-        private void PawnEntered(IPawn pawn)
+        public void PawnEntered(IPawn pawn)
         {
             _containedPawns.Add(pawn);
+            TryBlockTile();
         }
         
-        private void PawnExited(IPawn pawn)
+        public void PawnExited(IPawn pawn)
         {
             _containedPawns.Remove(pawn);
+            TryBlockTile();
         }
 
-        public void SetNavPosition(Vector3Int position)
+        public GameAreaTile SetNavPosition(Vector3Int position)
         {
             NavPos = position;
+            return this;
+        }
+
+        public bool CanWalkIn(IPawn pawn)
+        {
+            return _containedPawns.Count == 0;
+        }
+
+        public IPawn HasEnemyForPawn(IPawn pawn)
+        {
+            return _containedPawns.First(conPawn => conPawn.RelationTo(pawn) == PawnRelation.Enemy);
         }
 
         public void ActivateParticle(TileParticleType type, bool activate)
@@ -62,6 +72,12 @@ namespace Gameplay.Environment
                 
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
+        }
+
+        private void TryBlockTile()
+        {
+            var block = _containedPawns.Any(pawn => pawn.IsBlockingTile);
+            OnTileBlocked?.Invoke(this, block);
         }
     }
 }

@@ -4,9 +4,10 @@ namespace Gameplay.Interfaces
 {
     public interface IPawn
     {
-        bool IsAlive();
         PawnRelation RelationTo(IPawn pawn);
         
+        bool IsAlive { get; }
+        bool IsBlockingTile { get; }
         IPawnData PawnData { get; }
         IDamageable Damageable { get; }
     }

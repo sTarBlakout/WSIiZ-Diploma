@@ -73,6 +73,7 @@ public class GameArea : MonoBehaviour
         {
             var tile = cell.GetComponent<GameAreaTile>();
             tile.SetNavPosition(pathFinding.WorldToNav(cell.position));
+            tile.OnTileBlocked += BlockTile;
             tiles.Add(tile);
         }
 
