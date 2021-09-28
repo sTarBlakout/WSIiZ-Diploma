@@ -25,17 +25,17 @@ namespace Gameplay.Environment
 
         private void Start()
         {
-            colliderHandler.OnPawnEnter += PawnEntered;
-            colliderHandler.OnPawnExit += PawnExited;
+            colliderHandler.OnPawnEnter += Enter;
+            colliderHandler.OnPawnExit += Exit;
         }
 
-        public void PawnEntered(IPawn pawn)
+        public void Enter(IPawn pawn)
         {
             _containedPawns.Add(pawn);
             TryBlockTile();
         }
         
-        public void PawnExited(IPawn pawn)
+        public void Exit(IPawn pawn)
         {
             _containedPawns.Remove(pawn);
             TryBlockTile();

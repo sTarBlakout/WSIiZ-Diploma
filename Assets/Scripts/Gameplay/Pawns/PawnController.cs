@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
 using Gameplay.Environment;
+using Gameplay.Interactable;
 using Gameplay.Interfaces;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -174,7 +175,9 @@ namespace Gameplay.Pawns
 
             foreach (var tile in tiles)
             {
-                // TODO: Finish
+                var vessel = Instantiate(Data.BloodVesselPrefab).GetComponent<BloodVessel>();
+                vessel.transform.position = tile.transform.position;
+                tile.Enter(vessel);
             }
         }
 

@@ -22,5 +22,6 @@ MonoBehaviour:
   waitAfterMove: 0.5
   afterDamageDelay: 1
   attackDistance: 1
+  bloodVesselPrefab: {fileID: 7346976737164760374, guid: 1d4fe8914d837604eb456ce9b2f87ef0, type: 3}
   wayMoveLinePrefab: {fileID: 0}
   wayAttackLinePrefab: {fileID: 0}

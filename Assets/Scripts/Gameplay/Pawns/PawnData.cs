@@ -22,6 +22,7 @@ namespace Gameplay.Pawns
         [SerializeField] private int attackDistance;
 
         [Header("Prefabs")] 
+        [SerializeField] private GameObject bloodVesselPrefab;
         [SerializeField] private GameObject wayMoveLinePrefab;
         [SerializeField] private GameObject wayAttackLinePrefab;
 
@@ -58,6 +59,7 @@ namespace Gameplay.Pawns
 
         #region Prefabs
 
+        public GameObject BloodVesselPrefab => bloodVesselPrefab;
         public GameObject WayMoveLinePrefab => wayMoveLinePrefab;
         public GameObject WayAttackeLinePrefab => wayAttackLinePrefab;
 

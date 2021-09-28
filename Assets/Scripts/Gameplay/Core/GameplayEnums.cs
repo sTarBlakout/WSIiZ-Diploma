@@ -3,7 +3,8 @@ namespace Gameplay.Core
     public enum PawnRelation
     {
         Friend,
-        Enemy
+        Enemy,
+        Consumable
     }
     
     public enum OrderType
