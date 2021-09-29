@@ -115,6 +115,7 @@ namespace Gameplay.Pawns
         #region IDamageable Implementation
 
         private int _dmgRec;
+        private List<BloodVessel> _vessels = new List<BloodVessel>();
 
         public void PreDamage(IPawn attacker, Action onPrepared)
         {
@@ -154,8 +155,8 @@ namespace Gameplay.Pawns
 
         private void SpawnBloodVessels()
         {
-            var maxVesselCount = 3;
-            var vesselCount = Random.Range(1, maxVesselCount);
+            var maxVesselCount = Mathf.Min(_dmgRec, 3);
+            var vesselCount = Random.Range(1, maxVesselCount + 1);
             var tiles = default(List<GameAreaTile>);
             
             var dist = 1;
@@ -173,11 +174,16 @@ namespace Gameplay.Pawns
             vesselCount = Mathf.Min(vesselCount, tiles.Count);
             tiles = tiles.Take(vesselCount).ToList();
 
+            var remainingDmg = _dmgRec;
             foreach (var tile in tiles)
             {
                 var vessel = Instantiate(Data.BloodVesselPrefab).GetComponent<BloodVessel>();
                 vessel.transform.position = tile.transform.position;
+                var bloodPoints = tiles.Last() == tile ? remainingDmg : Random.Range(1, remainingDmg);
+                remainingDmg -= bloodPoints;
+                vessel.SetBloodPoints(bloodPoints);
                 tile.Enter(vessel);
+                _vessels.Add(vessel);
             }
         }
 
