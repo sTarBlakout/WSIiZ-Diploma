@@ -158,6 +158,8 @@ namespace Gameplay.Pawns
             var maxVesselCount = Mathf.Min(_dmgRec, 3);
             var vesselCount = Random.Range(1, maxVesselCount + 1);
             var tiles = default(List<GameAreaTile>);
+            var vessels = new List<BloodVessel>();
+            var remainingDmg = _dmgRec;
             
             var dist = 1;
             var filter = new GameArea.TilesFilter
@@ -171,17 +173,60 @@ namespace Gameplay.Pawns
                 dist++;
             }
             
-            vesselCount = Mathf.Min(vesselCount, tiles.Count);
-            tiles = tiles.Take(vesselCount).ToList();
+            vesselCount = Mathf.Min(vesselCount, tiles.Count + _vessels.Count);
 
-            var remainingDmg = _dmgRec;
+            if (_vessels.Count != 0)
+            {
+                if (dist > 2)
+                {
+                    vesselCount = Mathf.Min(vesselCount, _vessels.Count);
+                    vessels = new List<BloodVessel>(_vessels);
+                    vessels = vessels.Take(vesselCount).ToList();
+                    tiles.Clear();
+                }
+                else
+                {
+                    var v = 0;
+                    var t = 0;
+                    for (var i = 0; i < vesselCount; i++)
+                    {
+                        if (Random.Range(1, vesselCount + 1) > tiles.Count)
+                        {
+                            if (v < _vessels.Count) v++;
+                            else t++;
+                        }
+                        else
+                        {
+                            if (t < tiles.Count) t++;
+                            else v++;
+                        }
+                    }
+                    tiles = tiles.Take(t).ToList();
+                    vessels = _vessels.Take(v).ToList();
+                }
+            }
+            else
+            {
+                vesselCount = Mathf.Min(vesselCount, tiles.Count);
+                tiles = tiles.Take(vesselCount).ToList();
+            }
+            
+            foreach (var vessel in vessels)
+            {
+                if (remainingDmg == 0) break;
+                var bloodPoints = vessels.Last() == vessel ? remainingDmg : Random.Range(1, remainingDmg + 1);
+                remainingDmg -= bloodPoints;
+                vessel.AddBloodPoints(bloodPoints);
+            }
+
             foreach (var tile in tiles)
             {
+                if (remainingDmg == 0) break;
                 var vessel = Instantiate(Data.BloodVesselPrefab).GetComponent<BloodVessel>();
                 vessel.transform.position = tile.transform.position;
-                var bloodPoints = tiles.Last() == tile ? remainingDmg : Random.Range(1, remainingDmg);
+                var bloodPoints = tiles.Last() == tile ? remainingDmg : Random.Range(1, remainingDmg + 1);
                 remainingDmg -= bloodPoints;
-                vessel.SetBloodPoints(bloodPoints);
+                vessel.AddBloodPoints(bloodPoints);
                 tile.Enter(vessel);
                 _vessels.Add(vessel);
             }

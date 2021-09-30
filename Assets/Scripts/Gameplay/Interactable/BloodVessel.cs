@@ -35,9 +35,9 @@ namespace Gameplay.Interactable
             pointsText.enabled = true;
         }
 
-        public void SetBloodPoints(int bloodPoints)
+        public void AddBloodPoints(int bloodPoints)
         {
-            _bloodPoints = bloodPoints;
+            _bloodPoints += bloodPoints;
             pointsText.text = _bloodPoints.ToString();
         }
 
@@ -49,7 +49,7 @@ namespace Gameplay.Interactable
         }
 
         public bool IsAlive => false;
-        public bool IsBlockingTile => false;
+        public bool IsBlockingTile => true;
         public IPawnData PawnData => null;
         public IDamageable Damageable => null;
         
