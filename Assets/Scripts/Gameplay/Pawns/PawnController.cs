@@ -92,6 +92,7 @@ namespace Gameplay.Pawns
 
         public bool IsBlockingTile => IsAlive;
         public bool IsAlive => _currPawnData.Level != 0;
+        public Vector3 WorldPosition => transform.position;
         public IPawnData PawnData => this;
         public IDamageable Damageable => this;
 
@@ -229,6 +230,7 @@ namespace Gameplay.Pawns
                 vessel.AddBloodPoints(bloodPoints);
                 tile.Enter(vessel);
                 _vessels.Add(vessel);
+                _gameArea.AddPawn(vessel.gameObject);
             }
         }
 

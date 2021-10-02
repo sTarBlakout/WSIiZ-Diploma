@@ -33,8 +33,8 @@ namespace Gameplay.Core
             yield return new WaitUntil(() => _gameArea.IsInitialized());
 
             _turnParticipants.Clear();
-            foreach (var pawn in _gameArea.pawns) _turnParticipants.Add(pawn.GetComponent<OrderManagerBase>());
-            _player = _gameArea.pawns.First(pawn => pawn.gameObject.CompareTag("Player"));
+            foreach (var pawn in _gameArea.pawnsGameObjects) _turnParticipants.Add(pawn.GetComponent<OrderManagerBase>());
+            _player = _gameArea.pawnsGameObjects.First(pawn => pawn.gameObject.CompareTag("Player")).GetComponent<PawnController>();
             StartCoroutine(GameCoroutine());
         }
 

@@ -15,6 +15,7 @@ namespace Gameplay.Environment
         [Header("Native Particles")]
         [SerializeField] private ParticleSystem reachableTileParticle;
         [SerializeField] private ParticleSystem reachableEnemyParticle;
+        [SerializeField] private ParticleSystem reachableInteractableParticle;
 
         private List<IPawn> _containedPawns = new List<IPawn>();
 
@@ -68,6 +69,11 @@ namespace Gameplay.Environment
                 case TileParticleType.ReachableEnemy:
                     if (reachableTileParticle.isPlaying) GameManager.Instance.PlayParticle(reachableTileParticle, false);
                     GameManager.Instance.PlayParticle(reachableEnemyParticle, activate);
+                    break;
+                
+                case TileParticleType.ReachableInteractable:
+                    if (reachableTileParticle.isPlaying) GameManager.Instance.PlayParticle(reachableTileParticle, false);
+                    GameManager.Instance.PlayParticle(reachableInteractableParticle, activate);
                     break;
                 
                 default: throw new ArgumentOutOfRangeException(nameof(type), type, null);

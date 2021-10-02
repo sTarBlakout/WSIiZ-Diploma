@@ -1,4 +1,5 @@
 using Gameplay.Core;
+using UnityEngine;
 
 namespace Gameplay.Interfaces
 {
@@ -8,6 +9,7 @@ namespace Gameplay.Interfaces
         
         bool IsAlive { get; }
         bool IsBlockingTile { get; }
+        Vector3 WorldPosition { get; }
         IPawnData PawnData { get; }
         IDamageable Damageable { get; }
     }

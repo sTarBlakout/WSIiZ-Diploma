@@ -45,11 +45,12 @@ namespace Gameplay.Interactable
         
         public PawnRelation RelationTo(IPawn pawn)
         {
-            return PawnRelation.Consumable;
+            return PawnRelation.Interactable;
         }
 
-        public bool IsAlive => false;
+        public bool IsAlive => true;
         public bool IsBlockingTile => true;
+        public Vector3 WorldPosition => transform.position;
         public IPawnData PawnData => null;
         public IDamageable Damageable => null;
         

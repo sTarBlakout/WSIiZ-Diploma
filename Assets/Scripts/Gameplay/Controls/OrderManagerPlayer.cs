@@ -67,6 +67,7 @@ namespace Gameplay.Controls
         {
             HighlightReachableTiles(false);
             HighlightEnemyTiles(false);
+            HighlightInteractableTiles(false);
             
             switch (order)
             {
@@ -131,6 +132,17 @@ namespace Gameplay.Controls
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
+
+        private void HighlightInteractableTiles(bool highlight)
+        {
+            var pathsToInteractables = pathsToPawns.Where(pawnPath => 
+                pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Interactable
+                && IsPawnReachable(pawnPath.Key)
+                && pawnPath.Key.IsAlive);
+
+            var tilesList = pathsToInteractables.Select(pathsToInteractable => pathsToInteractable.Value[pathsToInteractable.Value.Count - 1]).ToList();
+            foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableInteractable, highlight);
+        }
         
         #endregion
 
@@ -141,6 +153,7 @@ namespace Gameplay.Controls
             base.OnAllPathsGenerated();
             HighlightReachableTiles(true);
             HighlightEnemyTiles(true);
+            HighlightInteractableTiles(true);
         }
 
         protected override void ProcessPostOrder()
@@ -153,6 +166,7 @@ namespace Gameplay.Controls
         {
             HighlightReachableTiles(false);
             HighlightEnemyTiles(false);
+            HighlightInteractableTiles(false);
             ResetOrder();
             base.CompleteTurn();
         }

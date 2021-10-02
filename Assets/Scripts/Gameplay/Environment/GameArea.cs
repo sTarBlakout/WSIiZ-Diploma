@@ -31,7 +31,8 @@ public class GameArea : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject cellPrefab;
     
-    public readonly List<PawnController> pawns = new List<PawnController>();
+    public readonly List<GameObject> pawnsGameObjects = new List<GameObject>();
+    public readonly List<IPawn> pawns = new List<IPawn>();
     public readonly List<GameAreaTile> tiles = new List<GameAreaTile>();
     
     private Coroutine _waitPathCor;
@@ -57,6 +58,7 @@ public class GameArea : MonoBehaviour
         _path = new Path(pathFinding);
         
         pawns.Clear();
+        pawnsGameObjects.Clear();
         foreach (Transform pawn in pawnsContainer)
         {
             var pawnController = pawn.GetComponent<PawnController>();
@@ -67,6 +69,7 @@ public class GameArea : MonoBehaviour
             BlockTileAtPos(pawnController.transform.position, true);
 
             pawns.Add(pawnController);
+            pawnsGameObjects.Add(pawn.gameObject);
         }
         
         foreach (Transform cell in cellsContainer)
@@ -122,6 +125,12 @@ public class GameArea : MonoBehaviour
     #endregion
 
     #region Utilities
+
+    public void AddPawn(GameObject pawn)
+    {
+        pawnsGameObjects.Add(pawn);
+        pawns.Add(pawn.GetComponent<IPawn>());
+    }
 
     public void BlockTile(GameAreaTile tile, bool block)
     {
@@ -235,21 +244,21 @@ public class GameArea : MonoBehaviour
         onGeneratedPath(tilePath);
     }
 
-    public void GeneratePathsToPawns(PawnController fromPawn, Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
+    public void GeneratePathsToPawns(IPawn fromPawn, Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
     {
         if (_waitPathCor != null) StopCoroutine(_waitPathCor);
         _waitPathCor = StartCoroutine(GeneratePathsToPawnsCor(fromPawn, onGeneratedPaths));
     }
     
-    private IEnumerator GeneratePathsToPawnsCor(PawnController fromPawn,  Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
+    private IEnumerator GeneratePathsToPawnsCor(IPawn fromPawn,  Action<Dictionary<IPawn, List<GameAreaTile>>> onGeneratedPaths)
     {
         var pathsToPawns = new Dictionary<IPawn, List<GameAreaTile>>();
         foreach (var pawn in pawns)
         {
             if (fromPawn == pawn) continue;
 
-            var toPos = pawn.transform.position;
-            var fromPos = fromPawn.Position;
+            var toPos = pawn.WorldPosition;
+            var fromPos = fromPawn.WorldPosition;
             var isFromToBlocked = (IsTileBlocked(fromPos), IsTileBlocked(toPos));
             BlockTileAtPos(fromPos, false);
             BlockTileAtPos(toPos, false);

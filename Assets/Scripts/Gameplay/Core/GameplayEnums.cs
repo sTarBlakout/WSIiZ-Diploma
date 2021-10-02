@@ -4,7 +4,7 @@ namespace Gameplay.Core
     {
         Friend,
         Enemy,
-        Consumable
+        Interactable
     }
     
     public enum OrderType
@@ -17,7 +17,8 @@ namespace Gameplay.Core
     public enum TileParticleType
     {
         ReachableTile,
-        ReachableEnemy
+        ReachableEnemy,
+        ReachableInteractable
     }
     
     public enum OrderResult
