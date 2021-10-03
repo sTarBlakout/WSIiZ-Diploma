@@ -25,3 +25,4 @@ MonoBehaviour:
   bloodVesselPrefab: {fileID: 7346976737164760374, guid: 1d4fe8914d837604eb456ce9b2f87ef0, type: 3}
   wayMoveLinePrefab: {fileID: 1512719256159936, guid: 66bd5cf96ce70d84d83c3e8f93f5b9d8, type: 3}
   wayAttackLinePrefab: {fileID: 1512719256159936, guid: bf918fc68cf14484886554d218c7e337, type: 3}
+  wayInteractLinePrefab: {fileID: 1512719256159936, guid: a31ae799340c2dd4086280ea9504e85f, type: 3}

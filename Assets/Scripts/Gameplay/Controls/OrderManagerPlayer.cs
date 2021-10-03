@@ -56,6 +56,17 @@ namespace Gameplay.Controls
                     OnPawnClicked?.Invoke(_targetPawnNormal);
                     return;
                 }
+
+                // Clicked on tile with interactable pawn, proceed with interaction
+                _targetPawnInteractable = tile.HasInteractableForPawn(_pawnController);
+                if (_targetPawnInteractable != null && IsPawnReachable(_targetPawnInteractable))
+                {
+                    var pathToPawn = pathsToPawns[_targetPawnInteractable];
+                    selectedTile = pathToPawn[pathToPawn.Count - 2];
+                    DrawWay(true, OrderType.Interact);
+                    OnPawnClicked?.Invoke(_targetPawnInteractable);
+                    return;
+                }
             }
         }
         
@@ -71,6 +82,7 @@ namespace Gameplay.Controls
             
             switch (order)
             {
+                case OrderType.Interact: StartOrderInteract(_targetPawnInteractable, false); break;
                 case OrderType.Attack: StartOrderAttack(_targetPawnNormal, false); break;
                 case OrderType.Move: StartOrderMove(selectedTile); break;
             }
@@ -82,6 +94,7 @@ namespace Gameplay.Controls
             DrawWay(false);
             selectedTile = null;
             _targetPawnNormal = null;
+            _targetPawnInteractable = null;
         }
         
         #endregion
@@ -105,8 +118,14 @@ namespace Gameplay.Controls
 
                 if (order == OrderType.Attack)
                 {
-                    _way.SetAttackLine(_pawnController.Data.WayAttackeLinePrefab)
-                        .BuildAttack(_targetPawnNormal);
+                    _way.SetAttackLine(_pawnController.Data.WayAttackLinePrefab)
+                        .BuildWayToPawn(_targetPawnNormal);
+                }
+
+                if (order == OrderType.Interact)
+                {
+                    _way.SetInteractableLine(_pawnController.Data.WayInteractLinePrefab)
+                        .BuildWayToPawn(_targetPawnInteractable);
                 }
             }
             else
@@ -120,29 +139,36 @@ namespace Gameplay.Controls
         private void HighlightReachableTiles(bool highlight)
         {
             var tilesList = new List<GameAreaTile>(pathsToTiles.Keys);
-            foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableTile, highlight);
+            foreach (var tile in tilesList)
+            {
+                if (_gameArea.IsTileBlocked(tile.NavPos)) continue;
+                tile.ActivateParticle(TileParticleType.ReachableTile, highlight);
+            }
         }
         
         private void HighlightEnemyTiles(bool highlight)
         {
             var pathsToNormalPawns = pathsToPawns.Where(pawnPath => pawnPath.Key is IPawnNormal)
                 .ToDictionary(pawnPath => pawnPath.Key as IPawnNormal, pawnPath => pawnPath.Value);
-            
-            var pathsToEnemies = pathsToNormalPawns.Where(pawnPath => 
-                pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
+
+            var pathsToEnemies = pathsToNormalPawns.Where(pawnPath =>
+                pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy
                 && IsPawnReachable(pawnPath.Key)
-                && pawnPath.Key.IsAlive)
-                .ToDictionary(pawnPath => pawnPath.Key, pawnPath => pawnPath.Value);
-            
+                && pawnPath.Key.IsAlive).ToList();
+
+            pathsToEnemies.RemoveAll(pawnPath => pawnPath.Value.Count == 0);
+
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
 
         private void HighlightInteractableTiles(bool highlight)
         {
-            var pathsToInteractables = pathsToPawns.Where(pawnPath => 
-                pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Interactable
-                && IsPawnReachable(pawnPath.Key));
+            var pathsToInteractables = pathsToPawns.Where(pawnPath =>
+                    pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Interactable &&
+                    IsPawnReachable(pawnPath.Key)).ToList();
+            
+            pathsToInteractables.RemoveAll(pawnPath => pawnPath.Value.Count == 0);
 
             var tilesList = pathsToInteractables.Select(pathsToInteractable => pathsToInteractable.Value[pathsToInteractable.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableInteractable, highlight);

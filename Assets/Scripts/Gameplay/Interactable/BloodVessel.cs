@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Gameplay.Interactable
 {
-    public class BloodVessel : MonoBehaviour, IPawnInteractable
+    public class BloodVessel : MonoBehaviour, IPawnInteractable, IPawnData
     {
         [SerializeField] private ParticleSystem bloodEssence;
         [SerializeField] private Transform pointsTextContainer;
@@ -50,8 +50,16 @@ namespace Gameplay.Interactable
         
         public bool IsBlockingTile => true;
         public Vector3 WorldPosition => transform.position;
-        public IPawnData PawnData => null;
+        public IPawnData PawnData => this;
 
         #endregion
+
+        public Vector3 Position => transform.position;
+        public int TeamId { get; }
+        public int DamageValue { get; }
+        public void ModifyLevelBy(int value)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

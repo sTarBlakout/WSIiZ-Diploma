@@ -13,6 +13,7 @@ namespace Gameplay.Controls
         [SerializeField] private UIView playerTurnView;
         [SerializeField] private UIView clickedTileView;
         [SerializeField] private UIView clickedEnemyView;
+        [SerializeField] private UIView clickedInteractableView;
 
         [Header("Buttons")] 
         [SerializeField] private UIButton endTurnButton;
@@ -31,6 +32,7 @@ namespace Gameplay.Controls
             playerTurnView.Hide(true);
             clickedTileView.Hide(true);
             clickedEnemyView.Hide(true);
+            clickedInteractableView.Hide(true);
         }
 
         private void OnEnable()
@@ -64,6 +66,7 @@ namespace Gameplay.Controls
         private void ProcessClickedPawn(IPawn pawn)
         {
             if (pawn.RelationTo(_player.Player) == PawnRelation.Enemy) ShowClickedEnemyView(true);
+            if (pawn.RelationTo(_player.Player) == PawnRelation.Interactable) ShowClickedInteractableView(true);
         }
         
         #endregion
@@ -87,6 +90,12 @@ namespace Gameplay.Controls
             if (show) clickedEnemyView.Show();
             else clickedEnemyView.Hide();
         }
+
+        private void ShowClickedInteractableView(bool show)
+        {
+            if (show) clickedInteractableView.Show();
+            else clickedInteractableView.Hide();
+        }
         
         #endregion
 
@@ -103,11 +112,18 @@ namespace Gameplay.Controls
             ShowClickedEnemyView(false);
             _player.StartOrder(OrderType.Attack);
         }
+        
+        public void ButtonInteractOrder()
+        {
+            ShowClickedInteractableView(false);
+            _player.StartOrder(OrderType.Interact);
+        }
 
         public void ButtonCancelOrder()
         {
             ShowClickedTileView(false);
             ShowClickedEnemyView(false);
+            ShowClickedInteractableView(false);
             _player.ResetOrder();
         }
         

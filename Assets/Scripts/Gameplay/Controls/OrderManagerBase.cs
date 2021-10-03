@@ -126,6 +126,7 @@ namespace Gameplay.Controls
         protected OrderBase _order;
         protected GameAreaWay _way;
         protected IPawnNormal _targetPawnNormal;
+        protected IPawnInteractable _targetPawnInteractable;
 
         protected void StartOrderMove(Vector3 toPos)
         {
@@ -170,6 +171,29 @@ namespace Gameplay.Controls
             var argsComplex = new OrderArgsComplex(_pawnController, _gameArea);
             argsComplex.AddOrder(orderMove)
                 .AddOrder(orderAttack)
+                .AddOnCompleteCallback(OnOrderAttackCompleted);
+            _order = new OrderComplex(argsComplex);
+
+            _order.StartOrder();
+        }
+
+        protected virtual void StartOrderInteract(IPawnInteractable target, bool moveIfTargetFar)
+        {
+            var argsMove = new OrderArgsMove(_pawnController, _gameArea);
+            argsMove.SetToPawn(target)
+                .SetMaxSteps(remainMovePoints)
+                .SetMoveAsFarAsCan(moveIfTargetFar)
+                .SetPathsToPawns(pathsToPawns)
+                .AddUsedMovePointsCallback(UseMovePoints);
+            var orderMove = new OrderMove(argsMove);
+            
+            var argsInteract = new OrderArgsInteract(_pawnController, _gameArea);
+            argsInteract.SetInteractable(target).AddUsedActionPointsCallback(UseActionPoints);
+            var orderInteract = new OrderInteract(argsInteract);
+            
+            var argsComplex = new OrderArgsComplex(_pawnController, _gameArea);
+            argsComplex.AddOrder(orderMove)
+                .AddOrder(orderInteract)
                 .AddOnCompleteCallback(OnOrderAttackCompleted);
             _order = new OrderComplex(argsComplex);
 

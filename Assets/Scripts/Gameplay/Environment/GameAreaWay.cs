@@ -10,6 +10,7 @@ namespace Gameplay.Environment
     {
         private LineRenderer _wayLine;
         private LineRenderer _attackLine;
+        private LineRenderer _interactLine;
         private Transform _followPawn;
         private List<GameAreaTile> _path;
         private OrderType _orderType = OrderType.None;
@@ -64,22 +65,32 @@ namespace Gameplay.Environment
             
             return this;
         }
-
-        public GameAreaWay BuildAttack(IPawn target)
+        
+        public GameAreaWay SetInteractableLine(GameObject intLinePrefab)
         {
-            _attackLine.positionCount = 2;
+            _interactLine = Instantiate(intLinePrefab).GetComponent<LineRenderer>();
+            _interactLine.transform.parent = transform;
+            _interactLine.enabled = false;
             
+            return this;
+        }
+
+        public GameAreaWay BuildWayToPawn(IPawn target)
+        {
+            var line = target is IPawnNormal ? _attackLine : _interactLine;
+            
+            line.positionCount = 2;
             if (_wayLine != null && _wayLine.positionCount > 1)
             {
-                _attackLine.SetPosition(0, _wayLine.GetPosition(_wayLine.positionCount - 1));
+                line.SetPosition(0, _wayLine.GetPosition(_wayLine.positionCount - 1));
             }
             else
             {
-                _attackLine.SetPosition(0, _followPawn.position);
+                line.SetPosition(0, _followPawn.position);
             }
             
-            _attackLine.SetPosition(1, target.PawnData.Position);
-            _attackLine.enabled = true;
+            line.SetPosition(1, target.PawnData.Position);
+            line.enabled = true;
             
             return this;
         }

@@ -24,6 +24,8 @@ namespace Gameplay.Environment
 
         public Action<GameAreaTile, bool> OnTileBlocked;
 
+        private bool _isBlocked;
+
         private void Start()
         {
             colliderHandler.OnPawnEnter += Enter;
@@ -57,13 +59,19 @@ namespace Gameplay.Environment
         {
             return (IPawnNormal) _containedPawns.FirstOrDefault(conPawn => conPawn.RelationTo(pawn) == PawnRelation.Enemy);
         }
+        
+        public IPawnInteractable HasInteractableForPawn(IPawn pawn)
+        {
+            return (IPawnInteractable) _containedPawns.FirstOrDefault(conPawn => conPawn.RelationTo(pawn) == PawnRelation.Interactable);
+        }
 
         public void ActivateParticle(TileParticleType type, bool activate)
         {
             switch (type)
             {
                 case TileParticleType.ReachableTile:
-                    if (!reachableEnemyParticle.isPlaying) GameManager.Instance.PlayParticle(reachableTileParticle, activate);
+                    if (!reachableEnemyParticle.isPlaying && !reachableInteractableParticle.isPlaying) 
+                        GameManager.Instance.PlayParticle(reachableTileParticle, activate);
                     break;
                 
                 case TileParticleType.ReachableEnemy:

@@ -11,7 +11,8 @@ namespace Gameplay.Core
     {
         None,
         Attack,
-        Move
+        Move,
+        Interact
     }
     
     public enum TileParticleType
