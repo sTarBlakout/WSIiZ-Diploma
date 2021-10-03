@@ -81,7 +81,8 @@ namespace Gameplay.Controls
         {
             foreach (var pawnPath in pathsToPawns)
             {
-                if (_pawnController.RelationTo(pawnPath.Key) != PawnRelation.Enemy || !pawnPath.Key.IsAlive) continue;
+                if (!(pawnPath.Key is IPawnNormal pawnNormal)) continue;
+                if (_pawnController.RelationTo(pawnNormal) != PawnRelation.Enemy || !pawnNormal.IsAlive) continue;
                 if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= remainMovePoints) return true;
             }
 
@@ -124,7 +125,7 @@ namespace Gameplay.Controls
 
         protected OrderBase _order;
         protected GameAreaWay _way;
-        protected IPawn _targetPawn;
+        protected IPawnNormal _targetPawnNormal;
 
         protected void StartOrderMove(Vector3 toPos)
         {
@@ -152,7 +153,7 @@ namespace Gameplay.Controls
             _order.StartOrder();
         }
 
-        protected virtual void StartOrderAttack(IPawn target, bool moveIfTargetFar)
+        protected virtual void StartOrderAttack(IPawnNormal target, bool moveIfTargetFar)
         {
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
             argsMove.SetToPawn(target)
@@ -262,7 +263,7 @@ namespace Gameplay.Controls
 
         protected bool IsPawnReachable(IPawn pawn)
         {
-            return pathsToPawns[pawn].Count - 2 <= remainMovePoints;
+            return pathsToPawns[pawn].Count - 2 <= remainMovePoints && remainActionPoints != 0;
         }
 
         #endregion

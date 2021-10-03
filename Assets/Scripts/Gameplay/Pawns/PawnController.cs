@@ -11,7 +11,7 @@ using Random = UnityEngine.Random;
 
 namespace Gameplay.Pawns
 {
-    public class PawnController : MonoBehaviour, IPawn, IPawnData, IDamageable
+    public class PawnController : MonoBehaviour, IPawnNormal, IPawnData, IDamageable
     {
         [Header("Logic Components")]
         [SerializeField] private PawnData pawnData;
@@ -70,7 +70,7 @@ namespace Gameplay.Pawns
                 pawnMover.RotateTo(position, onRotated);
         }
 
-        public void AttackTarget(IPawn target, Action onAttacked)
+        public void AttackTarget(IPawnNormal target, Action onAttacked)
         {
             if (pawnAttacker == null)
                 Debug.LogError($"{gameObject.name} does not have any attacker component!");

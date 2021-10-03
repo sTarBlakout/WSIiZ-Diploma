@@ -50,12 +50,12 @@ namespace Gameplay.Environment
 
         public bool CanWalkIn(IPawn pawn)
         {
-            return _containedPawns.Count == 0;
+            return _containedPawns.All(containedPawn => !containedPawn.IsBlockingTile);
         }
 
-        public IPawn HasEnemyForPawn(IPawn pawn)
+        public IPawnNormal HasEnemyForPawn(IPawn pawn)
         {
-            return _containedPawns.First(conPawn => conPawn.RelationTo(pawn) == PawnRelation.Enemy);
+            return (IPawnNormal) _containedPawns.FirstOrDefault(conPawn => conPawn.RelationTo(pawn) == PawnRelation.Enemy);
         }
 
         public void ActivateParticle(TileParticleType type, bool activate)

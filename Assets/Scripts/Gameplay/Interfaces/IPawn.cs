@@ -7,10 +7,8 @@ namespace Gameplay.Interfaces
     {
         PawnRelation RelationTo(IPawn pawn);
         
-        bool IsAlive { get; }
         bool IsBlockingTile { get; }
         Vector3 WorldPosition { get; }
         IPawnData PawnData { get; }
-        IDamageable Damageable { get; }
     }
 }

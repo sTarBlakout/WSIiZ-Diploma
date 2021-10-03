@@ -47,13 +47,13 @@ namespace Gameplay.Controls
                 }
 
                 // Clicked on tile with enemy pawn, proceed with attack
-                _targetPawn = tile.HasEnemyForPawn(_pawnController);
-                if (_targetPawn != null && _targetPawn.Damageable != null && IsPawnReachable(_targetPawn) && _targetPawn.IsAlive)
+                _targetPawnNormal = tile.HasEnemyForPawn(_pawnController);
+                if (_targetPawnNormal != null && IsPawnReachable(_targetPawnNormal) && _targetPawnNormal.IsAlive)
                 {
-                    var pathToPawn = pathsToPawns[_targetPawn];
+                    var pathToPawn = pathsToPawns[_targetPawnNormal];
                     selectedTile = pathToPawn[pathToPawn.Count - 2];
                     DrawWay(true, OrderType.Attack);
-                    OnPawnClicked?.Invoke(_targetPawn);
+                    OnPawnClicked?.Invoke(_targetPawnNormal);
                     return;
                 }
             }
@@ -71,7 +71,7 @@ namespace Gameplay.Controls
             
             switch (order)
             {
-                case OrderType.Attack: StartOrderAttack(_targetPawn, false); break;
+                case OrderType.Attack: StartOrderAttack(_targetPawnNormal, false); break;
                 case OrderType.Move: StartOrderMove(selectedTile); break;
             }
         }
@@ -81,7 +81,7 @@ namespace Gameplay.Controls
         {
             DrawWay(false);
             selectedTile = null;
-            _targetPawn = null;
+            _targetPawnNormal = null;
         }
         
         #endregion
@@ -106,7 +106,7 @@ namespace Gameplay.Controls
                 if (order == OrderType.Attack)
                 {
                     _way.SetAttackLine(_pawnController.Data.WayAttackeLinePrefab)
-                        .BuildAttack(_targetPawn);
+                        .BuildAttack(_targetPawnNormal);
                 }
             }
             else
@@ -125,10 +125,15 @@ namespace Gameplay.Controls
         
         private void HighlightEnemyTiles(bool highlight)
         {
-            var pathsToEnemies = pathsToPawns.Where(pawnPath => 
+            var pathsToNormalPawns = pathsToPawns.Where(pawnPath => pawnPath.Key is IPawnNormal)
+                .ToDictionary(pawnPath => pawnPath.Key as IPawnNormal, pawnPath => pawnPath.Value);
+            
+            var pathsToEnemies = pathsToNormalPawns.Where(pawnPath => 
                 pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Enemy 
                 && IsPawnReachable(pawnPath.Key)
-                && pawnPath.Key.IsAlive);
+                && pawnPath.Key.IsAlive)
+                .ToDictionary(pawnPath => pawnPath.Key, pawnPath => pawnPath.Value);
+            
             var tilesList = pathsToEnemies.Select(pathToEnemy => pathToEnemy.Value[pathToEnemy.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableEnemy, highlight);
         }
@@ -137,8 +142,7 @@ namespace Gameplay.Controls
         {
             var pathsToInteractables = pathsToPawns.Where(pawnPath => 
                 pawnPath.Key.RelationTo(_pawnController) == PawnRelation.Interactable
-                && IsPawnReachable(pawnPath.Key)
-                && pawnPath.Key.IsAlive);
+                && IsPawnReachable(pawnPath.Key));
 
             var tilesList = pathsToInteractables.Select(pathsToInteractable => pathsToInteractable.Value[pathsToInteractable.Value.Count - 1]).ToList();
             foreach (var tile in tilesList) tile.ActivateParticle(TileParticleType.ReachableInteractable, highlight);

@@ -17,8 +17,8 @@ namespace Gameplay.Controls
         private IEnumerator ProcessTurn()
         {
             yield return new WaitUntil(() => areAllPathsGenerated);
-            _targetPawn ??= GameManager.Instance.PlayerPawn;
-            StartOrderAttack(_targetPawn, true);
+            _targetPawnNormal ??= GameManager.Instance.PlayerPawn;
+            StartOrderAttack(_targetPawnNormal, true);
         }
 
         protected override bool CanMove()
@@ -29,7 +29,7 @@ namespace Gameplay.Controls
         protected override void ProcessPostOrder()
         {
             base.ProcessPostOrder();
-            if (isTakingTurn && CanDoActions() && CanReachAnyEnemy()) StartOrderAttack(_targetPawn, true);
+            if (isTakingTurn && CanDoActions() && CanReachAnyEnemy()) StartOrderAttack(_targetPawnNormal, true);
         }
     }
 }

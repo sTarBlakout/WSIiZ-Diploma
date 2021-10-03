@@ -6,19 +6,19 @@ namespace Gameplay.Pawns
 {
     public class PawnAttacker : MonoBehaviour
     {
-        private IPawn _pawn;
+        private IPawnNormal  _pawn;
         private PawnAnimator _pawnAnimator;
         
-        private IPawn _target;
+        private IPawnNormal  _target;
         private Action _onAttacked;
         
-        public void Init(IPawn pawn, PawnAnimator pawnAnimator)
+        public void Init(IPawnNormal  pawn, PawnAnimator pawnAnimator)
         {
             _pawn = pawn;
             _pawnAnimator = pawnAnimator;
         }
 
-        public void AttackTarget(IPawn target, Action onAttacked)
+        public void AttackTarget(IPawnNormal target, Action onAttacked)
         {
             _target = target;
             _onAttacked = onAttacked;
