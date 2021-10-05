@@ -53,13 +53,37 @@ namespace Gameplay.Interactable
         public IPawnData PawnData => this;
 
         #endregion
-
+        
+        #region IPawn Data
+        
         public Vector3 Position => transform.position;
         public int TeamId { get; }
         public int DamageValue { get; }
-        public void ModifyLevelBy(int value)
+        public void ModifyLevelBy(int value) { }
+
+        #endregion
+
+        #region IPawnInteractable Implementation
+
+        private IPawn _interactor;
+        
+        public void PreInteract(IPawn interactor, Action onPreInteract)
         {
-            throw new NotImplementedException();
+            _interactor = interactor;
+            onPreInteract?.Invoke();
         }
+
+        public void Interact(Action onInteract)
+        {
+            _interactor.PawnData.ModifyLevelBy(_bloodPoints);
+            onInteract?.Invoke();
+        }
+
+        public void PostInteract(Action onPostInteract)
+        {
+            onPostInteract?.Invoke();  
+        }
+
+        #endregion
     }
 }
