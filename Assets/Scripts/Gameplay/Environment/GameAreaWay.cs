@@ -89,7 +89,7 @@ namespace Gameplay.Environment
                 line.SetPosition(0, _followPawn.position);
             }
             
-            line.SetPosition(1, target.PawnData.Position);
+            line.SetPosition(1, target.WorldPosition);
             line.enabled = true;
             
             return this;

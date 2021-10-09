@@ -112,19 +112,19 @@ namespace Gameplay.Controls
                 
                 if (selectedTile != currLocationTile)
                 {
-                    _way.SetWayLine(_pawnController.Data.WayMoveLinePrefab)
+                    _way.SetWayLine(_pawnController.PawnData.WayMoveLinePrefab)
                         .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform));
                 }
 
                 if (order == OrderType.Attack)
                 {
-                    _way.SetAttackLine(_pawnController.Data.WayAttackLinePrefab)
+                    _way.SetAttackLine(_pawnController.PawnData.WayAttackLinePrefab)
                         .BuildWayToPawn(_targetPawnNormal);
                 }
 
                 if (order == OrderType.Interact)
                 {
-                    _way.SetInteractableLine(_pawnController.Data.WayInteractLinePrefab)
+                    _way.SetInteractableLine(_pawnController.PawnData.WayInteractLinePrefab)
                         .BuildWayToPawn(_targetPawnInteractable);
                 }
             }

@@ -4,9 +4,14 @@ namespace Gameplay.Interfaces
 {
     public interface IPawnData
     {
-        Vector3 Position { get; }
         int TeamId { get; }
-        int DamageValue { get; }
+        int Damage { get; }
+        int DistancePerTurn { get; }
+        int ActionsPerTurn { get; }
+        int AttackDistance { get; }
+        GameObject WayMoveLinePrefab { get; }
+        GameObject WayAttackLinePrefab { get; }
+        GameObject WayInteractLinePrefab { get; }
         void ModifyLevelBy(int value);
     }
 }

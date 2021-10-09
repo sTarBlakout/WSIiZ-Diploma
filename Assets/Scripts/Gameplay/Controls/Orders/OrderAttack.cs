@@ -29,7 +29,7 @@ namespace Gameplay.Controls.Orders
                 return;
             }
         
-            args.PawnController.RotateTo(args.Target.PawnData.Position, OnRotated);
+            args.PawnController.RotateTo(args.Target.WorldPosition, OnRotated);
         }
 
         private void OnRotated()

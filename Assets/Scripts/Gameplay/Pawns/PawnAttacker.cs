@@ -35,7 +35,7 @@ namespace Gameplay.Pawns
        
         public void Hit()
         {
-            _target.Damageable.Damage(_pawn.PawnData.DamageValue, OnDamageDealt);
+            _target.Damageable.Damage(_pawn.PawnData.Damage, OnDamageDealt);
         }
         
         #endregion

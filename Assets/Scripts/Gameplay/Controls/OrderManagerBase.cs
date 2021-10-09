@@ -57,8 +57,8 @@ namespace Gameplay.Controls
         public virtual void StartTurn()
         {
             isTakingTurn = true;
-            remainMovePoints = _pawnController.Data.DistancePerTurn;
-            remainActionPoints = _pawnController.Data.ActionsPerTurn;
+            remainMovePoints = _pawnController.PawnData.DistancePerTurn;
+            remainActionPoints = _pawnController.PawnData.ActionsPerTurn;
             GeneratePaths();
             RefreshPointsIndicator(true);
             OnTakingTurn?.Invoke(true);
@@ -83,7 +83,7 @@ namespace Gameplay.Controls
             {
                 if (!(pawnPath.Key is IPawnNormal pawnNormal)) continue;
                 if (_pawnController.RelationTo(pawnNormal) != PawnRelation.Enemy || !pawnNormal.IsAlive) continue;
-                if (pawnPath.Value.Count - _pawnController.Data.AttackDistance - 1 <= remainMovePoints) return true;
+                if (pawnPath.Value.Count - _pawnController.PawnData.AttackDistance - 1 <= remainMovePoints) return true;
             }
 
             return false;

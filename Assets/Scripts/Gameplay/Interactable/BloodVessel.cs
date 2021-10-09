@@ -56,9 +56,14 @@ namespace Gameplay.Interactable
         
         #region IPawn Data
         
-        public Vector3 Position => transform.position;
         public int TeamId { get; }
-        public int DamageValue { get; }
+        public int Damage { get; }
+        public int DistancePerTurn { get; }
+        public int ActionsPerTurn { get; }
+        public int AttackDistance { get; }
+        public GameObject WayMoveLinePrefab { get; }
+        public GameObject WayAttackLinePrefab { get; }
+        public GameObject WayInteractLinePrefab { get; }
         public void ModifyLevelBy(int value) { }
 
         #endregion

@@ -14,7 +14,7 @@ namespace Gameplay.Controls.Orders
         {
             completeArgs = new CompleteOrderArgsInteract();
             
-            args.PawnController.RotateTo(args.Target.PawnData.Position, OnRotated);
+            args.PawnController.RotateTo(args.Target.WorldPosition, OnRotated);
         }
         
         private void OnRotated()
