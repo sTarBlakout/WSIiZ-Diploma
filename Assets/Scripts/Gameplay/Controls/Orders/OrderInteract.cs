@@ -14,6 +14,12 @@ namespace Gameplay.Controls.Orders
         {
             completeArgs = new CompleteOrderArgsInteract();
             
+            args.PawnController.RotateTo(args.Target.PawnData.Position, OnRotated);
+        }
+        
+        private void OnRotated()
+        {
+            args.OnUsedActionPointsCallback?.Invoke(1);
             args.Target.PreInteract(args.PawnController, OnPreInteracted);
         }
 

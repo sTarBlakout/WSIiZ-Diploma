@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: PawnEnemyData
   m_EditorClassIdentifier: 
   teamId: 1
-  level: 15
+  level: 5
   actionsPerTurn: 2
   distancePerTurn: 2
   rotationSpeed: 120
@@ -25,3 +25,4 @@ MonoBehaviour:
   bloodVesselPrefab: {fileID: 7346976737164760374, guid: 1d4fe8914d837604eb456ce9b2f87ef0, type: 3}
   wayMoveLinePrefab: {fileID: 0}
   wayAttackLinePrefab: {fileID: 0}
+  wayInteractLinePrefab: {fileID: 0}
