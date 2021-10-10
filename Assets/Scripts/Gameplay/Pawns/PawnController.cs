@@ -14,7 +14,7 @@ namespace Gameplay.Pawns
     public class PawnController : MonoBehaviour, IPawnNormal
     {
         [Header("Logic Components")]
-        [SerializeField] private PawnData pawnData;
+        [SerializeField] private PawnNormalData pawnData;
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private PawnDamageable pawnDamageable;
@@ -28,12 +28,13 @@ namespace Gameplay.Pawns
         [SerializeField] private GameObject pawnGraphics;
         [SerializeField] private Collider pawnCollider;
 
-        private PawnData _currPawnData;
+        private PawnNormalData _currPawnData;
         private GameArea _gameArea;
         
         public PawnPointsIndicator PointsIndicator => pawnPointsIndicator;
         
         public Action onDeath;
+        private IPawnNormalData _pawnData;
 
         private void Awake()
         {
@@ -94,14 +95,21 @@ namespace Gameplay.Pawns
         #region IPawn Implementation
 
         public bool IsBlockingTile => IsAlive;
-        public bool IsAlive => _currPawnData.Level != 0;
+        public bool IsAlive => _currPawnData.BloodLevel != 0;
         public Vector3 WorldPosition => transform.position;
-        public IPawnData PawnData => _currPawnData;
+
         public IDamageable Damageable => pawnDamageable;
+        public IPawnNormalData PawnData => _currPawnData;
+        IPawnData IPawn.PawnData => PawnData;
 
         public PawnRelation RelationTo(IPawn pawn)
         {
-            return pawn.PawnData.TeamId == _currPawnData.TeamId ? PawnRelation.Friend : PawnRelation.Enemy;
+            if (pawn is IPawnNormal normalPawn)
+                return normalPawn.PawnData.TeamId == _currPawnData.TeamId
+                    ? PawnRelation.Friend
+                    : PawnRelation.Enemy;
+            
+            return PawnRelation.Unknown;
         }
 
         #endregion

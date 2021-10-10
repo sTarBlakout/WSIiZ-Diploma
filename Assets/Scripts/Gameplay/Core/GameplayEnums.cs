@@ -4,7 +4,8 @@ namespace Gameplay.Core
     {
         Friend,
         Enemy,
-        Interactable
+        Interactable,
+        Unknown
     }
     
     public enum OrderType

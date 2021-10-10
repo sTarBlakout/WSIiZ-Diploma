@@ -7,10 +7,10 @@ namespace Gameplay.Pawns
     {
         [SerializeField] private TextMeshPro levelText;
         
-        private PawnData _pawnData;
+        private PawnNormalData _pawnData;
         private Transform _cameraTransform;
 
-        public void Init(PawnData pawnData)
+        public void Init(PawnNormalData pawnData)
         {
             _pawnData = pawnData;
             _cameraTransform = Camera.main.transform;
@@ -19,7 +19,7 @@ namespace Gameplay.Pawns
         private void Update()
         {
             if (_pawnData == null) return;
-            levelText.text = _pawnData.Level.ToString(); 
+            levelText.text = _pawnData.BloodLevel.ToString(); 
             transform.LookAt(_cameraTransform.position);
         }
 

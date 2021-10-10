@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Gameplay.Interfaces
 {
-    public interface IPawnData
+    public interface IPawnInteractableData : IPawnData
     {
         
     }

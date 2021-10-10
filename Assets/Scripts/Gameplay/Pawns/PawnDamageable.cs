@@ -22,10 +22,10 @@ namespace Gameplay.Pawns
 
         private PawnMover _mover;
         private PawnAnimator _animator;
-        private PawnData _data;
+        private PawnNormalData _data;
         private GameArea _gameArea;
 
-        public void Init(PawnData data, PawnAnimator animator, PawnMover mover, GameArea gameArea, Action deathCallback)
+        public void Init(PawnNormalData data, PawnAnimator animator, PawnMover mover, GameArea gameArea, Action deathCallback)
         {
             _data = data;
             _animator = animator;
@@ -47,10 +47,10 @@ namespace Gameplay.Pawns
 
         public void Damage(int value, Action<int> onDamageDealt)
         {
-            var health = _data.Level;
+            var health = _data.BloodLevel;
             _dmgRec = value;
-            _data.ModifyLevelBy(-value);
-            if (_data.Level == 0) _dmgRec = value + (health - value);
+            _data.ModifyBloodLevelBy(-value);
+            if (_data.BloodLevel == 0) _dmgRec = value + (health - value);
             onDamageDealt?.Invoke(_dmgRec);
         }
         
@@ -64,7 +64,7 @@ namespace Gameplay.Pawns
             _animator.AnimateGetHit();
             onHitParticle.Play();
             SpawnBloodVessels();
-            if (_data.Level == 0) OnDeath?.Invoke();
+            if (_data.BloodLevel == 0) OnDeath?.Invoke();
             yield return new WaitForSeconds(_data.AfterDamageDelay);
             _animator.AnimateBlock(false);
             onPostDamage?.Invoke();

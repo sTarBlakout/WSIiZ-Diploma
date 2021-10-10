@@ -8,7 +8,7 @@ namespace Gameplay.Pawns
 {
     public class PawnMover : MonoBehaviour
     {
-        private PawnData _pawnData;
+        private PawnNormalData _pawnData;
         private GameObject _charGraphics;
         
         private Coroutine _waitCoroutine;
@@ -30,7 +30,7 @@ namespace Gameplay.Pawns
             ProcessRotation();
         }
 
-        public void Init(PawnData pawnData, PawnAnimator pawnAnimator, GameObject charGraphics)
+        public void Init(PawnNormalData pawnData, PawnAnimator pawnAnimator, GameObject charGraphics)
         {
             _pawnData = pawnData;
             _pawnAnimator = pawnAnimator;

@@ -12,7 +12,7 @@ namespace Gameplay.Controls
     public class OrderManagerPlayer : OrderManagerBase
     {
         public IPawn Player => _pawnController;
-        public GameAreaTile selectedTile;
+        [HideInInspector] public GameAreaTile selectedTile;
 
         public Action<GameAreaTile> OnTileClicked;
         public Action<IPawn> OnPawnClicked;
