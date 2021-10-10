@@ -15,6 +15,7 @@ namespace Gameplay.Interactable
 
         private int _bloodPoints;
         private Transform _cameraTransform;
+        public Action<GameObject> _onDestroyed;
         
         private void Start()
         {
@@ -26,6 +27,11 @@ namespace Gameplay.Interactable
         private void Update()
         {
             pointsTextContainer.LookAt(_cameraTransform.position);
+        }
+
+        public void SetOnDestroyListener(Action<GameObject> listener)
+        {
+            _onDestroyed += listener;
         }
 
         private IEnumerator StartParticleCor()
@@ -74,7 +80,9 @@ namespace Gameplay.Interactable
 
         public void PostInteract(Action onPostInteract)
         {
-            onPostInteract?.Invoke();  
+            _onDestroyed?.Invoke(gameObject);
+            onPostInteract?.Invoke();
+            Destroy(gameObject);
         }
 
         #endregion

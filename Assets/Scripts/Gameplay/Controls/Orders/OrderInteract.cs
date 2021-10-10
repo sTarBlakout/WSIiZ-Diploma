@@ -20,20 +20,10 @@ namespace Gameplay.Controls.Orders
         private void OnRotated()
         {
             args.OnUsedActionPointsCallback?.Invoke(1);
-            args.Target.PreInteract(args.PawnController, OnPreInteracted);
-        }
-
-        private void OnPreInteracted()
-        {
-            args.Target.Interact(OnInteracted);
+            args.PawnController.InteractWithTarget(args.Target, OnInteracted);
         }
 
         private void OnInteracted()
-        {
-            args.Target.PostInteract(OnPostInteracted);
-        }
-        
-        private void OnPostInteracted()
         {
             completeArgs.Result = OrderResult.Succes;
             args.OnCompleted?.Invoke(completeArgs);

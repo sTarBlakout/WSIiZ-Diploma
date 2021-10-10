@@ -93,5 +93,7 @@ namespace Gameplay.Environment
             var block = _containedPawns.Any(pawn => pawn.IsBlockingTile);
             OnTileBlocked?.Invoke(this, block);
         }
+        
+        //TODO: Fix when use interactable tile still blocked
     }
 }

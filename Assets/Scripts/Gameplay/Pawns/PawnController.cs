@@ -18,6 +18,7 @@ namespace Gameplay.Pawns
         [SerializeField] private PawnAnimator pawnAnimator;
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private PawnDamageable pawnDamageable;
+        [SerializeField] private PawnInteractor pawnInteractor;
         [SerializeField] private PawnMover pawnMover;
         
         [Header("Indicators")]
@@ -51,6 +52,7 @@ namespace Gameplay.Pawns
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
             pawnAttacker.Init(this, pawnAnimator);
             pawnHealthIndicator.Init(_currPawnData);
+            pawnInteractor.Init(this);
         }
 
         public void MovePath(List<Vector3> path, Action onReachedDestination)
@@ -76,12 +78,20 @@ namespace Gameplay.Pawns
             else
                 pawnAttacker.AttackTarget(target, onAttacked);
         }
+        
+        public void InteractWithTarget(IPawnInteractable target, Action onInteracted)
+        {
+            if (pawnInteractor == null)
+                Debug.LogError($"{gameObject.name} does not have any interactor component!");
+            else
+                pawnInteractor.InteractWithTarget(target, onInteracted);
+        }
 
         private void Die()
         {
             StartCoroutine(DeathCoroutine());
         }
-
+        
         private IEnumerator DeathCoroutine()
         {
             pawnAnimator.AnimateDie();
@@ -101,6 +111,11 @@ namespace Gameplay.Pawns
         public IDamageable Damageable => pawnDamageable;
         public IPawnNormalData PawnData => _currPawnData;
         IPawnData IPawn.PawnData => PawnData;
+        
+        public void SetOnDestroyListener(Action<GameObject> listener)
+        {
+            throw new NotImplementedException();
+        }
 
         public PawnRelation RelationTo(IPawn pawn)
         {

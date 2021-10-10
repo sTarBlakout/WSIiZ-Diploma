@@ -129,7 +129,15 @@ public class GameArea : MonoBehaviour
     public void AddPawn(GameObject pawn)
     {
         pawnsGameObjects.Add(pawn);
-        pawns.Add(pawn.GetComponent<IPawn>());
+        var ipawn = pawn.GetComponent<IPawn>();
+        ipawn.SetOnDestroyListener(RemovePawn);
+        pawns.Add(ipawn);
+    }
+
+    public void RemovePawn(GameObject pawn)
+    {
+        pawnsGameObjects.Remove(pawn);
+        pawns.Remove(pawn.GetComponent<IPawn>());
     }
 
     public void BlockTile(GameAreaTile tile, bool block)

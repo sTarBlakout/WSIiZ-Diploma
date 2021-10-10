@@ -2161,6 +2161,7 @@ GameObject:
   - component: {fileID: 3316738538415535986}
   - component: {fileID: 7126451183361429271}
   - component: {fileID: 8827536911420590770}
+  - component: {fileID: 7431357715898013227}
   - component: {fileID: 2597350701064370413}
   m_Layer: 0
   m_Name: Pawn
@@ -2232,6 +2233,7 @@ MonoBehaviour:
   pawnAnimator: {fileID: 7126451183361429271}
   pawnAttacker: {fileID: 3316738538415535986}
   pawnDamageable: {fileID: 8827536911420590770}
+  pawnInteractor: {fileID: 7431357715898013227}
   pawnMover: {fileID: 6974840743950332069}
   pawnHealthIndicator: {fileID: 5191940173515881877}
   pawnPointsIndicator: {fileID: 2449178562680488778}
@@ -2287,6 +2289,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   onHitParticle: {fileID: 1123429710686997568}
+--- !u!114 &7431357715898013227
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974840743950332067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f40aee658ad0e594393c344c63c4a963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &2597350701064370413
 Animator:
   serializedVersion: 3
