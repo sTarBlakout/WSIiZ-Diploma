@@ -35,6 +35,7 @@ namespace Gameplay.Environment
         public void Enter(IPawn pawn)
         {
             _containedPawns.Add(pawn);
+            pawn.OnDestroyed += TryRemovePawnGameObject;
             TryBlockTile();
         }
         
@@ -93,7 +94,12 @@ namespace Gameplay.Environment
             var block = _containedPawns.Any(pawn => pawn.IsBlockingTile);
             OnTileBlocked?.Invoke(this, block);
         }
-        
-        //TODO: Fix when use interactable tile still blocked
+
+        private void TryRemovePawnGameObject(GameObject pawnGO)
+        {
+            var pawn = pawnGO.GetComponent<IPawn>();
+            if (pawn == null) return;
+            Exit(pawn);
+        }
     }
 }

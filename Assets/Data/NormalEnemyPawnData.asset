@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: NormalEnemyPawnData
   m_EditorClassIdentifier: 
   teamId: 2
-  bloodLevel: 10
+  bloodLevel: 15
   actionsPerTurn: 2
   distancePerTurn: 2
   rotationSpeed: 120

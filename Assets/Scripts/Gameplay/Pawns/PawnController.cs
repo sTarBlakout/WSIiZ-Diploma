@@ -110,12 +110,8 @@ namespace Gameplay.Pawns
 
         public IDamageable Damageable => pawnDamageable;
         public IPawnNormalData PawnData => _currPawnData;
+        public Action<GameObject> OnDestroyed { get; set; }
         IPawnData IPawn.PawnData => PawnData;
-        
-        public void SetOnDestroyListener(Action<GameObject> listener)
-        {
-            throw new NotImplementedException();
-        }
 
         public PawnRelation RelationTo(IPawn pawn)
         {

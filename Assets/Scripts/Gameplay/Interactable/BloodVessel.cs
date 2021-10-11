@@ -15,8 +15,7 @@ namespace Gameplay.Interactable
 
         private int _bloodPoints;
         private Transform _cameraTransform;
-        public Action<GameObject> _onDestroyed;
-        
+
         private void Start()
         {
             StartCoroutine(StartParticleCor());
@@ -27,11 +26,6 @@ namespace Gameplay.Interactable
         private void Update()
         {
             pointsTextContainer.LookAt(_cameraTransform.position);
-        }
-
-        public void SetOnDestroyListener(Action<GameObject> listener)
-        {
-            _onDestroyed += listener;
         }
 
         private IEnumerator StartParticleCor()
@@ -56,6 +50,7 @@ namespace Gameplay.Interactable
         
         public bool IsBlockingTile => true;
         public Vector3 WorldPosition => transform.position;
+        public Action<GameObject> OnDestroyed { get; set; }
         public IPawnInteractableData PawnData => this;
         IPawnData IPawn.PawnData => PawnData;
 
@@ -80,7 +75,7 @@ namespace Gameplay.Interactable
 
         public void PostInteract(Action onPostInteract)
         {
-            _onDestroyed?.Invoke(gameObject);
+            OnDestroyed?.Invoke(gameObject);
             onPostInteract?.Invoke();
             Destroy(gameObject);
         }

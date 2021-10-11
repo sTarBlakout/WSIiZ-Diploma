@@ -130,7 +130,7 @@ public class GameArea : MonoBehaviour
     {
         pawnsGameObjects.Add(pawn);
         var ipawn = pawn.GetComponent<IPawn>();
-        ipawn.SetOnDestroyListener(RemovePawn);
+        ipawn.OnDestroyed += RemovePawn;
         pawns.Add(ipawn);
     }
 
