@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbc21eed75aa84543a374f0bc7373533, type: 3}
-  m_Name: GlobalData
+  m_Script: {fileID: 11500000, guid: 722bdf5ffd691714ebe5518364ed104d, type: 3}
+  m_Name: LevelList
   m_EditorClassIdentifier: 
-  targetFrameRate: 60
-  levelList: {fileID: 11400000, guid: 64cd46e10af52604bbe0208cbaf1522a, type: 2}
+  levels:
+  - {fileID: 6260269072011682803, guid: 44df02b0423907349976326f5abe7214, type: 3}

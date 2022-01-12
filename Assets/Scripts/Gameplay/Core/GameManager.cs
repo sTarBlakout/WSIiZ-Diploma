@@ -1,41 +1,54 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Pawns;
 using Gameplay.Controls;
 using Gameplay.Environment;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Core
 {
     public class GameManager : MonoBehaviour
     {
-        public static GameManager Instance => _instance;
-        private static GameManager _instance;
-        
+        public static GameManager Instance { get; private set; }
+
         private List<OrderManagerBase> _turnParticipants = new List<OrderManagerBase>();
         private PawnController _player;
         private CameraManager _cameraManager;
+        private InputManagerUI _inputManagerUI;
         private GameArea _gameArea;
         
         public PawnController PlayerPawn => _player;
 
+        private void Awake()
+        {
+            Instance = this;
+            _inputManagerUI = FindObjectOfType<InputManagerUI>();
+            _cameraManager = FindObjectOfType<CameraManager>();
+        }
+
         private void Start()
         {
-            _instance = this;
             StartCoroutine(InitGame());
         }
 
         private IEnumerator InitGame()
         {
-            _gameArea = FindObjectOfType<GameArea>();
-            _cameraManager = FindObjectOfType<CameraManager>();
+            var levelList = GlobalManager.Instance.GlobalData.LevelList;
+            var currLevel = levelList.GetLevel(0);
+            Instantiate(currLevel);
+
+            _gameArea = currLevel.GetComponent<GameArea>();
             yield return new WaitUntil(() => _gameArea.IsInitialized());
 
             _turnParticipants.Clear();
             foreach (var pawn in _gameArea.pawnsGameObjects) _turnParticipants.Add(pawn.GetComponent<OrderManagerBase>());
             _player = _gameArea.pawnsGameObjects.First(pawn => pawn.gameObject.CompareTag("Player")).GetComponent<PawnController>();
             StartCoroutine(GameCoroutine());
+            
+            _inputManagerUI.Init();
         }
 
         private IEnumerator GameCoroutine()

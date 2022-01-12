@@ -20,12 +20,22 @@ namespace Gameplay.Controls
         
         private OrderManagerPlayer _player;
 
-        #region Unity Events
-        
-        private void Awake()
+        public void Init()
         {
+            if (_player != null)
+            {
+                _player.OnTakingTurn -= ProcessPlayerTakingTurn;
+                _player.OnTileClicked -= ProcessClickedTile;
+                _player.OnPawnClicked -= ProcessClickedPawn;
+            }
+            
             _player = FindObjectOfType<OrderManagerPlayer>();
+            _player.OnTakingTurn += ProcessPlayerTakingTurn;
+            _player.OnTileClicked += ProcessClickedTile;
+            _player.OnPawnClicked += ProcessClickedPawn;
         }
+
+        #region Unity Events
 
         private void Start()
         {
@@ -35,20 +45,6 @@ namespace Gameplay.Controls
             clickedInteractableView.Hide(true);
         }
 
-        private void OnEnable()
-        {
-            _player.OnTakingTurn += ProcessPlayerTakingTurn;
-            _player.OnTileClicked += ProcessClickedTile;
-            _player.OnPawnClicked += ProcessClickedPawn;
-        }
-
-        private void OnDisable()
-        {
-            _player.OnTakingTurn -= ProcessPlayerTakingTurn;
-            _player.OnTileClicked -= ProcessClickedTile;
-            _player.OnPawnClicked -= ProcessClickedPawn;
-        }
-        
         #endregion
 
         #region Player Callbacks
