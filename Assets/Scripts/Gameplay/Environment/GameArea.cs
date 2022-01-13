@@ -56,7 +56,7 @@ public class GameArea : MonoBehaviour
     {
         yield return new WaitUntil(() => pathFinding.IsInitialised());
         _path = new Path(pathFinding);
-        
+
         pawns.Clear();
         pawnsGameObjects.Clear();
         foreach (Transform pawn in pawnsContainer)
@@ -71,7 +71,7 @@ public class GameArea : MonoBehaviour
             pawns.Add(pawnController);
             pawnsGameObjects.Add(pawn.gameObject);
         }
-        
+
         foreach (Transform cell in cellsContainer)
         {
             var tile = cell.GetComponent<GameAreaTile>();

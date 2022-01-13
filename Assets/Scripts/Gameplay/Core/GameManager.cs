@@ -37,8 +37,8 @@ namespace Gameplay.Core
         private IEnumerator InitGame()
         {
             var levelList = GlobalManager.Instance.GlobalData.LevelList;
-            var currLevel = levelList.GetLevel(0);
-            Instantiate(currLevel);
+            var currLevelPref = levelList.GetLevel(0);
+            var currLevel = Instantiate(currLevelPref);
 
             _gameArea = currLevel.GetComponent<GameArea>();
             yield return new WaitUntil(() => _gameArea.IsInitialized());
@@ -46,9 +46,9 @@ namespace Gameplay.Core
             _turnParticipants.Clear();
             foreach (var pawn in _gameArea.pawnsGameObjects) _turnParticipants.Add(pawn.GetComponent<OrderManagerBase>());
             _player = _gameArea.pawnsGameObjects.First(pawn => pawn.gameObject.CompareTag("Player")).GetComponent<PawnController>();
-            StartCoroutine(GameCoroutine());
-            
             _inputManagerUI.Init();
+            
+            StartCoroutine(GameCoroutine());
         }
 
         private IEnumerator GameCoroutine()

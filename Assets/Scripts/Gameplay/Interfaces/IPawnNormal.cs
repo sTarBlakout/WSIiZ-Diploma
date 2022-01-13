@@ -4,6 +4,6 @@ namespace Gameplay.Interfaces
     {
         bool IsAlive { get; }
         IDamageable Damageable { get; }
-        IPawnNormalData PawnData { get; }
+        new IPawnNormalData PawnData { get; }
     }
 }

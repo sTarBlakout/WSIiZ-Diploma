@@ -7,6 +7,6 @@ namespace Gameplay.Interfaces
         void PreInteract(IPawnNormal interactor, Action onPreInteract);
         void PostInteract(Action onPostInteract);
         void Interact(Action onInteract);
-        IPawnInteractableData PawnData { get; }
+        new IPawnInteractableData PawnData { get; }
     }
 }
