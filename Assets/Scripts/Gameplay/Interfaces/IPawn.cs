@@ -6,6 +6,7 @@ namespace Gameplay.Interfaces
 {
     public interface IPawn
     {
+        void Init();
         PawnRelation RelationTo(IPawn pawn);
         
         bool IsBlockingTile { get; }

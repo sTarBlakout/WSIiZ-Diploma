@@ -59,17 +59,17 @@ public class GameArea : MonoBehaviour
 
         pawns.Clear();
         pawnsGameObjects.Clear();
-        foreach (Transform pawn in pawnsContainer)
+        foreach (Transform pawnTransform in pawnsContainer)
         {
-            var pawnController = pawn.GetComponent<PawnController>();
-            pawnController.Init();
+            var pawn = pawnTransform.GetComponent<IPawn>();
+            pawn.Init();
 
-            var cellPosition = grid.WorldToCell(pawn.position);
-            pawn.position = grid.GetCellCenterWorld(cellPosition);
-            BlockTileAtPos(pawnController.transform.position, true);
+            var cellPosition = grid.WorldToCell(pawnTransform.position);
+            pawnTransform.position = grid.GetCellCenterWorld(cellPosition);
+            BlockTileAtPos(pawn.WorldPosition, true);
 
-            pawns.Add(pawnController);
-            pawnsGameObjects.Add(pawn.gameObject);
+            pawns.Add(pawn);
+            pawnsGameObjects.Add(pawnTransform.gameObject);
         }
 
         foreach (Transform cell in cellsContainer)
@@ -175,6 +175,11 @@ public class GameArea : MonoBehaviour
         if (filter.excludeBlockedTiles) result.RemoveAll(tile => IsTileBlocked(tile.NavPos));
 
         return result;
+    }
+
+    public GameAreaTile GetTileInPos(Vector3 pos)
+    {
+        return Physics.OverlapSphere(pos, 0.1f, tilesLayer).First()?.transform.parent.GetComponent<GameAreaTile>();
     }
     
     public List<GameAreaTile> OptimizePathForPawn(List<GameAreaTile> path, Transform pawn)

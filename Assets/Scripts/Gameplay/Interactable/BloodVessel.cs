@@ -42,6 +42,11 @@ namespace Gameplay.Interactable
         }
 
         #region IPawn Implementation
+
+        public void Init()
+        {
+            
+        }
         
         public PawnRelation RelationTo(IPawn pawn)
         {

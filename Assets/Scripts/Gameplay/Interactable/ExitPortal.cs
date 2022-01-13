@@ -7,7 +7,15 @@ namespace Gameplay.Interactable
 {
     public class ExitPortal : MonoBehaviour, IPawnInteractable, IPawnInteractableData
     {
+        private GameArea _gameArea;
+        
         #region IPawn Implementation
+        
+        public void Init()
+        {
+            _gameArea = FindObjectOfType<GameArea>();
+            _gameArea.GetTileInPos(WorldPosition).Enter(this);
+        }
         
         public PawnRelation RelationTo(IPawn pawn)
         {
@@ -26,7 +34,7 @@ namespace Gameplay.Interactable
         #region IPawnInteractable Implementation
 
         private IPawnNormal _interactor;
-        
+
         public void PreInteract(IPawnNormal interactor, Action onPreInteract)
         {
             _interactor = interactor;
