@@ -88,6 +88,8 @@ public class GameArea : MonoBehaviour
         return _isInit;
     }
     
+#if UNITY_EDITOR
+    
     [ContextMenu("Center Pawns")]
     public void CenterPawns()
     {
@@ -122,12 +124,15 @@ public class GameArea : MonoBehaviour
         }
     }
     
+#endif
+    
     #endregion
 
     #region Utilities
 
     public void AddPawn(GameObject pawn)
     {
+        pawn.transform.parent = pawnsContainer;
         pawnsGameObjects.Add(pawn);
         var ipawn = pawn.GetComponent<IPawn>();
         ipawn.OnDestroyed += RemovePawn;

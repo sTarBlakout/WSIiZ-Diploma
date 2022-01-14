@@ -19,6 +19,7 @@ namespace Gameplay.Core
         private CameraManager _cameraManager;
         private InputManagerUI _inputManagerUI;
         private GameArea _gameArea;
+        private Coroutine _gameCor;
         
         public PawnController PlayerPawn => _player;
 
@@ -31,11 +32,13 @@ namespace Gameplay.Core
 
         private void Start()
         {
-            StartCoroutine(InitGame());
+            StartCoroutine(InitNextLevel());
         }
 
-        private IEnumerator InitGame()
+        private IEnumerator InitNextLevel()
         {
+            if (_gameArea != null) Destroy(_gameArea.gameObject);
+            
             var levelList = GlobalManager.Instance.GlobalData.LevelList;
             var currLevelPref = levelList.GetLevel(0);
             var currLevel = Instantiate(currLevelPref);
@@ -52,28 +55,30 @@ namespace Gameplay.Core
             _player = _gameArea.pawnsGameObjects.First(pawn => pawn.gameObject.CompareTag("Player")).GetComponent<PawnController>();
             _inputManagerUI.Init();
             
-            StartCoroutine(GameCoroutine());
+            _gameCor = StartCoroutine(GameCoroutine());
         }
 
         private IEnumerator GameCoroutine()
         {
-            yield return new WaitUntil(_gameArea.IsInitialized);
-            
-            while (IsGameRunning())
+            while (_player.IsAlive)
             {
                 foreach (var participant in _turnParticipants)
                 {
                     if (!participant.CanTakeTurn()) continue;
-                    
+
                     participant.StartTurn();
                     yield return new WaitWhile(() => participant.IsTakingTurn);
+                    if (!_player.IsAlive) break;
                 }
             }
+            
+            FinishLevel(false);
         }
 
-        private bool IsGameRunning()
+        public void FinishLevel(bool win)
         {
-            return _player.IsAlive;
+            StopCoroutine(_gameCor);
+            StartCoroutine(InitNextLevel());
         }
 
         #region Uitilities

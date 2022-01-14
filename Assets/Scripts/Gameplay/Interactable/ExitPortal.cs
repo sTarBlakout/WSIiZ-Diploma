@@ -49,6 +49,7 @@ namespace Gameplay.Interactable
         public void PostInteract(Action onPostInteract)
         {
             onPostInteract?.Invoke();
+            GameManager.Instance.FinishLevel(true);
         }
 
         #endregion

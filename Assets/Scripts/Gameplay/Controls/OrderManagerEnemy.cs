@@ -31,5 +31,10 @@ namespace Gameplay.Controls
             base.ProcessPostOrder();
             if (isTakingTurn && CanDoActions() && CanReachAnyEnemy()) StartOrderAttack(_targetPawnNormal, true);
         }
+
+        protected override bool CanDoActions()
+        {
+            return base.CanDoActions() && CanReachAnyEnemy();
+        }
     }
 }
