@@ -112,8 +112,10 @@ namespace Gameplay.Controls
                 
                 if (selectedTile != currLocationTile)
                 {
+                    var optimizedPath = _gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform, order);
+                    
                     _way.SetWayLine(_pawnController.PawnData.WayMoveLinePrefab)
-                        .BuildWay(_gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform));
+                        .BuildWay(optimizedPath);
                 }
 
                 if (order == OrderType.Attack)

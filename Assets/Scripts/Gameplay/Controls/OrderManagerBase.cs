@@ -159,6 +159,7 @@ namespace Gameplay.Controls
             var argsMove = new OrderArgsMove(_pawnController, _gameArea);
             argsMove.SetToPawn(target)
                 .SetMaxSteps(remainMovePoints)
+                .SetWay(_way)
                 .SetMoveAsFarAsCan(moveIfTargetFar)
                 .SetPathsToPawns(pathsToPawns)
                 .AddUsedMovePointsCallback(UseMovePoints);
