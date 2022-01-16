@@ -34,6 +34,11 @@ namespace Gameplay.Controls
             _pawnController.onDeath += OnDeath;
         }
 
+        private void Start()
+        {
+            currLocationTile = _gameArea.GetTileInPos(transform.position);
+        }
+
         private void Update()
         {
             _order?.Update();
@@ -74,10 +79,10 @@ namespace Gameplay.Controls
         
         protected virtual bool HasMoreActionsToDo()
         {
-            return CanMove() || CanDoActions() && CanReachAnyEnemy();
+            return CanMove() || CanDoActions() && CanReachAnyEnemyCurrTurn();
         }
         
-        protected bool CanReachAnyEnemy()
+        protected virtual bool CanReachAnyEnemyCurrTurn()
         {
             foreach (var pawnPath in pathsToPawns)
             {

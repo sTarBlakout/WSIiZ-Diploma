@@ -17,6 +17,8 @@ namespace Gameplay.Controls
         public Action<GameAreaTile> OnTileClicked;
         public Action<IPawn> OnPawnClicked;
 
+        public bool inputBlocked;
+
         #region Finger Handling
 
         private void OnEnable()
@@ -31,9 +33,9 @@ namespace Gameplay.Controls
 
         private void HandleFingerTap(LeanFinger finger)
         {
-            if (_order != null || !isTakingTurn || !areAllPathsGenerated || selectedTile != null) return;
+            if (_order != null || !isTakingTurn || !areAllPathsGenerated || selectedTile != null || inputBlocked) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
-            
+
             var tile = hitInfo.collider.transform.parent.GetComponent<GameAreaTile>();
             if (tile != null)
             {
@@ -109,7 +111,7 @@ namespace Gameplay.Controls
                 if (order == OrderType.None) return;
 
                 _way = _gameArea.CreateWay().SetFollowPawn(_pawnController.transform).SetOrder(order);
-                
+
                 if (selectedTile != currLocationTile)
                 {
                     var optimizedPath = _gameArea.OptimizePathForPawn(pathsToTiles[selectedTile], _pawnController.transform, order);

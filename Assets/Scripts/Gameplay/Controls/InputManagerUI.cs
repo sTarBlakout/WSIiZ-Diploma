@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Doozy.Engine.UI;
 using Gameplay.Core;
 using Gameplay.Environment;
@@ -51,46 +52,46 @@ namespace Gameplay.Controls
 
         private void ProcessPlayerTakingTurn(bool takingTurn)
         {
-            ShowPlayerTurnView(takingTurn);
+            ShowView(takingTurn, playerTurnView);
         }
         
         private void ProcessClickedTile(GameAreaTile tile)
         {
-            ShowClickedTileView(true);
+            ShowView(true, clickedTileView);
         }
         
         private void ProcessClickedPawn(IPawn pawn)
         {
-            if (pawn.RelationTo(_player.Player) == PawnRelation.Enemy) ShowClickedEnemyView(true);
-            if (pawn.RelationTo(_player.Player) == PawnRelation.Interactable) ShowClickedInteractableView(true);
+            if (pawn.RelationTo(_player.Player) == PawnRelation.Enemy) ShowView(true, clickedEnemyView);
+            if (pawn.RelationTo(_player.Player) == PawnRelation.Interactable) ShowView(true, clickedInteractableView);
         }
         
         #endregion
 
         #region UI Managment
-        
-        private void ShowPlayerTurnView(bool show)
+
+        private void ShowView(bool show, UIView view)
         {
-            if (show) playerTurnView.Show();
-            else playerTurnView.Hide();
-        }
-        
-        private void ShowClickedTileView(bool show)
-        {
-            if (show) clickedTileView.Show();
-            else clickedTileView.Hide();
-        }
-        
-        private void ShowClickedEnemyView(bool show)
-        {
-            if (show) clickedEnemyView.Show();
-            else clickedEnemyView.Hide();
+            if (show) view.Show();
+            else
+            {
+                view.Hide();
+                _player.inputBlocked = true;
+                StartCoroutine(WaitForViewToHide(view));
+            }
         }
 
-        private void ShowClickedInteractableView(bool show)
+        private IEnumerator WaitForViewToHide(UIView view)
         {
-            if (show) clickedInteractableView.Show();
-            else clickedInteractableView.Hide();
+            yield return new WaitUntil(() => view.IsHidden);
+            _player.inputBlocked = false;
+        }
+
+        private void HideAll()
+        {
+            if (clickedTileView.IsVisible) ShowView(false, clickedTileView);
+            if (clickedEnemyView.IsVisible) ShowView(false, clickedEnemyView);
+            if (clickedInteractableView.IsVisible) ShowView(false, clickedInteractableView);
         }
         
         #endregion
@@ -99,34 +100,31 @@ namespace Gameplay.Controls
 
         public void ButtonMoveOrder()
         {
-            ShowClickedTileView(false);
+            ShowView(false, clickedTileView);
             _player.StartOrder(OrderType.Move);
         }
         
         public void ButtonAttackOrder()
         {
-            ShowClickedEnemyView(false);
+            ShowView(false, clickedEnemyView);
             _player.StartOrder(OrderType.Attack);
         }
         
         public void ButtonInteractOrder()
         {
-            ShowClickedInteractableView(false);
+            ShowView(false, clickedInteractableView);
             _player.StartOrder(OrderType.Interact);
         }
 
         public void ButtonCancelOrder()
         {
-            ShowClickedTileView(false);
-            ShowClickedEnemyView(false);
-            ShowClickedInteractableView(false);
+            HideAll();
             _player.ResetOrder();
         }
         
         public void ButtonEndTurn()
         {
-            ShowClickedTileView(false);
-            ShowClickedEnemyView(false);
+            HideAll();
             _player.CompleteTurn();
         }
         

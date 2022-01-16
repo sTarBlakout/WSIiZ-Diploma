@@ -45,7 +45,12 @@ namespace Gameplay.Controls.Orders
             {
                 var pathToPawn = args.PathsToPawns.First(pawn => pawn.Key == args.ToPawn).Value;
                 pathToPawn.RemoveAt(pathToPawn.Count - 1);
-                TryTraversePath(pathToPawn);
+                if (pathToPawn.Count > 1) TryTraversePath(pathToPawn);
+                else
+                {
+                    completeArgs.MovedToTile = pathToPawn.Last();
+                    OnReachedDestination();
+                }
             }
             else
             {
