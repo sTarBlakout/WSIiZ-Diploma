@@ -194,11 +194,12 @@ public class GameArea : MonoBehaviour
         var traverser = new GameObject("Traverser");
         traverser.transform.position = pawn.position;
         traverser.transform.rotation = pawn.rotation;
-            
+
         foreach (var point in path)
         {
             var posRot = (point, false);
-            if (Vector3.Angle(traverser.transform.forward, point.WorldPos - traverser.transform.position) > 5f ||
+
+            if (Vector3.Angle(traverser.transform.forward, traverser.transform.position - point.WorldPos) > 5f ||
                 (order == OrderType.Attack || order == OrderType.Interact) && path[path.Count - 1] == point)
             {
                 rez[rez.Count - 1] = (rez[rez.Count - 1].tile, true);
