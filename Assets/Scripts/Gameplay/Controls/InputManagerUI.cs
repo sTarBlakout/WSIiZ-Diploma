@@ -72,19 +72,25 @@ namespace Gameplay.Controls
 
         private void ShowView(bool show, UIView view)
         {
-            if (show) view.Show();
+            if (show)
+            {
+                if (view.IsHiding)
+                    StartCoroutine(WaitForViewToHide(view, () => view.Show()));
+                else
+                    view.Show();
+            }
             else
             {
                 view.Hide();
                 _player.inputBlocked = true;
-                StartCoroutine(WaitForViewToHide(view));
+                StartCoroutine(WaitForViewToHide(view, () => _player.inputBlocked = false));
             }
         }
 
-        private IEnumerator WaitForViewToHide(UIView view)
+        private IEnumerator WaitForViewToHide(UIView view, Action onViewHidden)
         {
             yield return new WaitUntil(() => view.IsHidden);
-            _player.inputBlocked = false;
+            onViewHidden?.Invoke();
         }
 
         private void HideAll()

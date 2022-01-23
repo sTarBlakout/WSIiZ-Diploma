@@ -33,7 +33,6 @@ namespace Gameplay.Controls
 
         private void HandleFingerTap(LeanFinger finger)
         {
-            // TODO: when all enemies are dead, input is blocked
             if (_order != null || !isTakingTurn || !areAllPathsGenerated || selectedTile != null || inputBlocked) return;
             if (!Physics.Raycast(finger.GetRay(), out var hitInfo, Mathf.Infinity) || finger.IsOverGui) return;
 
