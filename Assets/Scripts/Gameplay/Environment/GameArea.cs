@@ -186,34 +186,37 @@ public class GameArea : MonoBehaviour
     {
         return Physics.OverlapSphere(pos, 0.1f, tilesLayer).First()?.transform.parent.GetComponent<GameAreaTile>();
     }
-    
+
     public List<GameAreaTile> OptimizePathForPawn(List<GameAreaTile> path, Transform pawn, OrderType order = OrderType.Move)
     {
         var rez = new List<(GameAreaTile tile, bool rot)>();
-
+    
         var traverser = new GameObject("Traverser");
         traverser.transform.position = pawn.position;
         traverser.transform.rotation = pawn.rotation;
 
+        var first = true;
         foreach (var point in path)
         {
             var posRot = (point, false);
-
-            if (Vector3.Angle(traverser.transform.forward, traverser.transform.position - point.WorldPos) > 5f ||
-                (order == OrderType.Attack || order == OrderType.Interact) && path[path.Count - 1] == point)
+            if (first) posRot.Item2 = true;
+            
+            var dot = Vector3.Dot(traverser.transform.forward, (point.WorldPos - traverser.transform.position).normalized);
+            if (!first && dot < 0.9f)
             {
                 rez[rez.Count - 1] = (rez[rez.Count - 1].tile, true);
                 traverser.transform.LookAt(point.WorldPos);
             }
-
+    
             traverser.transform.position = point.WorldPos;
             rez.Add(posRot);
+            first = false;
         }
             
         rez[rez.Count - 1] = (rez[rez.Count - 1].tile, true);
         rez.RemoveAll(posRot => !posRot.rot);
         Destroy(traverser);
-            
+
         return rez.Select(tuple => tuple.tile).ToList();
     }
 
