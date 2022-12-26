@@ -7,6 +7,11 @@ namespace Gameplay.Core
         Interactable,
         Unknown
     }
+
+    public enum ItemType
+    {
+        Weapon
+    }
     
     public enum OrderType
     {
