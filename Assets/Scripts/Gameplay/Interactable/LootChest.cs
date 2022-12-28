@@ -17,18 +17,6 @@ namespace Gameplay.Interactable
         private GameArea _gameArea;
         private bool _hasLoot = true;
 
-        private void GiveLoot()
-        {
-            var itemType = items[0].ItemData.ItemType;
-
-            switch (itemType)
-            {
-                case ItemType.Weapon:
-                    Debug.Log("Give player a weapon with stats: " + ((IItemWeapon)items[0]).ItemData.DamageModifier + " " + ((IItemWeapon)items[0]).ItemData.RangeModifier);
-                    break;
-            }
-        }
-        
         #region IPawn Implementation
 
         public void Init()
@@ -64,7 +52,7 @@ namespace Gameplay.Interactable
 
         public void Interact(Action onInteract)
         {
-            GiveLoot();
+            _interactor.GiveItems(items);
             onInteract?.Invoke();
         }
 

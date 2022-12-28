@@ -2162,6 +2162,7 @@ GameObject:
   - component: {fileID: 7126451183361429271}
   - component: {fileID: 8827536911420590770}
   - component: {fileID: 7431357715898013227}
+  - component: {fileID: 6211088056069548771}
   - component: {fileID: 2597350701064370413}
   m_Layer: 0
   m_Name: Pawn
@@ -2234,6 +2235,7 @@ MonoBehaviour:
   pawnAttacker: {fileID: 3316738538415535986}
   pawnDamageable: {fileID: 8827536911420590770}
   pawnInteractor: {fileID: 7431357715898013227}
+  pawnInventory: {fileID: 6211088056069548771}
   pawnMover: {fileID: 6974840743950332069}
   pawnHealthIndicator: {fileID: 5191940173515881877}
   pawnPointsIndicator: {fileID: 2449178562680488778}
@@ -2301,9 +2303,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f40aee658ad0e594393c344c63c4a963, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6211088056069548771
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6974840743950332067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a99203f79fe706b42a3d6372760c00a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponHoldPosition: {fileID: 5294198715003031323}
 --- !u!95 &2597350701064370413
 Animator:
-  serializedVersion: 3
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2316,10 +2331,11 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
 --- !u!1 &7114858917856036110
 GameObject:
   m_ObjectHideFlags: 0

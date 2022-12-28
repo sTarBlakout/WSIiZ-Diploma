@@ -8,10 +8,11 @@ namespace Gameplay.Items.Weapons
         [SerializeField] private ItemWeaponSwordData weaponData;
 
         private ItemWeaponSwordData _currWeaponData;
-        
+
+        public GameObject ItemGameObject => gameObject;
         public IItemWeaponData ItemData => weaponData;
         IItemData IItem.ItemData => ItemData;
-        
+
         public void Start()
         {
             _currWeaponData = Instantiate(weaponData);

@@ -19,6 +19,7 @@ namespace Gameplay.Pawns
         [SerializeField] private PawnAttacker pawnAttacker;
         [SerializeField] private PawnDamageable pawnDamageable;
         [SerializeField] private PawnInteractor pawnInteractor;
+        [SerializeField] private PawnInventory pawnInventory;
         [SerializeField] private PawnMover pawnMover;
         
         [Header("Indicators")]
@@ -48,7 +49,7 @@ namespace Gameplay.Pawns
             _currPawnData = Instantiate(pawnData);
             _gameArea = FindObjectOfType<GameArea>();
 
-            pawnDamageable.Init(_currPawnData, pawnAnimator, pawnMover, _gameArea, Die);
+            pawnDamageable.Init(_currPawnData, pawnAnimator, pawnMover, _gameArea, HandleDeath);
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
             pawnAttacker.Init(this, pawnAnimator);
             pawnHealthIndicator.Init(_currPawnData);
@@ -87,7 +88,7 @@ namespace Gameplay.Pawns
                 pawnInteractor.InteractWithTarget(target, onInteracted);
         }
 
-        private void Die()
+        private void HandleDeath()
         {
             StartCoroutine(DeathCoroutine());
         }
@@ -110,6 +111,12 @@ namespace Gameplay.Pawns
 
         public IDamageable Damageable => pawnDamageable;
         public IPawnNormalData PawnData => _currPawnData;
+
+        public void GiveItems(List<IItem> items)
+        {
+            pawnInventory.AddItems(items);
+        }
+
         public Action<GameObject> OnDestroyed { get; set; }
         IPawnData IPawn.PawnData => PawnData;
 
