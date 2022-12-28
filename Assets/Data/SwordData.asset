@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ee64b1d4dca6a2429d48d96023b9d8b, type: 3}
   m_Name: SwordData
   m_EditorClassIdentifier: 
+  itemName: Great Sword
   itemType: 0
-  damageModifier: 1488
+  damageModifier: 2
   rangeModifier: 0

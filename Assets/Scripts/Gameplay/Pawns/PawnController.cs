@@ -51,7 +51,7 @@ namespace Gameplay.Pawns
 
             pawnDamageable.Init(_currPawnData, pawnAnimator, pawnMover, _gameArea, HandleDeath);
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
-            pawnAttacker.Init(this, pawnAnimator);
+            pawnAttacker.Init(this, pawnAnimator, pawnInventory);
             pawnHealthIndicator.Init(_currPawnData);
             pawnInteractor.Init(this);
         }

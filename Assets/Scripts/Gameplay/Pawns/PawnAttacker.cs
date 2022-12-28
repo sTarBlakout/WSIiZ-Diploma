@@ -8,14 +8,16 @@ namespace Gameplay.Pawns
     {
         private IPawnNormal  _pawn;
         private PawnAnimator _pawnAnimator;
+        private PawnInventory _pawnInventory;
         
         private IPawnNormal  _target;
         private Action _onAttacked;
         
-        public void Init(IPawnNormal  pawn, PawnAnimator pawnAnimator)
+        public void Init(IPawnNormal  pawn, PawnAnimator pawnAnimator, PawnInventory pawnInventory)
         {
             _pawn = pawn;
             _pawnAnimator = pawnAnimator;
+            _pawnInventory = pawnInventory;
         }
 
         public void AttackTarget(IPawnNormal target, Action onAttacked)
@@ -35,7 +37,14 @@ namespace Gameplay.Pawns
        
         public void Hit()
         {
-            _target.Damageable.Damage(_pawn.PawnData.BloodLevel, OnDamageDealt);
+            var damage = _pawn.PawnData.BloodLevel;
+
+            if (_pawnInventory.HasWeapon())
+            {
+                damage += _pawnInventory.GetWeaponDamageModifier();
+            }
+            
+            _target.Damageable.Damage(damage, OnDamageDealt);
         }
         
         #endregion

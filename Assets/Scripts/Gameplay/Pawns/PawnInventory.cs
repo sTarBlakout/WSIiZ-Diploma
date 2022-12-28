@@ -22,6 +22,16 @@ namespace Gameplay.Pawns
             }
         }
 
+        public bool HasWeapon()
+        {
+            return equippedWeapon != null;
+        }
+
+        public int GetWeaponDamageModifier()
+        {
+            return equippedWeapon.ItemData.DamageModifier;
+        }
+
         private void EquipWeapon(IItemWeapon weapon)
         {
             if (equippedWeapon != null) Destroy(equippedWeapon.ItemGameObject);
