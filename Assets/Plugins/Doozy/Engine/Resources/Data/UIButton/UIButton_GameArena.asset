@@ -20,3 +20,6 @@ MonoBehaviour:
   - MoveOrder
   - AttackOrder
   - InteractOrder
+  - InventoryAccept
+  - OpenInventory
+  - InventorySlotButton

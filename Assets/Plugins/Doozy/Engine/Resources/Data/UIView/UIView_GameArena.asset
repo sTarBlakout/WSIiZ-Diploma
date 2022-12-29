@@ -19,3 +19,4 @@ MonoBehaviour:
   - ClickedTile
   - PlayerTurn
   - ClickedInteractable
+  - Inventory

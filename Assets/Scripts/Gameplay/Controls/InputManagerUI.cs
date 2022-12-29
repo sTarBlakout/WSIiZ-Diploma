@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using Doozy.Engine.Layouts;
 using Doozy.Engine.UI;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Gameplay.Controls
 {
@@ -12,13 +14,14 @@ namespace Gameplay.Controls
     {
         [Header("Views")]
         [SerializeField] private UIView playerTurnView;
+        [SerializeField] private UIView inventoryView;
         [SerializeField] private UIView clickedTileView;
         [SerializeField] private UIView clickedEnemyView;
         [SerializeField] private UIView clickedInteractableView;
 
-        [Header("Buttons")] 
-        [SerializeField] private UIButton endTurnButton;
-        
+        [Header("Prefabs")] 
+        [SerializeField] private UIButton inventorySlotPrefab;
+
         private OrderManagerPlayer _player;
 
         public void Init()
@@ -41,6 +44,7 @@ namespace Gameplay.Controls
         private void Start()
         {
             playerTurnView.Hide(true);
+            inventoryView.Hide(true);
             clickedTileView.Hide(true);
             clickedEnemyView.Hide(true);
             clickedInteractableView.Hide(true);
@@ -133,7 +137,40 @@ namespace Gameplay.Controls
             HideAll();
             _player.CompleteTurn();
         }
+
+        public void ButtonOpenInventory()
+        {
+            ShowView(false, playerTurnView);
+            ShowView(true, inventoryView);
+            InitInventoryPanel();
+        }
+        
+        public void ButtonInventoryAccept()
+        {
+            ShowView(false, inventoryView);
+            ShowView(true, playerTurnView);
+        }
         
         #endregion
+        
+        #region Inventory Panel Managment
+
+        private void InitInventoryPanel()
+        {
+            var radialMenu = inventoryView.GetComponentInChildren<RadialLayout>();
+            
+            foreach (Transform child in radialMenu.transform) 
+            {
+                Destroy(child.gameObject);
+            }
+
+            var randBtns = Random.Range(3, 6);
+            for (var i = 0; i < randBtns; i++)
+            {
+                Instantiate(inventorySlotPrefab, radialMenu.transform, false);
+            }
+        }
+        
+        #endregion 
     }
 }
