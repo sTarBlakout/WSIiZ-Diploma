@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Gameplay.Core;
 
 namespace Gameplay.Interfaces
 {
@@ -9,5 +10,6 @@ namespace Gameplay.Interfaces
         new IPawnNormalData PawnData { get; }
 
         void GiveItems(List<IItem> item);
+        List<(IItem, bool)> GetInventoryItems(ItemType type);
     }
 }

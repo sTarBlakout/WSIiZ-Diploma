@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SwordData
   m_EditorClassIdentifier: 
   itemName: Great Sword
+  itemIcon: {fileID: 21300000, guid: a71b0afc6a980004f90b30aff71994f7, type: 3}
   itemType: 0
   damageModifier: 2
   rangeModifier: 0

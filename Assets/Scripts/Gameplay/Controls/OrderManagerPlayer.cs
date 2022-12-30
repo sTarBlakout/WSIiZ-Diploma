@@ -101,6 +101,14 @@ namespace Gameplay.Controls
         
         #endregion
 
+        #region InventoryManagment
+
+        public List<(IItem, bool)> GetItems(ItemType type)
+        {
+            return _pawnController.GetInventoryItems(type);
+        }
+
+        #endregion
 
         #region Visuals Managment
         

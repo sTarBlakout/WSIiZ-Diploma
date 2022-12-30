@@ -1,11 +1,13 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Doozy.Engine.Layouts;
 using Doozy.Engine.UI;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Gameplay.Controls
@@ -21,6 +23,7 @@ namespace Gameplay.Controls
 
         [Header("Prefabs")] 
         [SerializeField] private UIButton inventorySlotPrefab;
+        [SerializeField] private GameObject selectedSlotFrame;
 
         private OrderManagerPlayer _player;
 
@@ -142,7 +145,7 @@ namespace Gameplay.Controls
         {
             ShowView(false, playerTurnView);
             ShowView(true, inventoryView);
-            InitInventoryPanel();
+            StartCoroutine(InitInventoryPanel());
         }
         
         public void ButtonInventoryAccept()
@@ -154,21 +157,35 @@ namespace Gameplay.Controls
         #endregion
         
         #region Inventory Panel Managment
+        
+        private GameObject _selectedSlotFrame;
 
-        private void InitInventoryPanel()
+        private IEnumerator InitInventoryPanel()
         {
             var radialMenu = inventoryView.GetComponentInChildren<RadialLayout>();
-            
+            _selectedSlotFrame = Instantiate(selectedSlotFrame, inventoryView.transform, false);
+
             foreach (Transform child in radialMenu.transform) 
             {
                 Destroy(child.gameObject);
             }
-
-            var randBtns = Random.Range(3, 6);
-            for (var i = 0; i < randBtns; i++)
+            
+            var items = _player.GetItems(ItemType.Weapon);
+            foreach (var item in items)
             {
-                Instantiate(inventorySlotPrefab, radialMenu.transform, false);
+                var slot = Instantiate(inventorySlotPrefab, radialMenu.transform, false);
+                slot.transform.Find("Icon").GetComponent<Image>().sprite = item.Item1.ItemData.ItemIcon;
+                slot.GetComponent<Button>().onClick.AddListener(() => ProcessItemClick(item.Item1, slot.gameObject));
+
+                if (!item.Item2) continue;
+                yield return new WaitForEndOfFrame();
+                ProcessItemClick(item.Item1, slot.gameObject);
             }
+        }
+
+        private void ProcessItemClick(IItem item, GameObject slot)
+        {
+            _selectedSlotFrame.transform.localPosition = slot.transform.localPosition;
         }
         
         #endregion 

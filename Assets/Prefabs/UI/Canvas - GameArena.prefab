@@ -144,6 +144,7 @@ MonoBehaviour:
   clickedEnemyView: {fileID: 2647802402518210472}
   clickedInteractableView: {fileID: 2647802401976248943}
   inventorySlotPrefab: {fileID: 351338274656701284, guid: b05b598201a63554c93340254cf6d325, type: 3}
+  selectedSlotFrame: {fileID: 7195038613468531117, guid: 56c6dc7cb4fc01d47a3cc09fca6d254c, type: 3}
 --- !u!1001 &368770481720074126
 PrefabInstance:
   m_ObjectHideFlags: 0

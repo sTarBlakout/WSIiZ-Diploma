@@ -111,7 +111,12 @@ namespace Gameplay.Pawns
 
         public IDamageable Damageable => pawnDamageable;
         public IPawnNormalData PawnData => _currPawnData;
-
+        
+        public List<(IItem, bool)> GetInventoryItems(ItemType type)
+        {
+            return pawnInventory.GetItems(type);
+        }
+        
         public void GiveItems(List<IItem> items)
         {
             pawnInventory.AddItems(items);
