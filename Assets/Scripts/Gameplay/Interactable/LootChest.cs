@@ -52,7 +52,7 @@ namespace Gameplay.Interactable
 
         public void Interact(Action onInteract)
         {
-            _interactor.GiveItems(items);
+            _interactor.Inventory.AddItems(items);
             onInteract?.Invoke();
         }
 

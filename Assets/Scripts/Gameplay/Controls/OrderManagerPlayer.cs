@@ -105,12 +105,12 @@ namespace Gameplay.Controls
 
         public List<(IItem, bool)> GetItems(ItemType type)
         {
-            return _pawnController.GetInventoryItems(type);
+            return _pawnController.Inventory.GetInventoryItems(type);
         }
 
         public void EquipItem(IItem item)
         {
-            _pawnController.EquipItem(item);
+            _pawnController.Inventory.EquipItem(item);
         }
 
         #endregion

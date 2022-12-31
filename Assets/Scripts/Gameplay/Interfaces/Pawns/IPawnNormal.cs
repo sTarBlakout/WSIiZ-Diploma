@@ -7,9 +7,7 @@ namespace Gameplay.Interfaces
     {
         bool IsAlive { get; }
         IDamageable Damageable { get; }
+        IInventory Inventory { get; }
         new IPawnNormalData PawnData { get; }
-
-        void GiveItems(List<IItem> item);
-        List<(IItem, bool)> GetInventoryItems(ItemType type);
     }
 }

@@ -7,24 +7,13 @@ using UnityEngine;
 
 namespace Gameplay.Pawns
 {
-    public class PawnInventory : MonoBehaviour
+    public class PawnInventory : MonoBehaviour, IInventory
     {
         [SerializeField] private Transform weaponHoldPosition;
 
         private List<(IItem item, bool isEquipped)> items = new List<(IItem, bool)>();
             
         private IItemWeapon equippedWeapon;
-
-        public void AddItems(List<IItem> items)
-        {
-            foreach (var item in items)
-            {
-                switch (item.ItemData.ItemType)
-                {
-                    case ItemType.Weapon: AddWeapon((IItemWeapon) item); break;
-                }
-            }
-        }
 
         public bool HasWeapon()
         {
@@ -34,19 +23,6 @@ namespace Gameplay.Pawns
         public int GetWeaponDamageModifier()
         {
             return equippedWeapon.ItemData.DamageModifier;
-        }
-
-        public List<(IItem, bool)> GetItems(ItemType type)
-        {
-            return items;
-        }
-
-        public void EquipItem(IItem item)
-        {
-            switch (item.ItemData.ItemType)
-            {
-                case ItemType.Weapon: EquipWeapon((IItemWeapon) item); break;
-            }
         }
 
         private void AddWeapon(IItemWeapon weapon)
@@ -69,5 +45,33 @@ namespace Gameplay.Pawns
             equippedWeapon.ItemGameObject.transform.parent = weaponHoldPosition;
             equippedWeapon.ItemGameObject.transform.localPosition = Vector3.zero;
         }
+
+        #region IInventory Implementation
+
+        public List<(IItem, bool)> GetInventoryItems(ItemType type)
+        {
+            return items.Where(item => item.item.ItemData.ItemType == type).ToList();
+        }
+
+        public void AddItems(List<IItem> items)
+        {
+            foreach (var item in items)
+            {
+                switch (item.ItemData.ItemType)
+                {
+                    case ItemType.Weapon: AddWeapon((IItemWeapon) item); break;
+                }
+            }
+        }
+        
+        public void EquipItem(IItem item)
+        {
+            switch (item.ItemData.ItemType)
+            {
+                case ItemType.Weapon: EquipWeapon((IItemWeapon) item); break;
+            }
+        }
+
+        #endregion
     }
 }

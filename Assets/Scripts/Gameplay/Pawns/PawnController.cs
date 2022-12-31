@@ -103,15 +103,6 @@ namespace Gameplay.Pawns
             onDeath?.Invoke();
         }
 
-        #region Inventory Orders
-
-        public void EquipItem(IItem item)
-        {
-            pawnInventory.EquipItem(item);
-        }
-
-        #endregion
-
         #region IPawn Implementation
 
         public bool IsBlockingTile => IsAlive;
@@ -119,17 +110,8 @@ namespace Gameplay.Pawns
         public Vector3 WorldPosition => transform.position;
 
         public IDamageable Damageable => pawnDamageable;
+        public IInventory Inventory => pawnInventory;
         public IPawnNormalData PawnData => _currPawnData;
-        
-        public List<(IItem, bool)> GetInventoryItems(ItemType type)
-        {
-            return pawnInventory.GetItems(type);
-        }
-        
-        public void GiveItems(List<IItem> items)
-        {
-            pawnInventory.AddItems(items);
-        }
 
         public Action<GameObject> OnDestroyed { get; set; }
         IPawnData IPawn.PawnData => PawnData;
