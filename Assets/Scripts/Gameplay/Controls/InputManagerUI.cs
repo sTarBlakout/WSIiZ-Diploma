@@ -179,13 +179,14 @@ namespace Gameplay.Controls
 
                 if (!item.Item2) continue;
                 yield return new WaitForEndOfFrame();
-                ProcessItemClick(item.Item1, slot.gameObject);
+                ProcessItemClick(item.Item1, slot.gameObject, true);
             }
         }
 
-        private void ProcessItemClick(IItem item, GameObject slot)
+        private void ProcessItemClick(IItem item, GameObject slot, bool justUpdateSelected = false)
         {
             _selectedSlotFrame.transform.localPosition = slot.transform.localPosition;
+            if (!justUpdateSelected) _player.EquipItem(item);
         }
         
         #endregion 

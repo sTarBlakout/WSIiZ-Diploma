@@ -17,11 +17,12 @@ namespace Gameplay.Pawns
 
         public void AddItems(List<IItem> items)
         {
-            var item = items[0];
-            
-            switch (item.ItemData.ItemType)
+            foreach (var item in items)
             {
-                case ItemType.Weapon: AddWeapon((IItemWeapon) item); break;
+                switch (item.ItemData.ItemType)
+                {
+                    case ItemType.Weapon: AddWeapon((IItemWeapon) item); break;
+                }
             }
         }
 
@@ -40,6 +41,14 @@ namespace Gameplay.Pawns
             return items;
         }
 
+        public void EquipItem(IItem item)
+        {
+            switch (item.ItemData.ItemType)
+            {
+                case ItemType.Weapon: EquipWeapon((IItemWeapon) item); break;
+            }
+        }
+
         private void AddWeapon(IItemWeapon weapon)
         {
             items.Add((weapon, false));
@@ -48,7 +57,9 @@ namespace Gameplay.Pawns
         
         private void EquipWeapon(IItemWeapon weapon)
         {
-            var oldTuple = items.First(item => item.item == weapon);
+            var oldTuple = items.FirstOrDefault(item => item.item == weapon);
+            if (oldTuple.item == null) return;
+            
             var newTuple = (oldTuple.item, true);
             items[items.IndexOf(oldTuple)] = newTuple;
             

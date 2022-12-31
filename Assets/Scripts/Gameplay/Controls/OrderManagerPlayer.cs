@@ -108,6 +108,11 @@ namespace Gameplay.Controls
             return _pawnController.GetInventoryItems(type);
         }
 
+        public void EquipItem(IItem item)
+        {
+            _pawnController.EquipItem(item);
+        }
+
         #endregion
 
         #region Visuals Managment

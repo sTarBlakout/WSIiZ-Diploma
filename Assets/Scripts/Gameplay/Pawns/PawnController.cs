@@ -103,6 +103,15 @@ namespace Gameplay.Pawns
             onDeath?.Invoke();
         }
 
+        #region Inventory Orders
+
+        public void EquipItem(IItem item)
+        {
+            pawnInventory.EquipItem(item);
+        }
+
+        #endregion
+
         #region IPawn Implementation
 
         public bool IsBlockingTile => IsAlive;
