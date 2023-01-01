@@ -54,6 +54,7 @@ namespace Gameplay.Pawns
             pawnAttacker.Init(this, pawnAnimator, pawnInventory);
             pawnHealthIndicator.Init(_currPawnData);
             pawnInteractor.Init(this);
+            pawnInventory.Init(pawnAnimator);
         }
 
         public void MovePath(List<Vector3> path, Action onReachedDestination)

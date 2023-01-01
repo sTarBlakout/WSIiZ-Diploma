@@ -10,9 +10,11 @@ namespace Gameplay.Items
         [SerializeField] private string itemName;
         [SerializeField] private Sprite itemIcon;
         [SerializeField] private ItemType itemType;
+        [SerializeField] private AnimatorOverrideController overrideController; 
 
         public string ItemName => itemName;
         public Sprite ItemIcon => itemIcon;
         public ItemType ItemType => itemType;
+        public AnimatorOverrideController OverrideController => overrideController;
     }
 }

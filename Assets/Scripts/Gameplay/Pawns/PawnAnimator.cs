@@ -1,3 +1,4 @@
+using System;
 using Gameplay.Core;
 using UnityEngine;
 
@@ -13,6 +14,18 @@ namespace Gameplay.Pawns
 
         [SerializeField] private Animator animator;
 
+        private AnimatorOverrideController _defaultAnimatorController;
+
+        private void Awake()
+        {
+            _defaultAnimatorController = animator.runtimeAnimatorController as AnimatorOverrideController;
+        }
+
+        public void OverrideController(AnimatorOverrideController overrideController)
+        {
+            animator.runtimeAnimatorController = overrideController == null ? _defaultAnimatorController : overrideController;
+        }
+        
         public void AnimateMovement(AnimMovement movement, bool animate)
         {
             animator.SetBool(movement.ToString(), animate);

@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Sword
   itemIcon: {fileID: 21300000, guid: a71b0afc6a980004f90b30aff71994f7, type: 3}
   itemType: 0
+  overrideController: {fileID: 22100000, guid: 4287c2e0326830045bc53009a8a522e6, type: 2}
   damageModifier: 2
   rangeModifier: 0

@@ -8,5 +8,6 @@ namespace Gameplay.Interfaces
         string ItemName { get; }
         Sprite ItemIcon { get; }
         ItemType ItemType { get; }
+        AnimatorOverrideController OverrideController { get; }
     }
 }

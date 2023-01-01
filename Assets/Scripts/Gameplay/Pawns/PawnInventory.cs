@@ -14,7 +14,13 @@ namespace Gameplay.Pawns
         private List<(IItem item, bool isEquipped)> items = new List<(IItem, bool)>();
             
         private IItemWeapon equippedWeapon;
+        private PawnAnimator _animator;
 
+        public void Init(PawnAnimator animator)
+        {
+            _animator = animator;
+        }
+        
         public bool HasWeapon()
         {
             return equippedWeapon != null;
@@ -44,6 +50,8 @@ namespace Gameplay.Pawns
             equippedWeapon = Instantiate(weapon.ItemGameObject).GetComponent<IItemWeapon>();
             equippedWeapon.ItemGameObject.transform.parent = weaponHoldPosition;
             equippedWeapon.ItemGameObject.transform.localPosition = Vector3.zero;
+            
+            _animator.OverrideController(weapon.ItemData.OverrideController);
         }
 
         #region IInventory Implementation

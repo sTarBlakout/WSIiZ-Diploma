@@ -15,5 +15,6 @@ MonoBehaviour:
   itemName: Spear
   itemIcon: {fileID: 21300000, guid: b574bc316b79b74429b527f8fbebdf67, type: 3}
   itemType: 0
+  overrideController: {fileID: 22100000, guid: 3ae1d1f5deb1bfe4587d3636cdc71710, type: 2}
   damageModifier: 4
   rangeModifier: 0
