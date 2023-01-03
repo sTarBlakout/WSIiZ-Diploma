@@ -1,21 +1,25 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using Gameplay.Core;
 using Gameplay.Interfaces;
-using Gameplay.Items.Weapons;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Gameplay.Interactable
 {
     public class LootChest : MonoBehaviour, IPawnInteractable, IPawnInteractableData
     {
         [SerializeField] private List<GameObject> itemObjects = new List<GameObject>();
+        [SerializeField] private Transform headPart;
 
         private List<IItem> items = new List<IItem>();
         private GameArea _gameArea;
         private bool _hasLoot = true;
+
+        private void AnimateOpenChest()
+        {
+            headPart.DOLocalRotate(new Vector3(-65f, 0f, 0f), 1f, RotateMode.Fast);
+        }
 
         #region IPawn Implementation
 
@@ -52,6 +56,7 @@ namespace Gameplay.Interactable
 
         public void Interact(Action onInteract)
         {
+            AnimateOpenChest();
             _interactor.Inventory.AddItems(items);
             onInteract?.Invoke();
         }

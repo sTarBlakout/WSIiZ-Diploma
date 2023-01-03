@@ -20,6 +20,7 @@ namespace Gameplay.Core
         private InputManagerUI _inputManagerUI;
         private GameArea _gameArea;
         private Coroutine _gameCor;
+        private int _currLevel;
         
         public PawnController PlayerPawn => _player;
 
@@ -40,7 +41,7 @@ namespace Gameplay.Core
             if (_gameArea != null) Destroy(_gameArea.gameObject);
             
             var levelList = GlobalManager.Instance.GlobalData.LevelList;
-            var currLevelPref = levelList.GetLevel(0);
+            var currLevelPref = levelList.GetLevel(_currLevel);
             var currLevel = Instantiate(currLevelPref);
 
             _gameArea = currLevel.GetComponent<GameArea>();
@@ -77,6 +78,8 @@ namespace Gameplay.Core
 
         public void FinishLevel(bool win)
         {
+            Debug.Log(win);
+            if (win) _currLevel++;
             StopCoroutine(_gameCor);
             StartCoroutine(InitNextLevel());
         }

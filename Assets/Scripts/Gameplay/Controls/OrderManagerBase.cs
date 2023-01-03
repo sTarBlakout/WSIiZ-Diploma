@@ -101,7 +101,7 @@ namespace Gameplay.Controls
 
         protected virtual bool CanDoActions()
         {
-            return remainActionPoints != 0;
+            return remainActionPoints != 0 && _targetPawnNormal.IsAlive;
         }
 
         protected void UseActionPoints(int value)
