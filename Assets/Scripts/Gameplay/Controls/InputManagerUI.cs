@@ -44,21 +44,13 @@ namespace Gameplay.Controls
             _player.OnTileClicked += ProcessClickedTile;
             _player.OnPawnClicked += ProcessClickedPawn;
 
-            if (_player.GetItems(ItemType.Weapon).Count == 0)
-            {
-                inventoryButton.gameObject.SetActive(false);
-                StartCoroutine(EnableInventoryButtonWhenCan());
-            }
+            if (!_player.HasAnyItems(ItemType.Weapon)) StartCoroutine(EnableInventoryButtonWhenCan());
         }
 
         private IEnumerator EnableInventoryButtonWhenCan()
         {
-            while (_player.GetItems(ItemType.Weapon).Count == 0)
-            {
-                Debug.Log(_player.GetItems(ItemType.Weapon).Count);
-                yield return new WaitForSeconds(1);
-            }
-            
+            inventoryButton.gameObject.SetActive(false);
+            yield return new WaitUntil(() => _player.HasAnyItems(ItemType.Weapon));
             inventoryButton.gameObject.SetActive(true);
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Gameplay.Core;
@@ -41,21 +42,25 @@ namespace Gameplay.Pawns
         {
             var oldTuple = items.FirstOrDefault(item => item.item == weapon);
             if (oldTuple.item == null) return;
-            
+
             var newTuple = (oldTuple.item, true);
             items[items.IndexOf(oldTuple)] = newTuple;
             
             if (equippedWeapon != null) Destroy(equippedWeapon.ItemGameObject);
-            
-            equippedWeapon = Instantiate(weapon.ItemGameObject).GetComponent<IItemWeapon>();
-            equippedWeapon.ItemGameObject.transform.parent = weaponHoldPosition;
-            equippedWeapon.ItemGameObject.transform.localPosition = Vector3.zero;
+            equippedWeapon = Instantiate(weapon.ItemGameObject, weaponHoldPosition, false).GetComponent<IItemWeapon>();
+            // equippedWeapon.ItemGameObject.transform.parent = weaponHoldPosition;
+            // equippedWeapon.ItemGameObject.transform.localPosition = Vector3.zero;
             
             _animator.OverrideController(weapon.ItemData.OverrideController);
         }
 
         #region IInventory Implementation
 
+        public bool HasAnyItems(ItemType type)
+        {
+            return items.Count != 0;
+        }
+        
         public List<(IItem, bool)> GetInventoryItems(ItemType type)
         {
             return items.Where(item => item.item.ItemData.ItemType == type).ToList();
@@ -76,7 +81,7 @@ namespace Gameplay.Pawns
         {
             switch (item.ItemData.ItemType)
             {
-                case ItemType.Weapon: EquipWeapon((IItemWeapon) item); break;
+                case ItemType.Weapon: EquipWeapon((IItemWeapon)item); break;
             }
         }
 

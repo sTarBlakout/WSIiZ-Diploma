@@ -103,6 +103,11 @@ namespace Gameplay.Controls
 
         #region InventoryManagment
 
+        public bool HasAnyItems(ItemType type)
+        {
+            return _pawnController.Inventory.HasAnyItems(type);
+        }
+
         public List<(IItem, bool)> GetItems(ItemType type)
         {
             return _pawnController.Inventory.GetInventoryItems(type);
