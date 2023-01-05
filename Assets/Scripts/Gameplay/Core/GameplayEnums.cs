@@ -10,6 +10,7 @@ namespace Gameplay.Core
 
     public enum ItemType
     {
+        All,
         Weapon
     }
     

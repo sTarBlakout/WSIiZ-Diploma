@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemName: Axe
   itemIcon: {fileID: 21300000, guid: 7efb5df3386e6fd4f86b9ce834a117ba, type: 3}
-  itemType: 0
+  itemType: 1
   overrideController: {fileID: 22100000, guid: 350ec22178518244d8f4160f5e30ba6a, type: 2}
   damageModifier: 6
   rangeModifier: 0

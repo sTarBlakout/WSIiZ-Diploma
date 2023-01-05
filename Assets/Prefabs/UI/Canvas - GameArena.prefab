@@ -143,6 +143,7 @@ MonoBehaviour:
   clickedTileView: {fileID: 2647802403378529156}
   clickedEnemyView: {fileID: 2647802402518210472}
   clickedInteractableView: {fileID: 2647802401976248943}
+  inventoryButton: {fileID: 2647802402459489688}
   inventorySlotPrefab: {fileID: 351338274656701284, guid: b05b598201a63554c93340254cf6d325, type: 3}
   selectedSlotFrame: {fileID: 7195038613468531117, guid: 56c6dc7cb4fc01d47a3cc09fca6d254c, type: 3}
 --- !u!1001 &368770481720074126
@@ -1104,5 +1105,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 314affd16bceddb4c99fbaa07de901d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2647802402459489688 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4654575493228985526, guid: 50f29b6d5352c0e469a852ffbfe2e769, type: 3}
+  m_PrefabInstance: {fileID: 7216663817409849646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d12bfc32d0d797428cf0191288caabd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

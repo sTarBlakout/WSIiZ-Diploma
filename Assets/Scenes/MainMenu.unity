@@ -365,7 +365,7 @@ MonoBehaviour:
   StartAlpha: 1
   CanvasName: MainMenu
   CustomCanvasName: 0
-  DontDestroyCanvasOnLoad: 1
+  DontDestroyCanvasOnLoad: 0
 --- !u!1 &723731910
 GameObject:
   m_ObjectHideFlags: 0

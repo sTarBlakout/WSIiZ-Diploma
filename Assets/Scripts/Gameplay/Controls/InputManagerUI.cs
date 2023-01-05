@@ -21,6 +21,9 @@ namespace Gameplay.Controls
         [SerializeField] private UIView clickedEnemyView;
         [SerializeField] private UIView clickedInteractableView;
 
+        [Header("Buttons")] 
+        [SerializeField] private UIButton inventoryButton;
+        
         [Header("Prefabs")] 
         [SerializeField] private UIButton inventorySlotPrefab;
         [SerializeField] private GameObject selectedSlotFrame;
@@ -40,11 +43,28 @@ namespace Gameplay.Controls
             _player.OnTakingTurn += ProcessPlayerTakingTurn;
             _player.OnTileClicked += ProcessClickedTile;
             _player.OnPawnClicked += ProcessClickedPawn;
+
+            if (_player.GetItems(ItemType.Weapon).Count == 0)
+            {
+                inventoryButton.gameObject.SetActive(false);
+                StartCoroutine(EnableInventoryButtonWhenCan());
+            }
+        }
+
+        private IEnumerator EnableInventoryButtonWhenCan()
+        {
+            while (_player.GetItems(ItemType.Weapon).Count == 0)
+            {
+                Debug.Log(_player.GetItems(ItemType.Weapon).Count);
+                yield return new WaitForSeconds(1);
+            }
+            
+            inventoryButton.gameObject.SetActive(true);
         }
 
         #region Unity Events
 
-        private void Start()
+        private void Awake()
         {
             playerTurnView.Hide(true);
             inventoryView.Hide(true);

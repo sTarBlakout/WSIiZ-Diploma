@@ -3079,7 +3079,7 @@ MonoBehaviour:
   m_MaxAngle: 360
   m_MaxRadius: 1000
   m_MinAngle: 0
-  m_Radius: 450
+  m_Radius: 200
   m_RadiusControlsHeight: 0
   m_RadiusControlsWidth: 0
   m_RadiusHeightFactor: 1
