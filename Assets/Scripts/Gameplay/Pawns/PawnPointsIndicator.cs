@@ -7,6 +7,7 @@ namespace Gameplay.Pawns
     {
         [SerializeField] private TextMeshPro movePointsText;
         [SerializeField] private TextMeshPro actionPointsText;
+        [SerializeField] private GameObject background;
         
         private Transform _cameraTransform;
 
@@ -25,6 +26,7 @@ namespace Gameplay.Pawns
         {
             movePointsText.enabled = show;
             actionPointsText.enabled = show;
+            background.SetActive(show);
             return this;
         }
         
