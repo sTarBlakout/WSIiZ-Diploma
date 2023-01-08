@@ -358,6 +358,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   levelText: {fileID: 802893500111413238}
+  background: {fileID: 4246776425754640948}
 --- !u!222 &1331876973620186327
 CanvasRenderer:
   m_ObjectHideFlags: 0

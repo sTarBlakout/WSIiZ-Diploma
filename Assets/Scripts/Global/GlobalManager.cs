@@ -1,5 +1,3 @@
-using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Global
@@ -15,6 +13,7 @@ namespace Global
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
+            globalData.LoadPrefs();
         }
 
         private void Start()

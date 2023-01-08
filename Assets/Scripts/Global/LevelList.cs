@@ -8,6 +8,8 @@ namespace Global
     {
         [SerializeField] private List<GameObject> levels;
 
+        public int LevelsAmount => levels.Count;
+        
         public GameObject GetLevel(int lvlIdx)
         {
             return lvlIdx >= levels.Count ? null : levels[lvlIdx];

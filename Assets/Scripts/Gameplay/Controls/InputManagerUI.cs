@@ -165,6 +165,11 @@ namespace Gameplay.Controls
             ShowView(false, inventoryView);
             ShowView(true, playerTurnView);
         }
+
+        public void ClearPlayerPrefs()
+        {
+            PlayerPrefs.DeleteAll();
+        }
         
         #endregion
         

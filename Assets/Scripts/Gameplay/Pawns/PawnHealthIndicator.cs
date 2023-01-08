@@ -6,6 +6,7 @@ namespace Gameplay.Pawns
     public class PawnHealthIndicator : MonoBehaviour
     {
         [SerializeField] private TextMeshPro levelText;
+        [SerializeField] private GameObject background;
         
         private PawnNormalData _pawnData;
         private Transform _cameraTransform;
@@ -26,6 +27,7 @@ namespace Gameplay.Pawns
         public void Show(bool show)
         {
             levelText.enabled = show;
+            background.SetActive(show);
         }
     }
 }
