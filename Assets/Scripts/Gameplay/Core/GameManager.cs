@@ -80,7 +80,7 @@ namespace Gameplay.Core
             if (win)
             {
                 GlobalManager.Instance.GlobalData.CurrLevel++;
-                GlobalManager.Instance.GlobalData.SavePrefs();
+                GlobalManager.Instance.GlobalData.SaveGlobalPrefs();
             }
             StopCoroutine(_gameCor);
             StartCoroutine(InitNextLevel());

@@ -13,7 +13,7 @@ namespace Global
         {
             DontDestroyOnLoad(gameObject);
             Instance = this;
-            globalData.LoadPrefs();
+            globalData.LoadGlobalPrefs();
         }
 
         private void Start()

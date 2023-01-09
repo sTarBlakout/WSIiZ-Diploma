@@ -47,6 +47,8 @@ namespace Gameplay.Pawns
         {
             pawnCollider.enabled = true;
             _currPawnData = Instantiate(pawnData);
+            _currPawnData.Init();
+            
             _gameArea = FindObjectOfType<GameArea>();
 
             pawnDamageable.Init(_currPawnData, pawnAnimator, pawnMover, _gameArea, HandleDeath);

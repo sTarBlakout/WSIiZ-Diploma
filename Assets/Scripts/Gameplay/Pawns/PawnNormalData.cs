@@ -1,4 +1,5 @@
 using Gameplay.Interfaces;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Pawns
@@ -34,9 +35,22 @@ namespace Gameplay.Pawns
         public int BloodLevel => bloodLevel;
         public int ActionsPerTurn => actionsPerTurn;
 
+        public void Init()
+        {
+            if (teamId == 1)
+            {
+                var playerCharacterPrefs = GlobalManager.Instance.GlobalData.LoadPlayerCharacterPrefs();
+                if (playerCharacterPrefs.BloodLevel > 0)
+                {
+                    bloodLevel = playerCharacterPrefs.BloodLevel;
+                }
+            }
+        }
+        
         public void ModifyBloodLevelBy(int value)
         {
             bloodLevel =  Mathf.Max(0, bloodLevel + value);
+            if (teamId == 1) GlobalManager.Instance.GlobalData.SavePlayerCharacterBloodLevel(bloodLevel);
         }
 
         #endregion

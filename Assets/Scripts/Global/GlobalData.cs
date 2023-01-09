@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Global
 {
@@ -22,16 +21,43 @@ namespace Global
             }
         }
         private int _currLevel;
+        
+        public int CurrPlayerLevel
+        {
+            get => _currPlayerLevel;
+            set => _currPlayerLevel = value;
+        }
+        private int _currPlayerLevel;
 
-        public void SavePrefs()
+
+        public void SavePlayerCharacterBloodLevel(int bloodLevel)
+        {
+            PlayerPrefs.SetInt("BloodLevel", bloodLevel);
+            PlayerPrefs.Save();
+        }
+
+        public PlayerCharacterPrefs LoadPlayerCharacterPrefs()
+        {
+            var charPrefs = new PlayerCharacterPrefs();
+            charPrefs.BloodLevel = PlayerPrefs.GetInt("BloodLevel", -1);
+
+            return charPrefs;
+        }
+
+        public void SaveGlobalPrefs()
         {
             PlayerPrefs.SetInt("CurrentLevel", _currLevel);
             PlayerPrefs.Save();
         }
  
-        public void LoadPrefs()
+        public void LoadGlobalPrefs()
         {
             _currLevel = PlayerPrefs.GetInt("CurrentLevel", 0); 
         }
+    }
+
+    public class PlayerCharacterPrefs
+    {
+        public int BloodLevel;
     }
 }
