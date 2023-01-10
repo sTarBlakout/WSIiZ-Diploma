@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Gameplay.Interfaces;
+using Gameplay.Items;
 using Global;
 using UnityEngine;
 
@@ -12,6 +14,7 @@ namespace Gameplay.Pawns
         [SerializeField] private int bloodLevel;
         [SerializeField] private int actionsPerTurn;
         [SerializeField] private int distancePerTurn;
+        [SerializeField] private List<GameObject> items;
         
         [Header("Movement")]
         [SerializeField] private float rotationSpeed;
@@ -34,6 +37,7 @@ namespace Gameplay.Pawns
         public int TeamId => teamId;
         public int BloodLevel => bloodLevel;
         public int ActionsPerTurn => actionsPerTurn;
+        public List<GameObject> Items => items;
 
         public void Init()
         {
@@ -44,6 +48,8 @@ namespace Gameplay.Pawns
                 {
                     bloodLevel = playerCharacterPrefs.BloodLevel;
                 }
+                
+                items.AddRange(playerCharacterPrefs.Items);
             }
         }
         

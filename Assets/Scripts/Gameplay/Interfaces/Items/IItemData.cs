@@ -5,6 +5,7 @@ namespace Gameplay.Interfaces
 {
     public interface IItemData
     {
+        int ItemId { get; }
         string ItemName { get; }
         Sprite ItemIcon { get; }
         ItemType ItemType { get; }

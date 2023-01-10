@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using Gameplay.Interfaces;
+using Gameplay.Items;
 using UnityEngine;
 
 namespace Global
@@ -7,6 +10,7 @@ namespace Global
     {
         [SerializeField] private int targetFrameRate;
         [SerializeField] private LevelList levelList;
+        [SerializeField] private List<GameObject> items;
 
         public int TargetFrameRate => targetFrameRate;
         public LevelList LevelList => levelList;
@@ -29,7 +33,12 @@ namespace Global
         }
         private int _currPlayerLevel;
 
-
+        public void SavePlayerCharacterItem(int itemId)
+        {
+            PlayerPrefs.SetInt("Item_" + itemId, itemId);
+            PlayerPrefs.Save();
+        }
+        
         public void SavePlayerCharacterBloodLevel(int bloodLevel)
         {
             PlayerPrefs.SetInt("BloodLevel", bloodLevel);
@@ -40,6 +49,13 @@ namespace Global
         {
             var charPrefs = new PlayerCharacterPrefs();
             charPrefs.BloodLevel = PlayerPrefs.GetInt("BloodLevel", -1);
+
+            foreach (var itemGO in items)
+            {
+                var item = itemGO.GetComponent<IItem>();
+                var itemId = PlayerPrefs.GetInt("Item_" + item.ItemData.ItemId, -1);
+                if (itemId != -1) charPrefs.Items.Add(itemGO);
+            }
 
             return charPrefs;
         }
@@ -59,5 +75,6 @@ namespace Global
     public class PlayerCharacterPrefs
     {
         public int BloodLevel;
+        public List<GameObject> Items = new List<GameObject>();
     }
 }

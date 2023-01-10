@@ -181,6 +181,7 @@ namespace Gameplay.Controls
         {
             var radialMenu = inventoryView.GetComponentInChildren<RadialLayout>();
             _selectedSlotFrame = Instantiate(selectedSlotFrame, inventoryView.transform, false);
+            _selectedSlotFrame.SetActive(false);
 
             foreach (Transform child in radialMenu.transform) 
             {
@@ -202,6 +203,7 @@ namespace Gameplay.Controls
 
         private void ProcessItemClick(IItem item, GameObject slot, bool justUpdateSelected = false)
         {
+            _selectedSlotFrame.SetActive(true);
             _selectedSlotFrame.transform.localPosition = slot.transform.localPosition;
             if (!justUpdateSelected) _player.EquipItem(item);
         }

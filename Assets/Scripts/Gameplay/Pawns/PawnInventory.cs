@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Gameplay.Core;
 using Gameplay.Interfaces;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Pawns
@@ -17,9 +19,14 @@ namespace Gameplay.Pawns
         private IItemWeapon equippedWeapon;
         private PawnAnimator _animator;
 
-        public void Init(PawnAnimator animator)
+        public void Init(PawnAnimator animator, PawnNormalData data)
         {
             _animator = animator;
+
+            foreach (var item in data.Items)
+            {
+                items.Add((item.GetComponent<IItem>(), false));
+            }
         }
         
         public bool HasWeapon()
@@ -34,6 +41,7 @@ namespace Gameplay.Pawns
 
         private void AddWeapon(IItemWeapon weapon)
         {
+            GlobalManager.Instance.GlobalData.SavePlayerCharacterItem(weapon.ItemData.ItemId);
             items.Add((weapon, false));
             if (equippedWeapon == null) EquipWeapon(weapon);
         }
