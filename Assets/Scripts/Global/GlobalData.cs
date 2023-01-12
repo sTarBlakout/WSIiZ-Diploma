@@ -9,11 +9,25 @@ namespace Global
     public class GlobalData : ScriptableObject
     {
         [SerializeField] private int targetFrameRate;
+        [SerializeField] private float repeatLevelEnemyBloodModifier;
         [SerializeField] private LevelList levelList;
         [SerializeField] private List<GameObject> items;
 
         public int TargetFrameRate => targetFrameRate;
         public LevelList LevelList => levelList;
+
+        public float RepeatLevelEnemyBloodModifier
+        {
+            get
+            {
+                if (_repeatLevelCount == 0) return 1f;
+                return repeatLevelEnemyBloodModifier* _repeatLevelCount;
+            }
+        }
+
+        public int RepeatLevelCount => _repeatLevelCount;
+
+        private int _repeatLevelCount = 0;
 
         public int CurrLevel
         {
@@ -21,7 +35,12 @@ namespace Global
             set
             {
                 _currLevel = value;
-                if (_currLevel >= levelList.LevelsAmount) _currLevel = 0;
+                if (_currLevel >= levelList.LevelsAmount)
+                {
+                    _currLevel = 0;
+                    _repeatLevelCount++;
+                    SaveRepeatLevelCount();
+                }
             }
         }
         private int _currLevel;
@@ -33,6 +52,22 @@ namespace Global
         }
         private int _currPlayerLevel;
 
+        public void Init()
+        {
+            _repeatLevelCount = LoadRepeatLevelCount();
+        }
+        
+        public int LoadRepeatLevelCount()
+        {
+            return PlayerPrefs.GetInt("RepeatLevelCount", 0);
+        }
+        
+        public void SaveRepeatLevelCount()
+        {
+            PlayerPrefs.SetInt("RepeatLevelCount", _repeatLevelCount);
+            PlayerPrefs.Save();
+        }
+        
         public void SavePlayerCharacterItem(int itemId)
         {
             PlayerPrefs.SetInt("Item_" + itemId, itemId);

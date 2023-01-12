@@ -5,7 +5,9 @@ using System.Linq;
 using Gameplay.Pawns;
 using Gameplay.Core;
 using Gameplay.Environment;
+using Gameplay.Interactable;
 using Gameplay.Interfaces;
+using Global;
 using SimplePF2D;
 using UnityEditor;
 using UnityEngine;
@@ -61,6 +63,12 @@ public class GameArea : MonoBehaviour
         pawnsGameObjects.Clear();
         foreach (Transform pawnTransform in pawnsContainer)
         {
+            if (pawnTransform.GetComponent<LootChest>() != null && GlobalManager.Instance.GlobalData.RepeatLevelCount != 0)
+            {
+                Destroy(pawnTransform.gameObject);
+                continue;
+            }
+
             var pawn = pawnTransform.GetComponent<IPawn>();
             pawn.Init();
 

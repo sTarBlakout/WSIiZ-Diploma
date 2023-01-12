@@ -19,6 +19,7 @@ namespace Global
         private void Start()
         {
             Application.targetFrameRate = globalData.TargetFrameRate;
+            globalData.Init();
         }
     }
 }

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: GlobalData
   m_EditorClassIdentifier: 
   targetFrameRate: 60
+  repeatLevelEnemyBloodModifier: 2.4
   levelList: {fileID: 11400000, guid: 64cd46e10af52604bbe0208cbaf1522a, type: 2}
   items:
   - {fileID: 5837672251865694032, guid: 4fe2a96228f6ef14cbb2a66cdf1c72ad, type: 3}

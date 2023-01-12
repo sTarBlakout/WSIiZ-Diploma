@@ -51,6 +51,10 @@ namespace Gameplay.Pawns
                 
                 items.AddRange(playerCharacterPrefs.Items);
             }
+            else
+            {
+                bloodLevel = (int) (bloodLevel * GlobalManager.Instance.GlobalData.RepeatLevelEnemyBloodModifier);
+            }
         }
         
         public void ModifyBloodLevelBy(int value)

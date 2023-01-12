@@ -180,7 +180,7 @@ namespace Gameplay.Controls
         private IEnumerator InitInventoryPanel()
         {
             var radialMenu = inventoryView.GetComponentInChildren<RadialLayout>();
-            _selectedSlotFrame = Instantiate(selectedSlotFrame, inventoryView.transform, false);
+            if (_selectedSlotFrame == null) _selectedSlotFrame = Instantiate(selectedSlotFrame, inventoryView.transform, false);
             _selectedSlotFrame.SetActive(false);
 
             foreach (Transform child in radialMenu.transform) 
