@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24d45818deee9024fa15171ca2618618, type: 3}
-  m_Name: NormalEnemyPawnData
+  m_Name: ScoutEnemyPawnData
   m_EditorClassIdentifier: 
   teamId: 2
-  bloodLevel: 18
-  actionsPerTurn: 2
-  distancePerTurn: 2
+  bloodLevel: 5
+  actionsPerTurn: 3
+  distancePerTurn: 4
   items: []
-  animatorOverrideController: {fileID: 22100000, guid: 4287c2e0326830045bc53009a8a522e6, type: 2}
+  animatorOverrideController: {fileID: 22100000, guid: 3ae1d1f5deb1bfe4587d3636cdc71710, type: 2}
   rotationSpeed: 120
   movementSpeed: 1.8
   waitAfterRotate: 0.5

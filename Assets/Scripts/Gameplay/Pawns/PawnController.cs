@@ -51,6 +51,7 @@ namespace Gameplay.Pawns
             
             _gameArea = FindObjectOfType<GameArea>();
 
+            pawnAnimator.Init(pawnData);
             pawnDamageable.Init(_currPawnData, pawnAnimator, pawnMover, _gameArea, HandleDeath);
             pawnMover.Init(_currPawnData, pawnAnimator, pawnGraphics);
             pawnAttacker.Init(this, pawnAnimator, pawnInventory);

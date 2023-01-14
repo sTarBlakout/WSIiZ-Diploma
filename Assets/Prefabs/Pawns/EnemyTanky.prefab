@@ -1,0 +1,140 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &4993636520834901228
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2109458450170390930, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 8.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 6.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 17.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.102312416
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.052180473
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.6297268
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.76827955
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 78.039
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 13.585
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109458450170725556, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -153.802
+      objectReference: {fileID: 0}
+    - target: {fileID: 2212364430805563627, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3869432880384727968, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3869432880384906662, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3869432880384944468, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332067, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_Name
+      value: PawnTanky
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6974840743950332068, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550617257535909553, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+      propertyPath: pawnData
+      value: 
+      objectReference: {fileID: 11400000, guid: 5a61d3236bc731e43bda98aac1273dd5, type: 2}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+--- !u!1 &2704245853276378191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6974840743950332067, guid: 618bfa20b86142c4ab589887eba45543, type: 3}
+  m_PrefabInstance: {fileID: 4993636520834901228}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-6379250523675547250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2704245853276378191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cda7bb11d56294498a34d95c8a90864, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -13,7 +13,7 @@ namespace Gameplay.Controls.Orders
         public override void StartOrder()
         {
             completeArgs = new CompleteOrderArgsAttack();
-        
+
             if (!args.Target.IsAlive)
             {
                 completeArgs.Result = OrderResult.Fail;
@@ -28,7 +28,7 @@ namespace Gameplay.Controls.Orders
                 args.OnCompleted?.Invoke(completeArgs);
                 return;
             }
-        
+            
             args.PawnController.RotateTo(args.Target.WorldPosition, OnRotated);
         }
 

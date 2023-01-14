@@ -16,6 +16,8 @@ MonoBehaviour:
   bloodLevel: 10
   actionsPerTurn: 2
   distancePerTurn: 3
+  items: []
+  animatorOverrideController: {fileID: 0}
   rotationSpeed: 120
   movementSpeed: 1.8
   waitAfterRotate: 0.5

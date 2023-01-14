@@ -21,6 +21,14 @@ namespace Gameplay.Pawns
             _defaultAnimatorController = animator.runtimeAnimatorController as AnimatorOverrideController;
         }
 
+        public void Init(PawnNormalData data)
+        {
+            if (data.AnimatorOverrideController != null)
+            {
+                animator.runtimeAnimatorController = data.AnimatorOverrideController;
+            }
+        }
+
         public void OverrideController(AnimatorOverrideController overrideController)
         {
             animator.runtimeAnimatorController = overrideController == null ? _defaultAnimatorController : overrideController;

@@ -15,6 +15,7 @@ namespace Gameplay.Pawns
         [SerializeField] private int actionsPerTurn;
         [SerializeField] private int distancePerTurn;
         [SerializeField] private List<GameObject> items;
+        [SerializeField] private AnimatorOverrideController animatorOverrideController;
         
         [Header("Movement")]
         [SerializeField] private float rotationSpeed;
@@ -38,6 +39,7 @@ namespace Gameplay.Pawns
         public int BloodLevel => bloodLevel;
         public int ActionsPerTurn => actionsPerTurn;
         public List<GameObject> Items => items;
+        public AnimatorOverrideController AnimatorOverrideController => animatorOverrideController;
 
         public void Init()
         {
