@@ -13,6 +13,13 @@ namespace Global
         [SerializeField] private LevelList levelList;
         [SerializeField] private List<GameObject> items;
 
+        private bool isMusicEnabled;
+        private bool isVibrationEnabled;
+
+
+        public bool IsMusicEnabled => isMusicEnabled;
+        public bool IsVibrationEnabled => isVibrationEnabled;
+        
         public int TargetFrameRate => targetFrameRate;
         public LevelList LevelList => levelList;
 
@@ -55,6 +62,13 @@ namespace Global
         public void Init()
         {
             _repeatLevelCount = LoadRepeatLevelCount();
+            ReloadOptions();
+        }
+        
+        public void ReloadOptions()
+        {
+            isMusicEnabled = PlayerPrefs.GetInt("Music", 1) == 1;
+            isVibrationEnabled = PlayerPrefs.GetInt("Vibration", 1) == 1;
         }
         
         public int LoadRepeatLevelCount()
@@ -77,6 +91,18 @@ namespace Global
         public void SavePlayerCharacterBloodLevel(int bloodLevel)
         {
             PlayerPrefs.SetInt("BloodLevel", bloodLevel);
+            PlayerPrefs.Save();
+        }
+
+        public void SaveToggleMusic(bool toggle)
+        {
+            PlayerPrefs.SetInt("Music", toggle ? 1 : 0);
+            PlayerPrefs.Save();
+        }
+        
+        public void SaveToggleVibration(bool toggle)
+        {
+            PlayerPrefs.SetInt("Vibration", toggle ? 1 : 0);
             PlayerPrefs.Save();
         }
 

@@ -16,9 +16,11 @@ MonoBehaviour:
   CategoryNames:
   - Custom
   - Example
-  - General
   - GameArena
+  - General
+  - MainMenu
   Categories:
   - {fileID: 11400000, guid: b01e98f4801f7124ba39e1dac4debf90, type: 2}
   - {fileID: 11400000, guid: 7b4fbe7c5a609714fa86ddb04fb58088, type: 2}
   - {fileID: 11400000, guid: ea467056115d575478182aa7022b6741, type: 2}
+  - {fileID: 11400000, guid: f3ebe98df32fbe243b4b8a4873ff3ddd, type: 2}
