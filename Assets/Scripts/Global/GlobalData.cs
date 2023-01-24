@@ -59,12 +59,6 @@ namespace Global
         }
         private int _currPlayerLevel;
 
-        public void Init()
-        {
-            _repeatLevelCount = LoadRepeatLevelCount();
-            ReloadOptions();
-        }
-        
         public void ReloadOptions()
         {
             isMusicEnabled = PlayerPrefs.GetInt("Music", 1) == 1;
@@ -129,7 +123,9 @@ namespace Global
  
         public void LoadGlobalPrefs()
         {
+            _repeatLevelCount = LoadRepeatLevelCount();
             _currLevel = PlayerPrefs.GetInt("CurrentLevel", 0); 
+            ReloadOptions();
         }
     }
 

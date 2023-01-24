@@ -11,15 +11,22 @@ namespace Global
 
         private void Awake()
         {
-            DontDestroyOnLoad(gameObject);
-            Instance = this;
+            if (Instance == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+            
             globalData.LoadGlobalPrefs();
         }
 
         private void Start()
         {
             Application.targetFrameRate = globalData.TargetFrameRate;
-            globalData.Init();
         }
     }
 }

@@ -7,6 +7,7 @@ using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -164,6 +165,11 @@ namespace Gameplay.Controls
         {
             ShowView(false, inventoryView);
             ShowView(true, playerTurnView);
+        }
+
+        public void ButtonReturnToMainMenu()
+        {
+            SceneManager.LoadScene("MainMenu");
         }
 
         public void ClearPlayerPrefs()

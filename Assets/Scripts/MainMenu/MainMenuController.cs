@@ -39,6 +39,7 @@ namespace MainMenu
         public void ToggleMusic()
         {
             var currState = GlobalManager.Instance.GlobalData.IsMusicEnabled;
+            AudioManager.Instance.PlayBackgroundMusic(!currState);
             GlobalManager.Instance.GlobalData.SaveToggleMusic(!currState);
             GlobalManager.Instance.GlobalData.ReloadOptions();
             UpdateOptionTexts();
