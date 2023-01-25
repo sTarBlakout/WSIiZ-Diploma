@@ -24,6 +24,8 @@ MonoBehaviour:
   waitAfterMove: 0.5
   afterDamageDelay: 1
   attackDistance: 1
+  hitSound: {fileID: 8300000, guid: 7c47b20bb9874304a809dc5580d403ba, type: 3}
+  deathSound: {fileID: 8300000, guid: 566d2ea6240b489479a6e9fd608c2621, type: 3}
   bloodVesselPrefab: {fileID: 7346976737164760374, guid: 1d4fe8914d837604eb456ce9b2f87ef0, type: 3}
   wayMoveLinePrefab: {fileID: 1512719256159936, guid: 66bd5cf96ce70d84d83c3e8f93f5b9d8, type: 3}
   wayAttackLinePrefab: {fileID: 1512719256159936, guid: bf918fc68cf14484886554d218c7e337, type: 3}

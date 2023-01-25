@@ -27,6 +27,10 @@ namespace Gameplay.Pawns
         [SerializeField] private float afterDamageDelay;
         [SerializeField] private int attackDistance;
 
+        [Header("Audio")] 
+        [SerializeField] private AudioClip hitSound;
+        [SerializeField] private AudioClip deathSound;
+
         [Header("Prefabs")] 
         [SerializeField] private GameObject bloodVesselPrefab;
         [SerializeField] private GameObject wayMoveLinePrefab;
@@ -67,6 +71,13 @@ namespace Gameplay.Pawns
 
         #endregion
 
+        #region Audio
+
+        public AudioClip HitSound => hitSound;
+        public AudioClip DeathSound => deathSound;
+
+        #endregion
+        
         #region Movement
 
         public float RotationSpeed => rotationSpeed;

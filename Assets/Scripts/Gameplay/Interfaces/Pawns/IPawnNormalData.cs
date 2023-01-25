@@ -11,7 +11,14 @@ namespace Gameplay.Interfaces
         int ActionsPerTurn { get; }
         void ModifyBloodLevelBy(int value);
 
-        #endregion        
+        #endregion
+
+        #region Audio
+
+        AudioClip HitSound { get; }
+        AudioClip DeathSound { get; }
+
+        #endregion
         
         #region Movement
 

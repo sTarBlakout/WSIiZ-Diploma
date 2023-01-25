@@ -5,6 +5,7 @@ using System.Linq;
 using Gameplay.Environment;
 using Gameplay.Interactable;
 using Gameplay.Interfaces;
+using Global;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -64,7 +65,11 @@ namespace Gameplay.Pawns
             _animator.AnimateGetHit();
             onHitParticle.Play();
             SpawnBloodVessels();
-            if (_data.BloodLevel == 0) OnDeath?.Invoke();
+            if (_data.BloodLevel == 0)
+            {
+                AudioManager.Instance.PlaySound(_data.DeathSound);
+                OnDeath?.Invoke();
+            }
             yield return new WaitForSeconds(_data.AfterDamageDelay);
             _animator.AnimateBlock(false);
             onPostDamage?.Invoke();

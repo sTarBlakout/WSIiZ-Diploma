@@ -1,5 +1,6 @@
 using System;
 using Gameplay.Interfaces;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Pawns
@@ -13,7 +14,7 @@ namespace Gameplay.Pawns
         private IPawnNormal  _target;
         private Action _onAttacked;
         
-        public void Init(IPawnNormal  pawn, PawnAnimator pawnAnimator, PawnInventory pawnInventory)
+        public void Init(IPawnNormal pawn, PawnAnimator pawnAnimator, PawnInventory pawnInventory)
         {
             _pawn = pawn;
             _pawnAnimator = pawnAnimator;
@@ -45,6 +46,8 @@ namespace Gameplay.Pawns
             }
             
             _target.Damageable.Damage(damage, OnDamageDealt);
+            AudioManager.Instance.Vibrate();
+            AudioManager.Instance.PlaySound(_pawn.PawnData.HitSound);
         }
         
         #endregion

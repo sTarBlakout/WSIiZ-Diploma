@@ -5,6 +5,7 @@ namespace Global
 {
     public class AudioManager : MonoBehaviour
     {
+        [SerializeField] private AudioSource otherSounds;
         [SerializeField] private AudioSource backgroundMusic;
         
         public static AudioManager Instance { get; private set; }
@@ -31,6 +32,18 @@ namespace Global
         {
             if (play) backgroundMusic.Play();
             else backgroundMusic.Stop();
+        }
+
+        public void PlaySound(AudioClip clip)
+        {
+            otherSounds.clip = clip;
+            otherSounds.Play();
+        }
+
+        public void Vibrate()
+        {
+            if (!GlobalManager.Instance.GlobalData.IsVibrationEnabled) return;
+            Handheld.Vibrate();
         }
     }
 }
