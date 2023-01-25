@@ -4,6 +4,7 @@ using System.Linq;
 using Gameplay.Core;
 using Gameplay.Environment;
 using Gameplay.Interfaces;
+using Global;
 using Lean.Touch;
 using UnityEngine;
 
@@ -11,6 +12,8 @@ namespace Gameplay.Controls
 {
     public class OrderManagerPlayer : OrderManagerBase
     {
+        [SerializeField] private AudioClip cellClickedSound;
+        
         public IPawn Player => _pawnController;
         [HideInInspector] public GameAreaTile selectedTile;
 
@@ -39,6 +42,8 @@ namespace Gameplay.Controls
             var tile = hitInfo.collider.transform.parent.GetComponent<GameAreaTile>();
             if (tile != null)
             {
+                AudioManager.Instance.PlaySound(cellClickedSound);
+                
                 // Clicked on empty tile, proceed with movement
                 if (tile.CanWalkIn(_pawnController) && pathsToTiles.ContainsKey(tile))
                 {

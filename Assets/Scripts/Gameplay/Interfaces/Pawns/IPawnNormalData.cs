@@ -17,6 +17,8 @@ namespace Gameplay.Interfaces
 
         AudioClip HitSound { get; }
         AudioClip DeathSound { get; }
+        AudioClip InteractSound { get; }
+        AudioClip MovingSound { get; }
 
         #endregion
         

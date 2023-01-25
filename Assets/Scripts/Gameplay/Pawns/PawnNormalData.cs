@@ -30,6 +30,8 @@ namespace Gameplay.Pawns
         [Header("Audio")] 
         [SerializeField] private AudioClip hitSound;
         [SerializeField] private AudioClip deathSound;
+        [SerializeField] private AudioClip interactSound;
+        [SerializeField] private AudioClip movingSound;
 
         [Header("Prefabs")] 
         [SerializeField] private GameObject bloodVesselPrefab;
@@ -75,6 +77,8 @@ namespace Gameplay.Pawns
 
         public AudioClip HitSound => hitSound;
         public AudioClip DeathSound => deathSound;
+        public AudioClip InteractSound => interactSound;
+        public AudioClip MovingSound => movingSound;
 
         #endregion
         

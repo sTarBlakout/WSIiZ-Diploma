@@ -134,5 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df0e88fcaf9257c4cb6d39e935c3ac00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellClickedSound: {fileID: 8300000, guid: 1dbb011336ea16b44932cb88c4765971, type: 3}
   selectedTile: {fileID: 0}
   inputBlocked: 0

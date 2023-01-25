@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Gameplay.Core;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Pawns
@@ -48,19 +49,20 @@ namespace Gameplay.Pawns
             _onReachedDestination = onReachedDestination;
             _vectorPath = path;
             TargetNextPoint();
+            AudioManager.Instance.PlayContinuousSound(true, _pawnData.MovingSound);
         }
 
         private void ProcessRotation()
         {
             if (_onRotated == null) return;
             if (Rotate(_rotateToPos)) return;
-            
+
             if (!_waitedAfterRotate)
             {
                 InitWaiting(_pawnData.WaitAfterRotate, () => _waitedAfterRotate = true);
                 return;
             }
-            
+
             ResetAllWaitings();
             _onRotated?.Invoke();
             _onRotated = null;
@@ -123,7 +125,11 @@ namespace Gameplay.Pawns
         private void TargetNextPoint()
         {
             _vectorPath.RemoveAt(0);
-            if (_vectorPath.Count == 0) _onReachedDestination?.Invoke();
+            if (_vectorPath.Count == 0)
+            {
+                AudioManager.Instance.PlayContinuousSound(false);
+                _onReachedDestination?.Invoke();
+            }
         }
 
         private bool Rotate(Vector3 position)

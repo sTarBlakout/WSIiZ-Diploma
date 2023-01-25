@@ -1,5 +1,6 @@
 using System;
 using Gameplay.Interfaces;
+using Global;
 using UnityEngine;
 
 namespace Gameplay.Pawns
@@ -31,6 +32,7 @@ namespace Gameplay.Pawns
         private void OnInteracted()
         {
             _target.PostInteract(OnPostInteracted);
+            AudioManager.Instance.PlaySound(_pawn.PawnData.InteractSound);
         }
         
         private void OnPostInteracted()

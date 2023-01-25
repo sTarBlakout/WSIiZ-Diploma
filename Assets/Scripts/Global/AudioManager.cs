@@ -6,6 +6,7 @@ namespace Global
     public class AudioManager : MonoBehaviour
     {
         [SerializeField] private AudioSource otherSounds;
+        [SerializeField] private AudioSource otherContinuousSounds;
         [SerializeField] private AudioSource backgroundMusic;
         
         public static AudioManager Instance { get; private set; }
@@ -38,6 +39,13 @@ namespace Global
         {
             otherSounds.clip = clip;
             otherSounds.Play();
+        }
+
+        public void PlayContinuousSound(bool play, AudioClip clip = null)
+        {
+            if (clip != null) otherContinuousSounds.clip = clip;
+            if (play) otherContinuousSounds.Play();
+            else otherContinuousSounds.Stop();
         }
 
         public void Vibrate()
