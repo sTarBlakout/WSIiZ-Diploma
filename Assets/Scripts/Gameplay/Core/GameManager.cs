@@ -25,7 +25,15 @@ namespace Gameplay.Core
 
         private void Awake()
         {
-            Instance = this;
+            if (Instance == null)
+            {
+                DontDestroyOnLoad(gameObject);
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
             _inputManagerUI = FindObjectOfType<InputManagerUI>();
             _cameraManager = FindObjectOfType<CameraManager>();
         }
@@ -84,6 +92,7 @@ namespace Gameplay.Core
             }
             StopCoroutine(_gameCor);
             StartCoroutine(InitNextLevel());
+            if (AdsController.Instance.InterstitialAdLoaded) AdsController.Instance.ShowInterstitialAd();
         }
 
         #region Uitilities
